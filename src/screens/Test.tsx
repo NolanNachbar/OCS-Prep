@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Diff, Eyebrow, MicButton, Panel, Verdict } from "@/components/shared"
 import { useCards } from "@/lib/cards"
 import * as L from "@/lib/ocs.js"
-import { update, useStore } from "@/lib/store"
+import { getStore, update, useStore } from "@/lib/store"
 import type { Card, Score } from "@/lib/types"
 
 const shuffle = <T,>(a: T[]) => { const b = a.slice(); for (let i = b.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [b[i], b[j]] = [b[j], b[i]] } return b }
@@ -15,7 +15,7 @@ const shuffle = <T,>(a: T[]) => { const b = a.slice(); for (let i = b.length - 1
 export default function Test() {
   const store = useStore()
   const { all } = useCards()
-  const [learnedOnly, setLearnedOnly] = useState(true)
+  const [learnedOnly, setLearnedOnly] = useState(() => all.filter((c) => getStore().cards[c.id]).length >= 10)
   const [count, setCount] = useState("10")
   const [run, setRun] = useState<{ q: Card[]; i: number; right: number; missed: string[] } | null>(null)
   const [text, setText] = useState("")
@@ -35,6 +35,7 @@ export default function Test() {
           <Label htmlFor="lo" className="text-base">Only cards I have started ({all.filter((c) => store.cards[c.id]).length})</Label>
         </div>
         <Button disabled={pool.length === 0} onClick={() => { setRun({ q: shuffle(pool).slice(0, count === "all" ? pool.length : +count), i: 0, right: 0, missed: [] }); setText(""); setRes(null) }}>Start test</Button>
+        {learnedOnly && pool.length < 10 && pool.length > 0 && <p className="mt-3 text-sm text-gold">Only {pool.length} started card{pool.length === 1 ? "" : "s"} so the test is short. Turn the switch off to test all {all.length}.</p>}
         {pool.length === 0 && <p className="mt-3 text-sm text-muted-foreground">Learn a few cards in Study first, or turn the switch off.</p>}
       </Panel>
     )
