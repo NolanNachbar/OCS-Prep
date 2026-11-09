@@ -97,14 +97,14 @@
   body {
     @apply text-foreground;
     min-height: 100vh;
-    background: #08262C;
+    background: linear-gradient(180deg, #000 0%, #03141c 45%, #04283a 100%) fixed;
     font-size: 16px; line-height: 1.5;
   }
   :focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
 }
 
 /* Navy.mil / Navy.com look: uppercase, wide tracking, hairline rules */
-.eyebrow { font-weight: 500; font-size: 0.875rem; color: #C6CCD0; }
+.eyebrow { font-weight: 700; font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); }
 .section-title { font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; text-align: center; }
 .slab { font-family: var(--font-heading); letter-spacing: 0.02em; }
 h1, h2, h3 { font-family: var(--font-heading); }

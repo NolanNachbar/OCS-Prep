@@ -80,16 +80,16 @@ export default function Listen() {
     <Panel>
       <Tabs value={mode} onValueChange={(v) => { setMode(v); setPlaying(false); setIdx(0) }}>
         <TabsList className="grid h-auto! w-full grid-cols-2 rounded-none bg-black/30">
-          <TabsTrigger value="read" className="h-11 rounded-none font-bold">Read to me</TabsTrigger>
-          <TabsTrigger value="quiz" className="h-11 rounded-none font-bold">Quiz me</TabsTrigger>
+          <TabsTrigger value="read" className="h-11 rounded-none font-bold uppercase tracking-wider">Read to me</TabsTrigger>
+          <TabsTrigger value="quiz" className="h-11 rounded-none font-bold uppercase tracking-wider">Quiz me</TabsTrigger>
         </TabsList>
       </Tabs>
       <p className="mt-3 text-sm text-muted-foreground">{mode === "read" ? "Reads each card in the sections you pick, prompt then answer." : `Prompt, then ${store.settings.gap} seconds to say it aloud, then the answer.`}</p>
-      <div className="mt-4 mb-2 text-sm font-medium text-muted-foreground">Sections ({cards.length} cards)</div>
+      <div className="mt-4 mb-2 text-xs font-bold uppercase tracking-[0.18em] text-gold">Sections ({cards.length} cards)</div>
       <div className="flex flex-wrap gap-2">
         {secs.map(([k, name]) => (
           <button key={k} onClick={() => pick(k)} aria-pressed={picked.includes(k)}
-            className={`min-h-11 border px-3 text-xs font-bold ${picked.includes(k) ? "border-gold bg-gold text-navy-black" : "border-border text-foreground"}`}>{name}</button>
+            className={`min-h-11 border px-3 text-xs font-bold uppercase tracking-wider ${picked.includes(k) ? "border-gold bg-gold text-navy-black" : "border-border text-foreground"}`}>{name}</button>
         ))}
       </div>
       <div className="my-5 flex items-center gap-3">
@@ -99,7 +99,7 @@ export default function Listen() {
         <Label htmlFor="tp" className="text-base">Say memory hooks</Label>
       </div>
       <div className="border border-border bg-black/25 p-5 text-center">
-        <div className="text-sm font-medium text-muted-foreground">{playing ? (mode === "quiz" && phase === "gap" ? "Your turn" : mode === "quiz" && phase === "answer" ? "Answer" : "Reading") : "Paused"}</div>
+        <div className="text-xs font-bold uppercase tracking-[0.18em] text-gold">{playing ? (mode === "quiz" && phase === "gap" ? "Your turn" : mode === "quiz" && phase === "answer" ? "Answer" : "Reading") : "Paused"}</div>
         <div className="slab mt-2 text-3xl font-bold leading-none">{c ? c.prompt : "Pick at least one section"}</div>
         {c && (mode === "read" || phase === "answer") && playing && <p className="mt-3 text-lg text-muted-foreground">{c.answer}</p>}
       </div>
@@ -108,18 +108,18 @@ export default function Listen() {
         <Button size="lg" variant="outline" onClick={() => setIdx((i) => (i + 1) % Math.max(1, cards.length))} aria-label="Next card"><SkipForward /></Button>
       </div>
       <div className="mt-8 border-t border-border pt-5">
-        <div className="text-sm font-medium text-muted-foreground">Audio files, for the run</div>
+        <div className="text-xs font-bold uppercase tracking-[0.18em] text-gold">Audio files, for the run</div>
         <p className="mt-2 text-sm text-muted-foreground">Real recordings that keep playing with the screen locked or the phone in your pocket. Pick a section, press play, and it loops. Needs a connection the first time you play each one.</p>
         <div className="mt-3 flex flex-wrap gap-2">
           {secs.map(([k, name]) => (
             <button key={k} onClick={() => setASec(k)} aria-pressed={aSec === k}
-              className={`min-h-11 border px-3 text-xs font-bold ${aSec === k ? "border-gold bg-gold text-navy-black" : "border-border text-foreground"}`}>{name}</button>
+              className={`min-h-11 border px-3 text-xs font-bold uppercase tracking-wider ${aSec === k ? "border-gold bg-gold text-navy-black" : "border-border text-foreground"}`}>{name}</button>
           ))}
         </div>
         <Tabs value={aMode} onValueChange={setAMode} className="mt-3">
           <TabsList className="grid h-auto! w-full grid-cols-2 rounded-none bg-black/30">
-            <TabsTrigger value="read" className="h-11 rounded-none font-bold">Read</TabsTrigger>
-            <TabsTrigger value="quiz" className="h-11 rounded-none font-bold">Quiz (6 s gap)</TabsTrigger>
+            <TabsTrigger value="read" className="h-11 rounded-none font-bold uppercase tracking-wider">Read</TabsTrigger>
+            <TabsTrigger value="quiz" className="h-11 rounded-none font-bold uppercase tracking-wider">Quiz (6 s gap)</TabsTrigger>
           </TabsList>
         </Tabs>
         <audio key={aSec + aMode} className="mt-3 w-full" controls loop preload="none" src={`${import.meta.env.BASE_URL}audio/${aSec}-${aMode}.mp3`} />
