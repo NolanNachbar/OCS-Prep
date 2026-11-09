@@ -32,8 +32,8 @@ out=$(node tools/test_lib.mjs 2>&1) || fail "tests" "$out"
 # 3. Console errors and clipped nav at phone width, every tab
 (npx vite preview --port 4190 >/dev/null 2>&1 &) ; sleep 2
 $B viewport 390x844 >/dev/null 2>&1; $B console --clear >/dev/null 2>&1; $B goto http://localhost:4190/ >/dev/null 2>&1
-for t in Study Test Listen Cards Settings; do
-  $B js "[...document.querySelectorAll('[role=tab]')].find(b=>b.innerText.trim().toLowerCase()==='${t,,}').click(); await new Promise(r=>setTimeout(r,250)); document.documentElement.scrollWidth<=innerWidth ? 'ok' : 'HSCROLL'" 2>&1 | grep -q HSCROLL && { fuser -k 4190/tcp >/dev/null 2>&1; fail "layout" "horizontal scroll on $t at 390px"; }
+for t in study test listen cards more; do
+  $B js "document.querySelector('[data-nav="$t"]').click(); await new Promise(r=>setTimeout(r,250)); document.documentElement.scrollWidth<=innerWidth ? 'ok' : 'HSCROLL'" 2>&1 | grep -q HSCROLL && { fuser -k 4190/tcp >/dev/null 2>&1; fail "layout" "horizontal scroll on $t at 390px"; }
 done
 errs=$($B console --errors 2>&1 | grep -v -E "UNTRUSTED|no console errors")
 fuser -k 4190/tcp >/dev/null 2>&1

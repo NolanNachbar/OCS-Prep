@@ -7,3 +7,7 @@ Critics (Haiku): learning-science, phone-usability, content verifier.
 - Phone: sticky compact header, bigger slider thumb and blanks, bigger selects, Test override removed.
 - Gate: console buffer now cleared before the check.
 Rollback: `git revert -m 1 273bf1b` or `git reset --hard audit-2026-11-09-r1~1` (before the merge).
+
+## Round 2 additions (2026-11-09), tag audit-2026-11-09-r2
+Hamburger menu on phones (tab row on wide screens), Test this section / Test this card from Cards (a pass marks a new card known), memory hooks in Cards, a Hint button and miss reveal in Study, "Say memory hooks" in Listen, and per-section MP3s (read and quiz) built by tools/make_audio.py with local Piper TTS.
+Rollback: `git reset --hard audit-2026-11-09-r1` on main, then push with lease.

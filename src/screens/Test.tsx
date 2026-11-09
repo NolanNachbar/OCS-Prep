@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
@@ -17,9 +17,17 @@ export default function Test() {
   const { all } = useCards()
   const [learnedOnly, setLearnedOnly] = useState(() => all.filter((c) => getStore().cards[c.id]).length >= 10)
   const [count, setCount] = useState("10")
-  const [run, setRun] = useState<{ q: Card[]; i: number; right: number; missed: string[] } | null>(null)
+  const [run, setRun] = useState<{ q: Card[]; i: number; right: number; missed: string[]; targeted?: boolean } | null>(null)
   const [text, setText] = useState("")
   const [res, setRes] = useState<Score | null>(null)
+  useEffect(() => {
+    const ids = getStore().testIds
+    if (!ids?.length) return
+    update((s) => { delete s.testIds; return s })
+    const q = all.filter((c) => ids.includes(c.id))
+    if (q.length) { setRun({ q: shuffle(q), i: 0, right: 0, missed: [], targeted: true }) }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
   const pool = useMemo(() => all.filter((c) => !learnedOnly || store.cards[c.id]), [all, learnedOnly, store.cards])
 
   if (!run) {
@@ -46,6 +54,7 @@ export default function Test() {
         <Eyebrow>Test complete</Eyebrow>
         <h2 className="slab mt-2 text-3xl font-bold">{run.right} of {run.q.length}</h2>
         {run.missed.length > 0 && <p className="mt-2 text-muted-foreground">Missed: {run.missed.join(", ")}. They are due again today.</p>}
+        {run.targeted && run.right > 0 && <p className="mt-2 text-muted-foreground">Cards you passed that were new are now marked known and come back for review in a few days.</p>}
         <Button className="mt-5" onClick={() => setRun(null)}>Done</Button>
       </Panel>
     )
@@ -54,6 +63,7 @@ export default function Test() {
   const check = () => {
     const r = L.score(c, text, store.settings.threshold) as Score
     setRes(r)
+    if (r.ok && run?.targeted) update((s) => { if (!s.cards[c.id]) s.cards[c.id] = { box: 3, reps: 1, lapses: 0, misses: 0, due: L.addDays(L.ymd(new Date()), L.STEPS[3]) }; return s })
     if (!r.ok) update((s) => { s.cards[c.id] = { ...(s.cards[c.id] || { reps: 0, lapses: 0, misses: 0 }), box: 0, due: L.ymd(new Date()), misses: (s.cards[c.id]?.misses || 0) + 1 }; return s })
   }
   const next = (ok: boolean) => { setRun({ ...run, i: run.i + 1, right: run.right + (ok ? 1 : 0), missed: ok ? run.missed : [...run.missed, c.prompt] }); setText(""); setRes(null) }

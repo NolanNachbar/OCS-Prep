@@ -8,6 +8,7 @@ export type Store = {
   cards: Record<string, CardState>
   intro: { date: string; n: number }
   pinned?: string[]
+  testIds?: string[]
   edits: Record<string, string>
   log: LogEntry[]
 }
