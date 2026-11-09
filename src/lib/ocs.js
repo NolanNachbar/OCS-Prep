@@ -1,6 +1,4 @@
 // Pure logic for Navy OCS PREP: no DOM, so it can be tested under node.
-(function (root) {
-  "use strict";
 
   // ---- text normalization and scoring ----------------------------------------------------
   function norm(s) {
@@ -155,7 +153,4 @@
     return s;
   }
 
-  const api = { norm, words, stripLead, diff, score, cloze, priority, studyOrder, schedule, STEPS, ymd, addDays, daysBetween, parseYmd };
-  if (typeof module !== "undefined" && module.exports) module.exports = api;
-  else root.OCS = api;
-})(typeof window !== "undefined" ? window : globalThis);
+export { norm, words, stripLead, diff, score, cloze, priority, studyOrder, schedule, STEPS, ymd, addDays, daysBetween, parseYmd };

@@ -1,0 +1,108 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "@fontsource/roboto/400.css";
+@import "@fontsource/roboto/500.css";
+@import "@fontsource/roboto/700.css";
+@import "@fontsource/roboto-slab/500.css";
+@import "@fontsource/roboto-slab/700.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+    --font-heading: 'Roboto Slab', Georgia, serif;
+    --font-sans: 'Roboto', system-ui, sans-serif;
+    --color-sidebar-ring: var(--sidebar-ring);
+    --color-sidebar-border: var(--sidebar-border);
+    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    --color-sidebar-primary: var(--sidebar-primary);
+    --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar: var(--sidebar);
+    --color-chart-5: var(--chart-5);
+    --color-chart-4: var(--chart-4);
+    --color-chart-3: var(--chart-3);
+    --color-chart-2: var(--chart-2);
+    --color-chart-1: var(--chart-1);
+    --color-ring: var(--ring);
+    --color-input: var(--input);
+    --color-border: var(--border);
+    --color-destructive: var(--destructive);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-accent: var(--accent);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-muted: var(--muted);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-secondary: var(--secondary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-primary: var(--primary);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-popover: var(--popover);
+    --color-card-foreground: var(--card-foreground);
+    --color-card: var(--card);
+    --color-foreground: var(--foreground);
+    --color-background: var(--background);
+    --radius-sm: calc(var(--radius) * 0.6);
+    --radius-md: calc(var(--radius) * 0.8);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) * 1.4);
+    --radius-2xl: calc(var(--radius) * 1.8);
+    --radius-3xl: calc(var(--radius) * 2.2);
+    --radius-4xl: calc(var(--radius) * 2.6);
+    --color-gold: var(--gold);
+    --color-ok: var(--ok);
+    --color-navy-black: var(--navy-black);
+    --color-navy-blue: var(--navy-blue);
+    --color-teal-blue: var(--teal-blue);
+}
+
+/* U.S. Navy Design Guide palette (usnavy.github.io/Navy-Design-Guide): Navy Black #08262C, Navy Blue #003B4F,
+   Teal Blue #088199, Gray #C6CCD0, Yellow #E8B00F. Dark only. */
+:root, .dark {
+    --navy-black: #08262C;
+    --navy-blue: #003B4F;
+    --teal-blue: #088199;
+    --gold: #E8B00F;
+    --ok: #4cc38a;
+    --background: #04202b;
+    --foreground: #ffffff;
+    --card: #0a3044;
+    --card-foreground: #ffffff;
+    --popover: #0a3044;
+    --popover-foreground: #ffffff;
+    --primary: #E8B00F;
+    --primary-foreground: #08262C;
+    --secondary: #0d4259;
+    --secondary-foreground: #ffffff;
+    --muted: #0d3a4f;
+    --muted-foreground: #C6CCD0;
+    --accent: #088199;
+    --accent-foreground: #ffffff;
+    --destructive: #ff6b61;
+    --border: rgba(198, 204, 208, 0.22);
+    --input: rgba(198, 204, 208, 0.3);
+    --ring: #E8B00F;
+    --chart-1: #E8B00F; --chart-2: #088199; --chart-3: #C6CCD0; --chart-4: #003B4F; --chart-5: #4cc38a;
+    --sidebar: #08262C; --sidebar-foreground: #ffffff; --sidebar-primary: #E8B00F; --sidebar-primary-foreground: #08262C;
+    --sidebar-accent: #088199; --sidebar-accent-foreground: #ffffff; --sidebar-border: rgba(198, 204, 208, 0.22); --sidebar-ring: #E8B00F;
+    --radius: 0.375rem;
+}
+
+@layer base {
+  * { @apply border-border outline-ring/50; }
+  html { @apply font-sans; background: var(--background); }
+  body {
+    @apply text-foreground;
+    min-height: 100vh;
+    background: linear-gradient(180deg, #02121c 0%, #04202b 38%, #003B4F 100%) fixed;
+    font-size: 17px; line-height: 1.5;
+  }
+  :focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+}
+
+/* Navy.mil / Navy.com look: uppercase, wide tracking, hairline rules */
+.eyebrow { font-weight: 700; font-size: 0.75rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); }
+.section-title { font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; text-align: center; }
+.slab { font-family: var(--font-heading); }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }

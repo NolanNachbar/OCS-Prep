@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Parse the pasted Appendix B deck text into data/cards.json.
+"""Parse the pasted Appendix B deck text into src/data/cards.json.
 
 Source: tools/appendix-b-source.txt (lines 15-297 are the first copy of the deck).
 Each card is a title line followed by an answer line, grouped under ALL-CAPS headers.
@@ -66,4 +66,4 @@ counts = {}
 for c in cards:
     counts[c["secName"]] = counts.get(c["secName"], 0) + 1
 print(len(cards), counts)
-(root / "data/cards.json").write_text(json.dumps(cards, indent=1, ensure_ascii=False) + "\n")
+(root / "src/data/cards.json").write_text(json.dumps(cards, indent=1, ensure_ascii=False) + "\n")

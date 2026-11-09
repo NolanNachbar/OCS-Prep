@@ -1,9 +1,18 @@
-# Navy OCS PREP
+# OCS Recite
 
-Personal recital trainer for OCSINST 1530.1A Appendix B (the RLP knowledge). Static PWA, no build step, no server.
+Appendix B (RLP) recital trainer for Navy OCS. Vite, React, TypeScript, Tailwind v4, shadcn/ui.
 
-Run locally: `python3 -m http.server 8000` then open http://localhost:8000
-Tests: `node tools/test_lib.js`
-Rebuild cards: `python3 tools/build_cards.py` (reads `tools/appendix-b-source.txt`)
+- Study: learn, fill the blanks, recall, with spaced repetition
+- Test: random cards, no hints
+- Listen: hands-free prompt and answer loop for running
+- Cards and More: browse, edit chain-of-command links, settings, export and import
 
-Progress is stored in the browser only. Use More > Export progress to back it up.
+```
+npm install
+npm run dev
+npm test        # scoring and scheduler tests
+npm run build
+```
+
+Progress is stored in the browser (localStorage). Rebuild cards with `python3 tools/build_cards.py`.
+Pushes to `main` deploy to GitHub Pages.

@@ -141,7 +141,7 @@
     const item = S.queue[0];
     const c = card(item.id);
     const pct = S.total ? Math.round((S.done / S.total) * 100) : 0;
-    const head = `<div class="bar"><i style="width:${pct}%"></i></div>
+    const head = `<div class="meta"><span>${S.queue.length} left</span><span>${S.done} of ${S.total} cleared</span></div><div class="bar"><i style="width:${pct}%"></i></div>
       <div class="sec">${esc(c.secName)} <span class="chip">${item.stage === 0 ? "learn" : item.stage < 3 ? "fill the blanks" : "from memory"}</span>${item.missed ? '<span class="chip r">retry</span>' : ""}</div>
       <div class="prompt">${esc(c.prompt)}</div>`;
     const hook = hookFor(c);
@@ -415,7 +415,7 @@
     try { sessionStorage.setItem("ocsprep.tab", tab); } catch (e) { /* ignore */ }
     TABS[tab]();
   }
-  document.getElementById("tabs").addEventListener("click", (e) => { if (e.target.dataset.tab) { if (e.target.dataset.tab === "study") S = null; show(e.target.dataset.tab); } });
+  document.getElementById("tabs").addEventListener("click", (e) => { const b = e.target.closest("button[data-tab]"); if (b) { if (b.dataset.tab === "study") S = null; show(b.dataset.tab); } });
 
   fetch("data/cards.json").then((r) => r.json()).then((d) => {
     CARDS = d; load(); applyEdits(); ORDER = L.studyOrder(CARDS); countdown();

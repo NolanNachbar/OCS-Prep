@@ -1,7 +1,7 @@
-// Run: node tools/test_lib.js
-const assert = require("assert");
-const L = require("../lib.js");
-const cards = require("../data/cards.json");
+// Run: node tools/test_lib.mjs
+import assert from "assert"; import { readFileSync } from "fs";
+const L = await import("../src/lib/ocs.js");
+const cards = JSON.parse(readFileSync(new URL("../src/data/cards.json", import.meta.url)));
 const by = (id) => cards.find((c) => c.id.startsWith(id));
 let n = 0;
 const t = (name, fn) => { fn(); n++; console.log("ok", name); };
