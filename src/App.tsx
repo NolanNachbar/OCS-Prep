@@ -47,10 +47,10 @@ export default function App() {
           ))}
         </TabsList>
       </header>
-      <section className="border-b border-white/15 py-3 text-left text-white"><div className="mx-auto max-w-3xl px-4">
+      <section className="bg-gradient-to-b from-[#04283a] to-[#03141c] px-4 py-3 text-center text-white">
         <h1 className="slab text-3xl font-bold uppercase leading-none tracking-[0.12em]">{cur.label}</h1>
         <p className="mt-1 text-xs text-[#C6CCD0]">{cur.sub}</p>
-      </div></section>
+      </section>
       <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-4">
         {tab === "study" && <Study />}
         {tab === "test" && <Test />}
