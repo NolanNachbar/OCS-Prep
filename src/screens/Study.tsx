@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { Textarea } from "@/components/ui/textarea"
 import { Slider } from "@/components/ui/slider"
-import { Diff, Eyebrow, MicButton, Panel, StatTile, Verdict } from "@/components/shared"
+import { Diff, Eyebrow, MicButton, Panel, StatLine, Verdict } from "@/components/shared"
 import { useCards } from "@/lib/cards"
 import { hookFor } from "@/lib/hooks"
 import * as L from "@/lib/ocs.js"
@@ -105,11 +105,7 @@ export default function Study() {
 
   return (
     <div className="space-y-4">
-      <div className="flex gap-3 pb-1">
-        <StatTile value={due.length} label="Due today" tone="text-gold" />
-        <StatTile value={startedN} label={`of ${order.length} started`} />
-        <StatTile value={solid} label="Solid" tone="text-ok" />
-      </div>
+      <StatLine items={[{ value: due.length, label: "due today" }, { value: startedN, label: `of ${order.length} started` }, { value: solid, label: "solid" }]} />
 
       {s && item && c ? (
         <Panel>
@@ -117,17 +113,17 @@ export default function Study() {
           <Progress value={s.total ? (s.done / s.total) * 100 : 0} className="mb-4 h-1.5 [&>div]:bg-gold" />
           <div className="flex flex-wrap items-center gap-2">
             <Eyebrow>{c.secName}</Eyebrow>
-            <Badge variant="outline" className="rounded-none uppercase tracking-wider">{LEVELS[level]}</Badge>
-            {item.missed && <Badge variant="destructive" className="rounded-sm uppercase tracking-wider">Retry</Badge>}
+            <Badge variant="outline" className="rounded-none">{LEVELS[level]}</Badge>
+            {item.missed && <Badge variant="destructive" className="rounded-sm">Retry</Badge>}
           </div>
           <h2 className="slab mt-3 mb-4 text-4xl font-bold leading-none">{c.prompt}</h2>
-          <div className="mb-5 border border-border bg-black/25 p-3">
-            <div className="mb-2 flex items-center justify-between text-xs font-bold uppercase tracking-[0.12em]">
+          <div className="mb-5">
+            <div className="mb-2 flex items-center justify-between text-sm">
               <span className="text-muted-foreground">Fill in the blank</span>
               <span className="text-gold">{LEVELS[level]}{manual === null ? " (auto)" : ""}</span>
             </div>
             <Slider min={0} max={4} step={1} value={[level]} onValueChange={(v) => setManual(v[0])} aria-label="How much to fill in" />
-            <div className="mt-2 flex justify-between text-xs uppercase tracking-wider text-muted-foreground"><span>Nothing blank</span><span>Everything blank</span></div>
+            <div className="mt-2 flex justify-between text-sm text-muted-foreground"><span>Nothing blank</span><span>Everything blank</span></div>
             {manual !== null && <Button variant="ghost" size="sm" className="mt-1 px-0" onClick={() => setManual(null)}>Back to auto</Button>}
           </div>
           <Step key={item.uid + "-" + level} item={item} level={level} card={c} hook={hookFor(c, secIdx(c))} onIntro={() => introduce(item)} onNext={(ok) => advance(item, ok, level)} />
@@ -234,8 +230,8 @@ function Step({ item, level, card: c, hook, onIntro, onNext }: { item: Item; lev
 
 function Hook({ text }: { text: string }) {
   return (
-    <div className="mt-4 border border-gold/50 bg-black/20 p-3 text-[0.95rem] text-foreground">
-      <div className="mb-1 text-xs font-bold uppercase tracking-[0.18em] text-gold">Memory hook</div>
+    <div className="mt-4 text-[0.95rem] text-foreground">
+      <b className="font-medium text-gold">Memory hook. </b>
       {text}
     </div>
   )

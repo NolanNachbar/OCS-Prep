@@ -29,7 +29,7 @@ export default function Cards({ onTest }: { onTest: () => void }) {
           const cs = all.filter((c) => c.sec === sec)
           return (
             <AccordionItem key={sec} value={sec}>
-              <AccordionTrigger className="text-base font-bold uppercase tracking-wider">{cs[0].secName} ({cs.length})</AccordionTrigger>
+              <AccordionTrigger className="text-base font-bold">{cs[0].secName} ({cs.length})</AccordionTrigger>
               <AccordionContent className="space-y-3">
                 <Button size="sm" variant="outline" onClick={() => update((s) => { s.pinned = [...new Set([...(s.pinned || []), ...cs.map((c) => c.id)])]; return s })}>Learn this whole section next</Button>
                 <Button size="sm" variant="outline" className="ml-2" onClick={() => runTest(cs.map((c) => c.id))}>Test this section</Button>

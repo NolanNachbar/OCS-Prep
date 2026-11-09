@@ -10,15 +10,16 @@ export function Eyebrow({ children }: { children: ReactNode }) {
 }
 
 export function Panel({ children, className = "" }: { children: ReactNode; className?: string }) {
-  return <section className={`border border-white/15 bg-[#003B4F]/45 p-5 ${className}`}>{children}</section>
+  return <section className={`border-t border-white/15 pt-6 pb-2 first:border-t-0 first:pt-0 ${className}`}>{children}</section>
 }
 
-export function StatTile({ value, label, tone = "text-foreground" }: { value: ReactNode; label: string; tone?: string }) {
+export function StatLine({ items }: { items: { value: ReactNode; label: string }[] }) {
   return (
-    <div className="flex-1 border border-border bg-black/25 px-3 py-3 text-center">
-      <div className={`slab text-2xl font-bold leading-none ${tone}`}>{value}</div>
-      <div className="mt-1 text-[0.65rem] font-bold uppercase tracking-[0.14em] text-muted-foreground">{label}</div>
-    </div>
+    <p className="text-sm text-muted-foreground">
+      {items.map((it, k) => (
+        <span key={k}>{k > 0 && ", "}<b className="font-medium text-foreground">{it.value}</b> {it.label}</span>
+      ))}
+    </p>
   )
 }
 
