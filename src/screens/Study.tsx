@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { Textarea } from "@/components/ui/textarea"
+import { Slider } from "@/components/ui/slider"
 import { Diff, Eyebrow, MicButton, Panel, StatTile, Verdict } from "@/components/shared"
 import { useCards } from "@/lib/cards"
 import { hookFor } from "@/lib/hooks"
@@ -12,6 +13,9 @@ import { speak } from "@/lib/speech"
 import { getStore, update, useStore } from "@/lib/store"
 import type { Card, Score } from "@/lib/types"
 
+const LEVELS = ["Read it", "First letters", "Some words", "Most words", "From memory"]
+const FRAC = [0, 1, 0.35, 0.7, 1]
+const stageLevel = (stage: number) => [0, 2, 3, 4][stage]
 type Item = { uid: number; id: string; stage: number; missed?: boolean }
 type Session = { queue: Item[]; total: number; done: number; miss: number }
 let uid = 1
@@ -33,6 +37,7 @@ export default function Study() {
   const store = useStore()
   const { order, byId, secIdx } = useCards()
   const [s, setS] = useState<Session | null>(null)
+  const [manual, setManual] = useState<number | null>(null)
 
   const due = useMemo(() => order.filter((c) => store.cards[c.id]?.due && store.cards[c.id].due <= today()), [order, store.cards])
   const fresh = useMemo(() => order.filter((c) => !store.cards[c.id]), [order, store.cards])
@@ -51,7 +56,7 @@ export default function Study() {
 
   const requeue = (q: Item[], item: Item, gap: number) => { const at = Math.min(q.length, gap); q.splice(at, 0, item) }
 
-  const advance = (item: Item, ok: boolean) => {
+  const advance = (item: Item, ok: boolean, level = 4) => {
     if (!s) return
     const c = byId.get(item.id)!
     const q = s.queue.slice(1)
@@ -59,8 +64,8 @@ export default function Study() {
     if (!ok) {
       miss++
       requeue(q, { uid: uid++, id: c.id, stage: Math.max(1, item.stage - 1), missed: true }, 3)
-    } else if (item.stage < 3) {
-      requeue(q, { uid: uid++, id: c.id, stage: item.stage + 1, missed: item.missed }, 4)
+    } else if (item.stage < 3 || level < 4) {
+      requeue(q, { uid: uid++, id: c.id, stage: Math.min(3, item.stage + 1), missed: item.missed }, 4)
     } else {
       update((st) => {
         let cs = st.cards[c.id] || { box: 0, reps: 0, lapses: 0, due: today(), misses: 0 }
@@ -91,6 +96,7 @@ export default function Study() {
   const startedN = order.length - fresh.length
   const item = s?.queue[0]
   const c = item ? byId.get(item.id) : undefined
+  const level = item ? (manual ?? stageLevel(item.stage)) : 0
 
   return (
     <div className="space-y-4">
@@ -106,11 +112,20 @@ export default function Study() {
           <Progress value={s.total ? (s.done / s.total) * 100 : 0} className="mb-4 h-1.5 [&>div]:bg-gold" />
           <div className="flex flex-wrap items-center gap-2">
             <Eyebrow>{c.secName}</Eyebrow>
-            <Badge variant="outline" className="rounded-none uppercase tracking-wider">{item.stage === 0 ? "Learn" : item.stage < 3 ? "Fill the blanks" : "From memory"}</Badge>
+            <Badge variant="outline" className="rounded-none uppercase tracking-wider">{LEVELS[level]}</Badge>
             {item.missed && <Badge variant="destructive" className="rounded-sm uppercase tracking-wider">Retry</Badge>}
           </div>
-          <h2 className="slab mt-3 mb-4 text-3xl font-bold leading-tight">{c.prompt}</h2>
-          <Step key={item.uid} item={item} card={c} hook={hookFor(c, secIdx(c))} onIntro={() => introduce(item)} onNext={(ok) => advance(item, ok)} />
+          <h2 className="slab mt-3 mb-4 text-4xl font-bold leading-none">{c.prompt}</h2>
+          <div className="mb-5 border border-border bg-black/25 p-3">
+            <div className="mb-2 flex items-center justify-between text-xs font-bold uppercase tracking-[0.12em]">
+              <span className="text-muted-foreground">Fill in the blank</span>
+              <span className="text-gold">{LEVELS[level]}{manual === null ? " (auto)" : ""}</span>
+            </div>
+            <Slider min={0} max={4} step={1} value={[level]} onValueChange={(v) => setManual(v[0])} aria-label="How much to fill in" />
+            <div className="mt-2 flex justify-between text-[0.6rem] uppercase tracking-wider text-muted-foreground"><span>Nothing blank</span><span>Everything blank</span></div>
+            {manual !== null && <Button variant="ghost" size="sm" className="mt-1 px-0" onClick={() => setManual(null)}>Back to auto</Button>}
+          </div>
+          <Step key={item.uid + "-" + level} item={item} level={level} card={c} hook={hookFor(c, secIdx(c))} onIntro={() => introduce(item)} onNext={(ok) => advance(item, ok, level)} />
         </Panel>
       ) : s ? (
         <Panel>
@@ -125,12 +140,12 @@ export default function Study() {
   )
 }
 
-function Step({ item, card: c, hook, onIntro, onNext }: { item: Item; card: Card; hook: string; onIntro: () => void; onNext: (ok: boolean) => void }) {
+function Step({ item, level, card: c, hook, onIntro, onNext }: { item: Item; level: number; card: Card; hook: string; onIntro: () => void; onNext: (ok: boolean) => void }) {
   const store = useStore()
   const [res, setRes] = useState<{ r: Score; note?: string; peeked?: boolean } | null>(null)
   const [text, setText] = useState("")
   const [vals, setVals] = useState<Record<number, string>>({})
-  const toks = useMemo(() => (item.stage === 1 || item.stage === 2 ? L.cloze(c, item.stage === 1 ? 0.35 : 0.7, 1) : []), [item.stage, c])
+  const toks = useMemo(() => (level >= 1 && level <= 3 ? L.cloze(c, FRAC[level], 1) : []), [level, c])
 
   const record = (r: Score, note?: string, peeked?: boolean) => {
     if (!r.ok) update((st) => { if (st.cards[c.id]) st.cards[c.id].misses = (st.cards[c.id].misses || 0) + 1; return st })
@@ -138,15 +153,15 @@ function Step({ item, card: c, hook, onIntro, onNext }: { item: Item; card: Card
     setRes({ r, note, peeked })
   }
 
-  if (item.stage === 0) {
+  if (level === 0) {
     return (
       <div>
-        {c.lead && <p className="slab italic text-muted-foreground">{c.lead}</p>}
-        <p className="text-xl leading-relaxed">{c.answer}</p>
+        {c.lead && <p className="italic text-muted-foreground">{c.lead}</p>}
+        <p className="text-lg leading-relaxed">{c.answer}</p>
         {hook && <Hook text={hook} />}
         <p className="mt-4 text-sm text-muted-foreground">Read it, then say it out loud once without looking.</p>
         <div className="mt-2 flex flex-wrap gap-3">
-          <Button onClick={onIntro}>I said it aloud</Button>
+          {item.stage === 0 ? <Button onClick={onIntro}>I said it aloud</Button> : <Button onClick={() => onNext(true)}>Next card</Button>}
           <Button variant="outline" onClick={() => speak((c.lead ? c.lead + " " : "") + c.answer, store.settings.rate)}><Volume2 /> Hear it</Button>
         </div>
       </div>
@@ -154,7 +169,7 @@ function Step({ item, card: c, hook, onIntro, onNext }: { item: Item; card: Card
   }
 
   const check = () => {
-    if (item.stage < 3) {
+    if (level < 4) {
       const blanks = toks.filter((t: { blank: boolean }) => t.blank)
       let good = 0
       blanks.forEach((t: { text: string }, i: number) => { if (L.norm(vals[i] || "") === L.norm(t.text)) good++ })
@@ -167,8 +182,8 @@ function Step({ item, card: c, hook, onIntro, onNext }: { item: Item; card: Card
   let bi = 0
   return (
     <div>
-      {c.lead && <p className="slab italic text-muted-foreground">{item.stage < 3 ? c.lead : "Start with: " + c.lead}</p>}
-      {item.stage < 3 ? (
+      {c.lead && <p className="italic text-muted-foreground">{level < 4 ? c.lead : "Start with: " + c.lead}</p>}
+      {level < 4 ? (
         <p className="text-xl leading-[2.4]">
           {toks.map((t: { text: string; blank: boolean }, i: number) => {
             if (!t.blank) return <span key={i}>{t.text} </span>
@@ -179,7 +194,8 @@ function Step({ item, card: c, hook, onIntro, onNext }: { item: Item; card: Card
                 onChange={(e) => setVals({ ...vals, [k]: e.target.value })}
                 size={Math.min(Math.max(3, L.norm(t.text).length), 14)}
                 autoCapitalize="none" autoComplete="off" spellCheck={false} aria-label={`blank ${k + 1}`}
-                className={`mx-1 rounded-t-md border-0 border-b-2 bg-secondary px-2 py-1 text-center text-xl text-foreground outline-none focus:bg-muted ${state}`} />
+                placeholder={level === 1 ? t.text.replace(/^[^A-Za-z0-9]*/, "").slice(0, 1) : ""}
+                className={`mx-1 rounded-none border-0 border-b-2 bg-secondary px-2 py-1 text-center text-xl text-foreground outline-none placeholder:text-gold placeholder:font-bold focus:bg-muted ${state}`} />
             )
           })}
         </p>
@@ -199,7 +215,7 @@ function Step({ item, card: c, hook, onIntro, onNext }: { item: Item; card: Card
       ) : (
         <div className="mt-4 flex flex-wrap gap-3">
           <Button onClick={check}>Check</Button>
-          {item.stage === 3 && <MicButton onText={(t) => setText(t)} />}
+          {level === 4 && <MicButton onText={(t) => setText(t)} />}
           <Button variant="outline" onClick={() => record(peekScore(c), undefined, true)}>Show answer</Button>
         </div>
       )}
@@ -209,7 +225,7 @@ function Step({ item, card: c, hook, onIntro, onNext }: { item: Item; card: Card
 
 function Hook({ text }: { text: string }) {
   return (
-    <div className="mt-4 border-l-4 border-l-gold pl-3 text-[0.95rem] text-amber-100">
+    <div className="mt-4 border-l-4 border-l-gold pl-3 text-[0.95rem] text-foreground">
       <div className="mb-1 text-[0.68rem] font-bold uppercase tracking-[0.18em] text-gold">Memory hook</div>
       {text}
     </div>

@@ -1,5 +1,4 @@
 import { useState } from "react"
-import { BookOpen, Headphones, LayoutList, Settings, Timer } from "lucide-react"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import Study from "@/screens/Study"
 import Test from "@/screens/Test"
@@ -10,43 +9,45 @@ import { useStore } from "@/lib/store"
 import * as L from "@/lib/ocs.js"
 
 const TABS = [
-  { v: "study", label: "Study", Icon: BookOpen },
-  { v: "test", label: "Test", Icon: Timer },
-  { v: "listen", label: "Listen", Icon: Headphones },
-  { v: "cards", label: "Cards", Icon: LayoutList },
-  { v: "more", label: "More", Icon: Settings },
+  { v: "study", label: "Study", sub: "Learn and review Appendix B" },
+  { v: "test", label: "Test", sub: "Ten cards, no hints" },
+  { v: "listen", label: "Listen", sub: "Hands-free, for the run" },
+  { v: "cards", label: "Cards", sub: "All 135 cards by section" },
+  { v: "more", label: "Settings", sub: "Dates, pass mark, your data" },
 ]
 
 export default function App() {
   const [tab, setTab] = useState("study")
   const { settings } = useStore()
   const days = Math.max(0, L.daysBetween(L.ymd(new Date()), settings.ship))
+  const cur = TABS.find((t) => t.v === tab)!
   return (
-    <div className="mx-auto flex min-h-dvh max-w-2xl flex-col">
-      <header className="flex items-center justify-between border-b-4 border-gold bg-navy-black px-4 pt-[max(1rem,env(safe-area-inset-top))] pb-3">
-        <div>
-          <h1 className="slab text-xl font-bold uppercase tracking-[0.14em]">OCS Recite</h1>
-          <div className="text-xs text-muted-foreground">Appendix B, Recruit Learning Program</div>
+    <Tabs value={tab} onValueChange={setTab} className="min-h-dvh gap-0">
+      <header className="bg-black text-white">
+        <div className="mx-auto flex max-w-3xl items-center justify-between px-4 pt-[max(0.75rem,env(safe-area-inset-top))] pb-3">
+          <div className="slab text-lg font-bold uppercase leading-tight tracking-[0.14em]">OCS Recite<span className="block font-sans text-[0.65rem] font-medium tracking-[0.2em] text-[#C6CCD0]">Appendix B, Recruit Learning Program</span></div>
+          <div className="text-right text-[0.65rem] font-bold uppercase tracking-[0.16em] text-[#C6CCD0]"><span className="slab block text-2xl leading-none text-gold">{days}</span>days to ship</div>
         </div>
-        <div className="text-right text-xs font-bold uppercase tracking-wider text-gold"><span className="slab block text-2xl leading-none">{days}</span>days to ship</div>
+        <TabsList className="mx-auto grid h-auto! w-full max-w-3xl grid-cols-5 rounded-none border-t border-white/15 bg-transparent p-0">
+          {TABS.map(({ v, label }) => (
+            <TabsTrigger key={v} value={v} className="h-12 rounded-none border-0 border-b-4 border-transparent bg-transparent text-[0.78rem] font-bold uppercase tracking-[0.12em] text-[#C6CCD0] shadow-none data-[state=active]:border-gold data-[state=active]:bg-transparent data-[state=active]:text-white">
+              {label}
+            </TabsTrigger>
+          ))}
+        </TabsList>
       </header>
-      <main className="flex-1 px-4 pt-5 pb-32">
+      <section className="bg-gradient-to-b from-[#04283a] to-[#03141c] px-4 py-7 text-center text-white">
+        <h1 className="slab text-4xl font-bold uppercase tracking-[0.12em]">{cur.label}</h1>
+        <p className="mt-1 text-sm text-[#C6CCD0]">{cur.sub}</p>
+      </section>
+      <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-6">
         {tab === "study" && <Study />}
         {tab === "test" && <Test />}
         {tab === "listen" && <Listen />}
         {tab === "cards" && <Cards />}
         {tab === "more" && <More />}
-        <div className="mt-8 border-t border-border pt-4 text-center text-xs font-bold uppercase tracking-[0.3em] text-muted-foreground">Honor | Courage | Commitment</div>
       </main>
-      <Tabs value={tab} onValueChange={setTab} className="fixed inset-x-0 bottom-0 z-10 border-t border-border bg-background/95 pb-[env(safe-area-inset-bottom)] backdrop-blur">
-        <TabsList className="mx-auto grid h-auto! w-full max-w-2xl grid-cols-5 rounded-none bg-transparent">
-          {TABS.map(({ v, label, Icon }) => (
-            <TabsTrigger key={v} value={v} className="h-16 flex-col gap-1 rounded-none text-[0.65rem] font-bold uppercase tracking-wider data-[state=active]:text-gold">
-              <Icon className="size-5" />{label}
-            </TabsTrigger>
-          ))}
-        </TabsList>
-      </Tabs>
-    </div>
+      <footer className="border-t border-white/15 bg-navy-black px-4 pt-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] text-center text-xs font-bold uppercase tracking-[0.3em] text-[#C6CCD0]">Honor | Courage | Commitment</footer>
+    </Tabs>
   )
 }

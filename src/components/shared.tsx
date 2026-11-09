@@ -10,12 +10,12 @@ export function Eyebrow({ children }: { children: ReactNode }) {
 }
 
 export function Panel({ children, className = "" }: { children: ReactNode; className?: string }) {
-  return <section className={`border-t-2 border-gold/80 pt-5 ${className}`}>{children}</section>
+  return <section className={`border-l-4 border-l-gold bg-black/25 p-5 ${className}`}>{children}</section>
 }
 
 export function StatTile({ value, label, tone = "text-foreground" }: { value: ReactNode; label: string; tone?: string }) {
   return (
-    <div className="flex-1 border-l border-border pl-3 first:border-l-0 first:pl-0">
+    <div className="flex-1 border border-border bg-black/25 px-3 py-3 text-center">
       <div className={`slab text-2xl font-bold leading-none ${tone}`}>{value}</div>
       <div className="mt-1 text-[0.65rem] font-bold uppercase tracking-[0.14em] text-muted-foreground">{label}</div>
     </div>
