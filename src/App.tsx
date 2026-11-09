@@ -28,7 +28,7 @@ export default function App() {
     <Tabs value={tab} onValueChange={setTab} className="min-h-dvh gap-0">
       <header className="sticky top-0 z-20 bg-black text-white">
         <div className="mx-auto flex max-w-3xl items-center justify-between px-4 pt-[max(0.75rem,env(safe-area-inset-top))] pb-3">
-          <button type="button" className="mr-3 -ml-2 flex size-11 items-center justify-center sm:hidden" aria-label="Menu" aria-expanded={menu} onClick={() => setMenu((m) => !m)}>{menu ? <X /> : <Menu />}</button>
+          <button type="button" className="mr-3 -ml-2 flex size-11 shrink-0 items-center justify-center sm:hidden" aria-label="Menu" aria-expanded={menu} onClick={() => setMenu((m) => !m)}>{menu ? <X /> : <Menu />}</button>
           <div className="slab mr-auto text-lg font-bold uppercase leading-tight tracking-[0.14em]">OCS Recite<span className="block font-sans text-xs font-medium tracking-[0.12em] text-[#C6CCD0]">Appendix B, Recruit Learning Program</span></div>
           <div className="text-right text-xs font-bold uppercase tracking-[0.16em] text-[#C6CCD0]"><span className="slab block text-2xl leading-none text-gold">{days}</span>days to ship</div>
         </div>

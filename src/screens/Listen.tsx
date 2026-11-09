@@ -13,7 +13,7 @@ import { useStore } from "@/lib/store"
 // Quiz: prompt, a gap to say it aloud, then the answer. Read: just reads the chosen sections to you.
 export default function Listen() {
   const store = useStore()
-  const { order } = useCards()
+  const { order, secIdx } = useCards()
   const secs = [...new Map(order.map((c) => [c.sec, c.secName])).entries()]
   const [mode, setMode] = useState("read")
   const [picked, setPicked] = useState<string[]>(secs.slice(0, 1).map(([k]) => k))
@@ -36,7 +36,7 @@ export default function Listen() {
     const id = ++run.current
     const live = () => run.current === id
     const full = (c.lead ? c.lead + " " : "") + c.answer
-    const hook = tips ? hookFor(c, order.filter((x) => x.sec === c.sec).indexOf(c)) : ""
+    const hook = tips ? hookFor(c, secIdx(c)) : ""
     const after = () => {
       if (!live()) return
       if (idx + 1 >= cards.length && !loop) { setPlaying(false); setIdx(0); return }
@@ -59,7 +59,7 @@ export default function Listen() {
     }
     return () => { run.current++; clearTimeout(t); stopSpeaking() }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [playing, idx, mode, tips])
+  }, [playing, idx, mode, tips, c?.id])
 
   const toggle = async () => {
     const next = !playing
@@ -72,6 +72,7 @@ export default function Listen() {
       else if (lock.current) { await lock.current.release(); lock.current = null }
     } catch { /* wake lock is best effort */ }
   }
+  useEffect(() => { if (!playing && lock.current) { lock.current.release().catch(() => {}); lock.current = null } }, [playing])
   useEffect(() => () => { lock.current?.release().catch(() => {}) }, [])
   const pick = (k: string) => { setPicked((p) => (p.includes(k) ? p.filter((x) => x !== k) : [...p, k])); setIdx(0) }
 
