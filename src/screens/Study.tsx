@@ -1,3 +1,4 @@
+import { ChevronLeft, ChevronRight } from "lucide-react"
 import { useEffect, useMemo, useRef, useState } from "react"
 import { Volume2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -84,6 +85,13 @@ export default function Study() {
     setS({ queue: q, total: s.total, done, miss })
   }
 
+  // Browse the queue without answering: nothing is scored, the card just moves to the other end.
+  const browse = (dir: 1 | -1) => {
+    if (!s || s.queue.length < 2) return
+    const q = dir === 1 ? [...s.queue.slice(1), s.queue[0]] : [s.queue[s.queue.length - 1], ...s.queue.slice(0, -1)]
+    setS({ ...s, queue: q })
+  }
+
   const introduce = (item: Item) => {
     if (!s) return
     update((st) => {
@@ -115,7 +123,11 @@ export default function Study() {
       {s && item && c ? (
         <Panel>
           <div className="mb-1 flex justify-between text-xs text-muted-foreground"><span>{s.queue.length} left</span><span>{s.done} of {s.total} cleared</span></div>
-          <Progress value={s.total ? (s.done / s.total) * 100 : 0} className="mb-4 h-1.5 [&>div]:bg-gold" />
+          <Progress value={s.total ? (s.done / s.total) * 100 : 0} className="mb-3 h-1.5 [&>div]:bg-gold" />
+          <div className="mb-4 flex gap-3">
+            <Button variant="outline" size="sm" className="flex-1" onClick={() => browse(-1)} disabled={s.queue.length < 2}><ChevronLeft />Back</Button>
+            <Button variant="outline" size="sm" className="flex-1" onClick={() => browse(1)} disabled={s.queue.length < 2}>Skip<ChevronRight /></Button>
+          </div>
           <div className="flex flex-wrap items-center gap-2">
             <Eyebrow>{c.secName}</Eyebrow>
             <Badge variant="outline" className="rounded-none uppercase tracking-wider">{LEVELS[level]}</Badge>
