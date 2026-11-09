@@ -7,6 +7,7 @@ export type Store = {
   settings: Settings
   cards: Record<string, CardState>
   intro: { date: string; n: number }
+  pinned?: string[]
   edits: Record<string, string>
   log: LogEntry[]
 }

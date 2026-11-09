@@ -46,10 +46,13 @@ export default function Study() {
     const t = today()
     const intro = getStore().intro.date === t ? getStore().intro : { date: t, n: 0 }
     if (intro !== getStore().intro) update((x) => { x.intro = intro; return x })
-    const reviews: Item[] = due.map((c) => ({ uid: uid++, id: c.id, stage: store.cards[c.id].box >= 2 ? 3 : 2 }))
+    const pins = getStore().pinned || []
+    const pinned: Item[] = pins.filter((id) => byId.has(id)).map((id) => ({ uid: uid++, id, stage: store.cards[id] ? (store.cards[id].box >= 2 ? 3 : 2) : 0 }))
+    if (pins.length) update((x) => { x.pinned = []; return x })
+    const reviews: Item[] = due.filter((c) => !pins.includes(c.id)).map((c) => ({ uid: uid++, id: c.id, stage: store.cards[c.id].box >= 2 ? 3 : 2 }))
     const room = Math.max(0, store.settings.newPerDay + extra - intro.n)
-    const news: Item[] = fresh.slice(0, room).map((c) => ({ uid: uid++, id: c.id, stage: 0 }))
-    setS({ queue: [...reviews, ...news], total: reviews.length + news.length, done: 0, miss: 0 })
+    const news: Item[] = fresh.filter((c) => !pins.includes(c.id)).slice(0, room).map((c) => ({ uid: uid++, id: c.id, stage: 0 }))
+    setS({ queue: [...pinned, ...reviews, ...news], total: pinned.length + reviews.length + news.length, done: 0, miss: 0 })
   }
   const started = useRef(false)
   useEffect(() => { if (!started.current) { started.current = true; start(0) } })
