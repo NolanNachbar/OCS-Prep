@@ -217,6 +217,7 @@ function Step({ item, level, card: c, hook, onIntro, onNext }: { item: Item; lev
           {!res.r.ok && hook && <Hook text={hook} />}
           <div className="mt-4 flex flex-col gap-6">
             <Button onClick={() => onNext(res.r.ok && !(hint && level === 4))} autoFocus>Next</Button>
+            {!res.r.ok && <Button variant="outline" onClick={() => { setRes(null); setText(""); setVals({}) }}>Try again</Button>}
             {!res.r.ok && !res.peeked && level < 4 && <Button variant="outline" onClick={() => onNext(true)}>Count as correct</Button>}
           </div>
         </div>
