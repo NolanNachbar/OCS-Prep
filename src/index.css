@@ -2,14 +2,17 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
-@import "@fontsource/rajdhani/600.css";
-@import "@fontsource/rajdhani/700.css";
+@import "@fontsource/barlow-semi-condensed/600.css";
+@import "@fontsource/barlow-semi-condensed/700.css";
+@import "@fontsource/roboto/400.css";
+@import "@fontsource/roboto/500.css";
+@import "@fontsource/roboto/700.css";
 
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-    --font-heading: 'Rajdhani', 'Arial Narrow', sans-serif;
-    --font-sans: 'Helvetica Neue', Helvetica, Arial, 'Liberation Sans', sans-serif;
+    --font-heading: 'Barlow Semi Condensed', 'Arial Narrow', sans-serif;
+    --font-sans: 'Roboto', Helvetica, Arial, sans-serif;
     --color-sidebar-ring: var(--sidebar-ring);
     --color-sidebar-border: var(--sidebar-border);
     --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -57,7 +60,7 @@
 
 /* U.S. Navy Design Guide palette (usnavy.github.io/Navy-Design-Guide): Navy Black #08262C, Navy Blue #003B4F,
    Teal Blue #088199, Gray #C6CCD0, Yellow #E8B00F. Light page, navy bands (navy.mil pattern). */
-@theme inline { --font-display: 'Rajdhani', 'Arial Narrow', sans-serif; }
+@theme inline { --font-display: 'Barlow Semi Condensed', 'Arial Narrow', sans-serif; }
 :root {
     --navy-black: #08262C;
     --navy-blue: #003B4F;
@@ -101,7 +104,7 @@
 }
 
 /* Navy.mil / Navy.com look: uppercase, wide tracking, hairline rules */
-.eyebrow { font-weight: 700; font-size: 0.75rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); }
+.eyebrow { font-weight: 700; font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); }
 .section-title { font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; text-align: center; }
 .slab { font-family: var(--font-heading); letter-spacing: 0.02em; }
 h1, h2, h3 { font-family: var(--font-heading); }
