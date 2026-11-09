@@ -1,0 +1,9 @@
+# Audit log
+
+## Round 1 (2026-11-09), tag audit-2026-11-09-r1
+Critics (Haiku): learning-science, phone-usability, content verifier.
+- Content: 135/135 cards match Appendix B. Four memory hooks were wrong (warrant colors, USMC devices, E-7..E-9 note); fixed.
+- Learning: strict scoring (20 words or fewer must be exact), no override at full recall, lapse goes to box 1, daily review cap 60, pick-your-own cards.
+- Phone: sticky compact header, bigger slider thumb and blanks, bigger selects, Test override removed.
+- Gate: console buffer now cleared before the check.
+Rollback: `git revert -m 1 273bf1b` or `git reset --hard audit-2026-11-09-r1~1` (before the merge).
