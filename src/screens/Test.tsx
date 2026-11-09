@@ -2,6 +2,7 @@ import { useMemo, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { Diff, Eyebrow, MicButton, Panel, Verdict } from "@/components/shared"
 import { useCards } from "@/lib/cards"
@@ -15,6 +16,7 @@ export default function Test() {
   const store = useStore()
   const { all } = useCards()
   const [learnedOnly, setLearnedOnly] = useState(true)
+  const [count, setCount] = useState("10")
   const [run, setRun] = useState<{ q: Card[]; i: number; right: number; missed: string[] } | null>(null)
   const [text, setText] = useState("")
   const [res, setRes] = useState<Score | null>(null)
@@ -24,12 +26,15 @@ export default function Test() {
     return (
       <Panel>
         <Eyebrow>Test mode</Eyebrow>
-        <h2 className="slab mt-2 text-2xl font-bold">Ten random cards, no hints</h2>
+        <h2 className="slab mt-2 text-2xl font-bold">Random cards, no hints</h2>
+        <div className="mt-4 grid max-w-xs gap-2"><Label>Cards in the test</Label>
+          <Select value={count} onValueChange={setCount}><SelectTrigger className="h-12"><SelectValue /></SelectTrigger>
+            <SelectContent>{["5", "10", "20", "30", "50", "all"].map((n) => <SelectItem key={n} value={n}>{n === "all" ? `All (${pool.length})` : n}</SelectItem>)}</SelectContent></Select></div>
         <div className="my-5 flex items-center gap-3">
           <Switch id="lo" checked={learnedOnly} onCheckedChange={setLearnedOnly} />
           <Label htmlFor="lo" className="text-base">Only cards I have started ({all.filter((c) => store.cards[c.id]).length})</Label>
         </div>
-        <Button disabled={pool.length === 0} onClick={() => { setRun({ q: shuffle(pool).slice(0, 10), i: 0, right: 0, missed: [] }); setText(""); setRes(null) }}>Start test</Button>
+        <Button disabled={pool.length === 0} onClick={() => { setRun({ q: shuffle(pool).slice(0, count === "all" ? pool.length : +count), i: 0, right: 0, missed: [] }); setText(""); setRes(null) }}>Start test</Button>
         {pool.length === 0 && <p className="mt-3 text-sm text-muted-foreground">Learn a few cards in Study first, or turn the switch off.</p>}
       </Panel>
     )
