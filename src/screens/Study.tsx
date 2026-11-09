@@ -49,7 +49,9 @@ export default function Study() {
     const pins = getStore().pinned || []
     const pinned: Item[] = pins.filter((id) => byId.has(id)).map((id) => ({ uid: uid++, id, stage: store.cards[id] ? (store.cards[id].box >= 2 ? 3 : 2) : 0 }))
     if (pins.length) update((x) => { x.pinned = []; return x })
-    const reviews: Item[] = due.filter((c) => !pins.includes(c.id)).map((c) => ({ uid: uid++, id: c.id, stage: store.cards[c.id].box >= 2 ? 3 : 2 }))
+    const reviews: Item[] = due.filter((c) => !pins.includes(c.id))
+      .sort((a, b) => store.cards[a.id].box - store.cards[b.id].box || store.cards[a.id].due.localeCompare(store.cards[b.id].due))
+      .slice(0, store.settings.maxReviews ?? 60).map((c) => ({ uid: uid++, id: c.id, stage: store.cards[c.id].box >= 2 ? 3 : 2 }))
     const room = Math.max(0, store.settings.newPerDay + extra - intro.n)
     const news: Item[] = fresh.filter((c) => !pins.includes(c.id)).slice(0, room).map((c) => ({ uid: uid++, id: c.id, stage: 0 }))
     setS({ queue: [...pinned, ...reviews, ...news], total: pinned.length + reviews.length + news.length, done: 0, miss: 0 })
@@ -72,7 +74,7 @@ export default function Study() {
     } else {
       update((st) => {
         let cs = st.cards[c.id] || { box: 0, reps: 0, lapses: 0, due: today(), misses: 0 }
-        if (item.missed && cs.reps > 0) cs = { ...cs, box: 0, lapses: cs.lapses + 1 }
+        if (item.missed && cs.reps > 0) cs = { ...cs, box: 1, lapses: cs.lapses + 1 }
         st.cards[c.id] = { misses: cs.misses || 0, ...L.schedule(cs, true, today(), st.settings.ship) }
         return st
       })
@@ -212,7 +214,7 @@ function Step({ item, level, card: c, hook, onIntro, onNext }: { item: Item; lev
           <Diff r={res.r} />
           <div className="mt-4 flex flex-wrap gap-3">
             <Button onClick={() => onNext(res.r.ok)} autoFocus>Next</Button>
-            {!res.r.ok && !res.peeked && <Button variant="outline" onClick={() => onNext(true)}>Count as correct</Button>}
+            {!res.r.ok && !res.peeked && level < 4 && <Button variant="outline" onClick={() => onNext(true)}>Count as correct</Button>}
           </div>
         </div>
       ) : (

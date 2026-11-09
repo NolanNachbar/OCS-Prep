@@ -45,15 +45,16 @@
     return { hit, extra, matched: dp[0][0] };
   }
 
-  // threshold: fraction of expected words that must be present, in order. Short answers must be exact.
+  // threshold: fraction of expected words that must be present, in order. Answers of 20 words or fewer must be exact.
   function score(card, userText, threshold) {
     const exp = words(card.key);
     const usr = stripLead(userText, card.lead || "");
     const d = diff(exp, usr);
     const total = exp.length;
     const ratio = total ? d.matched / total : 0;
-    const need = total <= 4 ? 1 : (threshold == null ? 0.95 : threshold);
-    return { ok: ratio >= need - 1e-9, ratio, expected: exp, hit: d.hit, extra: d.extra };
+    const need = total <= 20 ? 1 : (threshold == null ? 0.95 : threshold);
+    // A couple of filler words ("um", "sir") are tolerated; more than that is a wrong recital.
+    return { ok: ratio >= need - 1e-9 && d.extra.length <= 2, ratio, expected: exp, hit: d.hit, extra: d.extra };
   }
 
   // ---- cloze -----------------------------------------------------------------------------
