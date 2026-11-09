@@ -109,3 +109,5 @@
 .slab { font-family: var(--font-heading); letter-spacing: 0.02em; }
 h1, h2, h3 { font-family: var(--font-heading); }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+html { scroll-padding-top: 5rem; }

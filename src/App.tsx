@@ -30,7 +30,7 @@ export default function App() {
         <div className="mx-auto flex max-w-3xl items-center justify-between px-4 pt-[max(0.75rem,env(safe-area-inset-top))] pb-3">
           <button type="button" className="mr-3 -ml-2 flex size-11 shrink-0 items-center justify-center sm:hidden" aria-label="Menu" aria-expanded={menu} onClick={() => setMenu((m) => !m)}>{menu ? <X /> : <Menu />}</button>
           <div className="slab mr-auto text-lg font-bold uppercase leading-tight tracking-[0.14em]">OCS Recite<span className="block font-sans text-xs font-medium tracking-[0.12em] text-[#C6CCD0]">Appendix B trainer</span></div>
-          <div className="text-right text-xs font-bold uppercase tracking-[0.16em] text-[#C6CCD0]"><span className="slab block text-2xl leading-none text-gold">{days}</span>days to ship</div>
+          <div className="text-right text-xs font-bold uppercase tracking-[0.16em] text-[#C6CCD0]"><span className="slab block text-2xl leading-none text-gold">{Number.isFinite(days) ? days : "--"}</span>days to ship</div>
         </div>
         {menu && (
           <nav className="border-t border-white/15 sm:hidden">
@@ -52,7 +52,7 @@ export default function App() {
         <p className="mt-1 text-xs text-[#C6CCD0]">{cur.sub}</p>
       </section>
       <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-4">
-        {tab === "study" && <Study />}
+        <div hidden={tab !== "study"}><Study /></div>
         {tab === "test" && <Test />}
         {tab === "listen" && <Listen />}
         {tab === "cards" && <Cards onTest={() => go("test")} />}

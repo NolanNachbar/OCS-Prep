@@ -18,3 +18,8 @@ Rollback: `git reset --hard audit-2026-11-09-r1` on main, then push with lease.
 - Listen: hook index uses the section index, wake lock released when playback stops, section change restarts playback.
 - Hamburger button no longer shrinks below 44px.
 - Not fixed on purpose: 40px buttons in Cards and Study (you said fat-finger misses do not matter).
+
+## Rounds 3 to 8 (2026-11-09)
+- Tags r3 to r8: section/card tests, hamburger nav, hooks, audio, font swap, flat design tried and reverted. Tag audit-2026-11-09-r7 points at the flat-design commit c9d29b3 by mistake; r8 is the correct state. Roll back to r8 or r5, never r7.
+- Round 3 critics (learning, content, phone/look) fixes (tag r9): import validates, confirms and clears the file input; settings deep-merge with ship date validation; sir/ma'am and hyphen-tolerant answer matching; stage-0 correct routes through introduce; Study stays mounted across tabs; cloze varies per attempt; speech utterance retained; header shows -- for a bad ship date; USMC warrant hook wording; stat labels raised to 12px; scroll-padding under the sticky header.
+- Skipped on purpose: color changes (owner reverted the teal and flat looks), fat-finger spacing, Watchstanding heading (content frozen).

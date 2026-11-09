@@ -15,7 +15,15 @@ export default function More() {
     a.href = URL.createObjectURL(new Blob([JSON.stringify(getStore(), null, 1)], { type: "application/json" }))
     a.download = "ocsprep-progress.json"; a.click()
   }
-  const importJson = async (f?: File) => { if (!f) return; try { replace(JSON.parse(await f.text())) } catch { /* ignore bad file */ } }
+  const importJson = async (f?: File) => {
+    if (!f) return
+    try {
+      const data = JSON.parse(await f.text())
+      if (!data || typeof data.cards !== "object") throw new Error("not a progress file")
+      if (confirm("Replace all progress on this device with this file?")) replace(data)
+    } catch { alert("That file is not an OCS Recite progress export.") }
+    if (file.current) file.current.value = ""
+  }
   return (
     <div className="space-y-4">
       <Panel>

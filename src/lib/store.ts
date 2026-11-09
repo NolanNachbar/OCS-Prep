@@ -34,7 +34,12 @@ export function update(fn: (s: Store) => Store | void) {
   persist()
   subs.forEach((f) => f())
 }
-export function replace(s: Store) { update(() => ({ ...defaults(), ...s })) }
+export function replace(s: Store) {
+  const d = defaults()
+  const settings = { ...d.settings, ...(s.settings || {}) }
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(settings.ship)) settings.ship = d.settings.ship
+  update(() => ({ ...d, ...s, settings }))
+}
 export function reset() { update(() => defaults()) }
 export const getStore = () => state
 export function useStore(): Store {

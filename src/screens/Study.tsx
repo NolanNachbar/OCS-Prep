@@ -63,6 +63,7 @@ export default function Study() {
 
   const advance = (item: Item, ok: boolean, level = 4) => {
     if (!s) return
+    if (item.stage === 0 && ok) return introduce(item)
     const c = byId.get(item.id)!
     const q = s.queue.slice(1)
     let { done, miss } = s
@@ -151,7 +152,7 @@ function Step({ item, level, card: c, hook, onIntro, onNext }: { item: Item; lev
   const [res, setRes] = useState<{ r: Score; note?: string; peeked?: boolean } | null>(null)
   const [text, setText] = useState("")
   const [vals, setVals] = useState<Record<number, string>>({})
-  const toks = useMemo(() => (level >= 1 && level <= 3 ? L.cloze(c, FRAC[level], 1) : []), [level, c])
+  const toks = useMemo(() => (level >= 1 && level <= 3 ? L.cloze(c, FRAC[level], item.uid) : []), [level, c, item.uid])
 
   const record = (r: Score, note?: string, peeked?: boolean) => {
     if (!r.ok) update((st) => { if (st.cards[c.id]) st.cards[c.id].misses = (st.cards[c.id].misses || 0) + 1; return st })

@@ -17,7 +17,7 @@ export function StatTile({ value, label, tone = "text-foreground" }: { value: Re
   return (
     <div className="flex-1 border border-border bg-black/25 px-3 py-3 text-center">
       <div className={`slab text-2xl font-bold leading-none ${tone}`}>{value}</div>
-      <div className="mt-1 text-[0.65rem] font-bold uppercase tracking-[0.14em] text-muted-foreground">{label}</div>
+      <div className="mt-1 text-xs font-bold uppercase tracking-[0.08em] text-muted-foreground">{label}</div>
     </div>
   )
 }

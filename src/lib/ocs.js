@@ -5,6 +5,7 @@
     return String(s || "")
       .toLowerCase()
       .replace(/[–—]/g, " ")
+      .replace(/([a-z0-9])-([a-z0-9])/g, "$1$2")
       .replace(/['’]/g, "")
       .replace(/[^a-z0-9 ]+/g, " ")
       .replace(/\s+/g, " ")
@@ -17,9 +18,12 @@
 
   // Drop the spoken lead-in ("Sir/Ma'am, the first general order of a sentry is to") if the user said it.
   function stripLead(userText, lead) {
+    const greet = (w) => w === "sir" || w === "maam";
     const u = words(userText);
-    const l = words(lead);
+    const l = words(lead).filter((w) => !greet(w));
     if (!l.length) return u;
+    // "Sir" or "Ma'am" alone, or both, count as part of the lead-in
+    while (u.length && greet(u[0])) u.shift();
     let i = 0;
     while (i < l.length && i < u.length && u[i] === l[i]) i++;
     // accept a partial lead-in of 4+ words, or the whole thing
@@ -133,7 +137,7 @@
     return Math.round((parseYmd(b) - parseYmd(a)) / 86400000);
   }
 
-  // After a clean recall, move up a box; a miss drops to box 0 and is due again today.
+  // After a clean recall, move up a box. (Study.tsx sets a lapsed card to box 1 first, so a miss never keeps a long gap.)
   function schedule(state, ok, today, ship) {
     const s = Object.assign({ box: 0, reps: 0, lapses: 0 }, state);
     s.reps += 1;
@@ -146,7 +150,7 @@
     s.box = Math.min(s.box + 1, STEPS.length - 1);
     let gap = STEPS[s.box];
     // Never let the next review slip past a quarter of the time left before shipping.
-    if (ship) {
+    if (ship && /^\d{4}-\d{2}-\d{2}$/.test(ship)) {
       const left = daysBetween(today, ship);
       gap = Math.min(gap, Math.max(1, Math.floor(left / 4)));
     }
