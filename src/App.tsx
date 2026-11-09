@@ -23,14 +23,14 @@ export default function App() {
   const days = Math.max(0, L.daysBetween(L.ymd(new Date()), settings.ship))
   return (
     <div className="mx-auto flex min-h-dvh max-w-2xl flex-col">
-      <header className="flex items-center justify-between px-4 pt-[max(1rem,env(safe-area-inset-top))] pb-3">
+      <header className="flex items-center justify-between border-b-4 border-gold bg-navy-black px-4 pt-[max(1rem,env(safe-area-inset-top))] pb-3">
         <div>
-          <div className="eyebrow">Appendix B</div>
-          <h1 className="slab text-xl font-bold uppercase tracking-[0.12em]">OCS Recite</h1>
+          <h1 className="slab text-xl font-bold uppercase tracking-[0.14em]">OCS Recite</h1>
+          <div className="text-xs text-muted-foreground">Appendix B, Recruit Learning Program</div>
         </div>
-        <div className="rounded-full border border-gold/60 px-3 py-1 text-xs font-bold uppercase tracking-wider text-gold">{days} days to ship</div>
+        <div className="text-right text-xs font-bold uppercase tracking-wider text-gold"><span className="slab block text-2xl leading-none">{days}</span>days to ship</div>
       </header>
-      <main className="flex-1 px-4 pb-28">
+      <main className="flex-1 px-4 pt-5 pb-32">
         {tab === "study" && <Study />}
         {tab === "test" && <Test />}
         {tab === "listen" && <Listen />}
@@ -39,9 +39,9 @@ export default function App() {
         <div className="mt-8 border-t border-border pt-4 text-center text-xs font-bold uppercase tracking-[0.3em] text-muted-foreground">Honor | Courage | Commitment</div>
       </main>
       <Tabs value={tab} onValueChange={setTab} className="fixed inset-x-0 bottom-0 z-10 border-t border-border bg-background/95 pb-[env(safe-area-inset-bottom)] backdrop-blur">
-        <TabsList className="mx-auto grid h-16 w-full max-w-2xl grid-cols-5 rounded-none bg-transparent">
+        <TabsList className="mx-auto grid h-auto! w-full max-w-2xl grid-cols-5 rounded-none bg-transparent">
           {TABS.map(({ v, label, Icon }) => (
-            <TabsTrigger key={v} value={v} className="h-full flex-col gap-1 text-[0.65rem] font-bold uppercase tracking-wider data-[state=active]:text-gold">
+            <TabsTrigger key={v} value={v} className="h-16 flex-col gap-1 rounded-none text-[0.65rem] font-bold uppercase tracking-wider data-[state=active]:text-gold">
               <Icon className="size-5" />{label}
             </TabsTrigger>
           ))}

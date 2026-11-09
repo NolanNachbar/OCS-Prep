@@ -94,7 +94,7 @@ export default function Study() {
 
   return (
     <div className="space-y-4">
-      <div className="flex gap-3">
+      <div className="flex gap-3 pb-1">
         <StatTile value={due.length} label="Due today" tone="text-gold" />
         <StatTile value={startedN} label={`of ${order.length} started`} />
         <StatTile value={solid} label="Solid" tone="text-ok" />
@@ -106,10 +106,10 @@ export default function Study() {
           <Progress value={s.total ? (s.done / s.total) * 100 : 0} className="mb-4 h-1.5 [&>div]:bg-gold" />
           <div className="flex flex-wrap items-center gap-2">
             <Eyebrow>{c.secName}</Eyebrow>
-            <Badge variant="outline" className="rounded-sm uppercase tracking-wider">{item.stage === 0 ? "Learn" : item.stage < 3 ? "Fill the blanks" : "From memory"}</Badge>
+            <Badge variant="outline" className="rounded-none uppercase tracking-wider">{item.stage === 0 ? "Learn" : item.stage < 3 ? "Fill the blanks" : "From memory"}</Badge>
             {item.missed && <Badge variant="destructive" className="rounded-sm uppercase tracking-wider">Retry</Badge>}
           </div>
-          <h2 className="slab mt-3 mb-4 text-2xl font-bold leading-tight sm:text-3xl">{c.prompt}</h2>
+          <h2 className="slab mt-3 mb-4 text-3xl font-bold leading-tight">{c.prompt}</h2>
           <Step key={item.uid} item={item} card={c} hook={hookFor(c, secIdx(c))} onIntro={() => introduce(item)} onNext={(ok) => advance(item, ok)} />
         </Panel>
       ) : s ? (
@@ -209,7 +209,7 @@ function Step({ item, card: c, hook, onIntro, onNext }: { item: Item; card: Card
 
 function Hook({ text }: { text: string }) {
   return (
-    <div className="mt-4 rounded-md border border-gold/40 border-l-4 border-l-gold bg-gold/10 p-3 text-[0.95rem] text-amber-100">
+    <div className="mt-4 border-l-4 border-l-gold pl-3 text-[0.95rem] text-amber-100">
       <div className="mb-1 text-[0.68rem] font-bold uppercase tracking-[0.18em] text-gold">Memory hook</div>
       {text}
     </div>

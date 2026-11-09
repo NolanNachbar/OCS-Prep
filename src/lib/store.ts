@@ -4,7 +4,7 @@ import type { Store } from "./types"
 const KEY = "ocsprep.v1"
 const defaults = (): Store => ({
   v: 1,
-  settings: { ship: "2027-04-01", newPerDay: 5, threshold: 0.95, rate: 1, gap: 6 },
+  settings: { ship: "2027-01-01", newPerDay: 5, threshold: 0.95, rate: 1, gap: 6 },
   cards: {},
   intro: { date: "", n: 0 },
   edits: {},

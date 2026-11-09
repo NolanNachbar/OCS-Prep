@@ -10,18 +10,14 @@ export function Eyebrow({ children }: { children: ReactNode }) {
 }
 
 export function Panel({ children, className = "" }: { children: ReactNode; className?: string }) {
-  return (
-    <Card className={`rounded-md border border-border bg-card/85 py-0 shadow-lg shadow-black/30 ring-0 backdrop-blur ${className}`}>
-      <CardContent className="p-5 sm:p-6">{children}</CardContent>
-    </Card>
-  )
+  return <section className={`border-t-2 border-gold/80 pt-5 ${className}`}>{children}</section>
 }
 
 export function StatTile({ value, label, tone = "text-foreground" }: { value: ReactNode; label: string; tone?: string }) {
   return (
-    <div className="flex-1 rounded-md border border-border bg-card/70 px-3 py-4 text-center">
-      <div className={`slab text-3xl font-bold ${tone}`}>{value}</div>
-      <div className="mt-1 text-[0.68rem] font-bold uppercase tracking-[0.18em] text-muted-foreground">{label}</div>
+    <div className="flex-1 border-l border-border pl-3 first:border-l-0 first:pl-0">
+      <div className={`slab text-2xl font-bold leading-none ${tone}`}>{value}</div>
+      <div className="mt-1 text-[0.65rem] font-bold uppercase tracking-[0.14em] text-muted-foreground">{label}</div>
     </div>
   )
 }
@@ -57,7 +53,7 @@ export function MicButton({ onText }: { onText: (t: string) => void }) {
 export function Diff({ r }: { r: Score }) {
   return (
     <div className="mt-3">
-      <div className="rounded-md border border-border bg-background/60 p-4 text-lg leading-relaxed">
+      <div className="border-l-2 border-border pl-4 text-lg leading-relaxed">
         {r.expected.map((w, i) => (
           <span key={i} className={r.hit[i] ? "text-ok" : "text-destructive underline decoration-wavy underline-offset-4"}>{w} </span>
         ))}
