@@ -37,10 +37,10 @@ export function hookFor(c: Card, idxInSection: number): string {
     case "go": return GO[idxInSection] || ""
     case "const": return CONST
     case "chain": return chain(idxInSection)
-    case "nvo": return "Officer collar: gold bar, silver bar, two silver bars, gold oak leaf, silver oak leaf, eagle, then one to five stars. Warrants: blue breaks."
-    case "mco": return "The USMC copies the Navy collar devices. Warrants: red background with gold breaks."
-    case "nve": return "E-7 to E-9: the same anchor plus zero, one or two stars (MCPON three)."
-    case "mce": return "Drill the exceptions: the E-8 and E-9 pairs. Do not mix up First Sergeant and Master Gunnery Sergeant."
+    case "nvo": return "Officer collar: gold bar, silver bar, two silver bars, gold oak leaf, silver oak leaf, eagle, then one to five stars. Warrants: blue breaks (W-5 is a thin blue line)."
+    case "mco": return c.prompt.includes("W-") ? "USMC warrants: red background. W-1 and W-2 have gold breaks, W-3 and W-4 silver breaks, W-5 is a silver bar with a thin red break." : "The USMC officer devices copy the Navy collar devices."
+    case "nve": return !/E-[789]|MCPON/.test(c.prompt) ? "" : "E-7 to E-9: the same anchor plus zero, one or two stars (MCPON three)."
+    case "mce": return "Drill the exceptions: the E-8 and E-9 pairs. Look-alike pairs: Master Sergeant and First Sergeant (both E-8), Sergeant Major and Master Gunnery Sergeant (both E-9)."
     default: return ""
   }
 }
