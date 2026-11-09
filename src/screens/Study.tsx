@@ -146,6 +146,7 @@ export default function Study() {
 }
 
 function Step({ item, level, card: c, hook, onIntro, onNext }: { item: Item; level: number; card: Card; hook: string; onIntro: () => void; onNext: (ok: boolean) => void }) {
+  const [hint, setHint] = useState(false)
   const store = useStore()
   const [res, setRes] = useState<{ r: Score; note?: string; peeked?: boolean } | null>(null)
   const [text, setText] = useState("")
@@ -212,6 +213,7 @@ function Step({ item, level, card: c, hook, onIntro, onNext }: { item: Item; lev
         <div>
           <Verdict ok={res.r.ok} note={res.note} />
           <Diff r={res.r} />
+          {!res.r.ok && hook && <Hook text={hook} />}
           <div className="mt-4 flex flex-col gap-6">
             <Button onClick={() => onNext(res.r.ok)} autoFocus>Next</Button>
             {!res.r.ok && !res.peeked && level < 4 && <Button variant="outline" onClick={() => onNext(true)}>Count as correct</Button>}
@@ -219,8 +221,10 @@ function Step({ item, level, card: c, hook, onIntro, onNext }: { item: Item; lev
         </div>
       ) : (
         <div className="mt-4 flex flex-wrap gap-3">
+          {hint && hook && <div className="w-full"><Hook text={hook} /></div>}
           <Button onClick={check}>Check</Button>
           {level === 4 && <MicButton onText={(t) => setText(t)} />}
+          {hook && <Button variant="outline" onClick={() => setHint(true)} disabled={hint}>Hint</Button>}
           <Button variant="outline" onClick={() => record(peekScore(c), undefined, true)}>Show answer</Button>
         </div>
       )}
