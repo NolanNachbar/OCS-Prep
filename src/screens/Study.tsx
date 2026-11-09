@@ -234,7 +234,7 @@ function Step({ item, level, card: c, hook, onIntro, onNext }: { item: Item; lev
 
 function Hook({ text }: { text: string }) {
   return (
-    <div className="mt-4 border-l-4 border-l-gold pl-3 text-[0.95rem] text-foreground">
+    <div className="mt-4 border border-gold/50 bg-black/20 p-3 text-[0.95rem] text-foreground">
       <div className="mb-1 text-xs font-bold uppercase tracking-[0.18em] text-gold">Memory hook</div>
       {text}
     </div>
