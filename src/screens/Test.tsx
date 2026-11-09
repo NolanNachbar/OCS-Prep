@@ -28,7 +28,7 @@ export default function Test() {
         <Eyebrow>Test mode</Eyebrow>
         <h2 className="slab mt-2 text-2xl font-bold">Random cards, no hints</h2>
         <div className="mt-4 grid max-w-xs gap-2"><Label>Cards in the test</Label>
-          <Select value={count} onValueChange={setCount}><SelectTrigger className="h-12"><SelectValue /></SelectTrigger>
+          <Select value={count} onValueChange={setCount}><SelectTrigger className="h-12! w-full"><SelectValue /></SelectTrigger>
             <SelectContent>{["5", "10", "20", "30", "50", "all"].map((n) => <SelectItem key={n} value={n}>{n === "all" ? `All (${pool.length})` : n}</SelectItem>)}</SelectContent></Select></div>
         <div className="my-5 flex items-center gap-3">
           <Switch id="lo" checked={learnedOnly} onCheckedChange={setLearnedOnly} />
@@ -65,7 +65,7 @@ export default function Test() {
       {res ? (
         <>
           <Verdict ok={res.ok} /><Diff r={res} />
-          <div className="mt-4 flex gap-3"><Button onClick={() => next(res.ok)} autoFocus>Next</Button>{!res.ok && <Button variant="outline" onClick={() => next(true)}>Count as correct</Button>}</div>
+          <div className="mt-4 flex gap-3"><Button onClick={() => next(res.ok)} autoFocus>Next</Button></div>
         </>
       ) : (
         <div className="mt-4 flex gap-3"><Button onClick={check}>Check</Button><MicButton onText={setText} /></div>

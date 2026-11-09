@@ -34,7 +34,7 @@ export default function Cards() {
                   <div key={c.id} className="rounded-md border border-border bg-background/50 p-3">
                     <div className="flex items-center justify-between gap-2"><b>{c.prompt}</b>{chip(c)}</div>
                     <p className="mt-1 text-muted-foreground">{c.answer}</p>
-                    <Button size="sm" variant={(store.pinned || []).includes(c.id) ? "default" : "outline"} className="mt-2 mr-2" aria-pressed={(store.pinned || []).includes(c.id)}
+                    <Button variant={(store.pinned || []).includes(c.id) ? "default" : "outline"} className="mt-2 mr-2" aria-pressed={(store.pinned || []).includes(c.id)}
                       onClick={() => update((s) => { const p = s.pinned || []; s.pinned = p.includes(c.id) ? p.filter((x) => x !== c.id) : [...p, c.id]; return s })}>
                       {(store.pinned || []).includes(c.id) ? "Queued for Study" : "Learn this next"}</Button>
                     {c.sec === "chain" && <Button size="sm" variant="outline" className="mt-2" onClick={() => { setEdit(c); setVal(store.edits[c.id] || c.answer) }}>Edit</Button>}

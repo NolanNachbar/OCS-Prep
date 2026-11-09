@@ -127,7 +127,7 @@ export default function Study() {
               <span className="text-gold">{LEVELS[level]}{manual === null ? " (auto)" : ""}</span>
             </div>
             <Slider min={0} max={4} step={1} value={[level]} onValueChange={(v) => setManual(v[0])} aria-label="How much to fill in" />
-            <div className="mt-2 flex justify-between text-[0.6rem] uppercase tracking-wider text-muted-foreground"><span>Nothing blank</span><span>Everything blank</span></div>
+            <div className="mt-2 flex justify-between text-xs uppercase tracking-wider text-muted-foreground"><span>Nothing blank</span><span>Everything blank</span></div>
             {manual !== null && <Button variant="ghost" size="sm" className="mt-1 px-0" onClick={() => setManual(null)}>Back to auto</Button>}
           </div>
           <Step key={item.uid + "-" + level} item={item} level={level} card={c} hook={hookFor(c, secIdx(c))} onIntro={() => introduce(item)} onNext={(ok) => advance(item, ok, level)} />
@@ -200,7 +200,7 @@ function Step({ item, level, card: c, hook, onIntro, onNext }: { item: Item; lev
                 size={Math.min(Math.max(3, L.norm(t.text).length), 14)}
                 autoCapitalize="none" autoComplete="off" spellCheck={false} aria-label={`blank ${k + 1}`}
                 placeholder={level === 1 ? t.text.replace(/^[^A-Za-z0-9]*/, "").slice(0, 1) : ""}
-                className={`mx-1 rounded-none border-0 border-b-2 bg-secondary px-2 py-1 text-center text-xl text-foreground outline-none placeholder:text-gold placeholder:font-bold focus:bg-muted ${state}`} />
+                className={`mx-1 min-h-11 rounded-none border-0 border-b-2 bg-secondary px-2 py-1 text-center text-xl text-foreground outline-none placeholder:text-gold placeholder:font-bold focus:bg-muted ${state}`} />
             )
           })}
         </p>
@@ -212,7 +212,7 @@ function Step({ item, level, card: c, hook, onIntro, onNext }: { item: Item; lev
         <div>
           <Verdict ok={res.r.ok} note={res.note} />
           <Diff r={res.r} />
-          <div className="mt-4 flex flex-wrap gap-3">
+          <div className="mt-4 flex flex-col gap-6">
             <Button onClick={() => onNext(res.r.ok)} autoFocus>Next</Button>
             {!res.r.ok && !res.peeked && level < 4 && <Button variant="outline" onClick={() => onNext(true)}>Count as correct</Button>}
           </div>
@@ -231,7 +231,7 @@ function Step({ item, level, card: c, hook, onIntro, onNext }: { item: Item; lev
 function Hook({ text }: { text: string }) {
   return (
     <div className="mt-4 border-l-4 border-l-gold pl-3 text-[0.95rem] text-foreground">
-      <div className="mb-1 text-[0.68rem] font-bold uppercase tracking-[0.18em] text-gold">Memory hook</div>
+      <div className="mb-1 text-xs font-bold uppercase tracking-[0.18em] text-gold">Memory hook</div>
       {text}
     </div>
   )
