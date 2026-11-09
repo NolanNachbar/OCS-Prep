@@ -1,0 +1,1352 @@
+[
+ {
+  "sec": "basics",
+  "secName": "Navy Basics",
+  "prompt": "Mission of the Navy",
+  "full": "Mission of the Navy, to recruit, train, equip, and organize to deliver combat ready Naval forces to win conflicts and wars while maintaining security and deterrence through sustained forward presence.",
+  "id": "basics-000",
+  "lead": "",
+  "answer": "Mission of the Navy, to recruit, train, equip, and organize to deliver combat ready Naval forces to win conflicts and wars while maintaining security and deterrence through sustained forward presence.",
+  "key": "Mission of the Navy, to recruit, train, equip, and organize to deliver combat ready Naval forces to win conflicts and wars while maintaining security and deterrence through sustained forward presence."
+ },
+ {
+  "sec": "basics",
+  "secName": "Navy Basics",
+  "prompt": "Navy Core Values",
+  "full": "Honor, Courage, Commitment",
+  "id": "basics-001",
+  "lead": "",
+  "answer": "Honor, Courage, Commitment",
+  "key": "Honor, Courage, Commitment"
+ },
+ {
+  "sec": "basics",
+  "secName": "Navy Basics",
+  "prompt": "CNO's Core Attributes",
+  "full": "Integrity, Accountability, Initiative, Toughness",
+  "id": "basics-002",
+  "lead": "",
+  "answer": "Integrity, Accountability, Initiative, Toughness",
+  "key": "Integrity, Accountability, Initiative, Toughness"
+ },
+ {
+  "sec": "coc",
+  "secName": "Code of Conduct",
+  "prompt": "Code of Conduct, Article 1",
+  "full": "Sir/Ma'am, the first article of the code of conduct is: I am an American, fighting in the forces which guard my country and our way of life. I am prepared to give my life in their defense.",
+  "id": "coc-003",
+  "lead": "Sir/Ma'am, the first article of the code of conduct is:",
+  "answer": "I am an American, fighting in the forces which guard my country and our way of life. I am prepared to give my life in their defense.",
+  "key": "I am an American, fighting in the forces which guard my country and our way of life. I am prepared to give my life in their defense."
+ },
+ {
+  "sec": "coc",
+  "secName": "Code of Conduct",
+  "prompt": "Code of Conduct, Article 2",
+  "full": "Sir/Ma'am, the second article of the code of conduct is: I will never surrender of my own free will. If in command, I will never surrender the members of my command while they still have the means to resist.",
+  "id": "coc-004",
+  "lead": "Sir/Ma'am, the second article of the code of conduct is:",
+  "answer": "I will never surrender of my own free will. If in command, I will never surrender the members of my command while they still have the means to resist.",
+  "key": "I will never surrender of my own free will. If in command, I will never surrender the members of my command while they still have the means to resist."
+ },
+ {
+  "sec": "coc",
+  "secName": "Code of Conduct",
+  "prompt": "Code of Conduct, Article 3",
+  "full": "Sir/Ma'am, the third article of the code of conduct is: If I am captured I will continue to resist by all means available. I will make every effort to escape and aid others to escape. I will accept neither parole nor special favors from the enemy.",
+  "id": "coc-005",
+  "lead": "Sir/Ma'am, the third article of the code of conduct is:",
+  "answer": "If I am captured I will continue to resist by all means available. I will make every effort to escape and aid others to escape. I will accept neither parole nor special favors from the enemy.",
+  "key": "If I am captured I will continue to resist by all means available. I will make every effort to escape and aid others to escape. I will accept neither parole nor special favors from the enemy."
+ },
+ {
+  "sec": "coc",
+  "secName": "Code of Conduct",
+  "prompt": "Code of Conduct, Article 4",
+  "full": "Sir/Ma'am, the fourth article of the code of conduct is: If I become a prisoner of war, I will keep faith with my fellow prisoners. I will give no information or take part in any action which might be harmful to my comrades. If I am senior, I will take command. If not, I will obey the lawful orders of those appointed over me and will back them up in every way.",
+  "id": "coc-006",
+  "lead": "Sir/Ma'am, the fourth article of the code of conduct is:",
+  "answer": "If I become a prisoner of war, I will keep faith with my fellow prisoners. I will give no information or take part in any action which might be harmful to my comrades. If I am senior, I will take command. If not, I will obey the lawful orders of those appointed over me and will back them up in every way.",
+  "key": "If I become a prisoner of war, I will keep faith with my fellow prisoners. I will give no information or take part in any action which might be harmful to my comrades. If I am senior, I will take command. If not, I will obey the lawful orders of those appointed over me and will back them up in every way."
+ },
+ {
+  "sec": "coc",
+  "secName": "Code of Conduct",
+  "prompt": "Code of Conduct, Article 5",
+  "full": "Sir/Ma'am, the fifth article of the code of conduct is: When questioned, should I become a prisoner of war, I am required to give name, rank, service number and date of birth. I will evade answering further questions to the utmost of my ability. I will make no oral or written statements disloyal to my country and its allies or harmful to their cause.",
+  "id": "coc-007",
+  "lead": "Sir/Ma'am, the fifth article of the code of conduct is:",
+  "answer": "When questioned, should I become a prisoner of war, I am required to give name, rank, service number and date of birth. I will evade answering further questions to the utmost of my ability. I will make no oral or written statements disloyal to my country and its allies or harmful to their cause.",
+  "key": "When questioned, should I become a prisoner of war, I am required to give name, rank, service number and date of birth. I will evade answering further questions to the utmost of my ability. I will make no oral or written statements disloyal to my country and its allies or harmful to their cause."
+ },
+ {
+  "sec": "coc",
+  "secName": "Code of Conduct",
+  "prompt": "Code of Conduct, Article 6",
+  "full": "Sir/Ma'am, the sixth article of the code of conduct is: I will never forget that I am an American, fighting for freedom, responsible for my actions, and dedicated to the principles which made my country free. I will trust in my God and in the United States of America.",
+  "id": "coc-008",
+  "lead": "Sir/Ma'am, the sixth article of the code of conduct is:",
+  "answer": "I will never forget that I am an American, fighting for freedom, responsible for my actions, and dedicated to the principles which made my country free. I will trust in my God and in the United States of America.",
+  "key": "I will never forget that I am an American, fighting for freedom, responsible for my actions, and dedicated to the principles which made my country free. I will trust in my God and in the United States of America."
+ },
+ {
+  "sec": "const",
+  "secName": "Constitution",
+  "prompt": "Article I of the Constitution",
+  "full": "The Legislative Branch – Establishes Congress (House of Representative and Senate) and defines its powers and limits.",
+  "id": "const-009",
+  "lead": "",
+  "answer": "The Legislative Branch – Establishes Congress (House of Representative and Senate) and defines its powers and limits.",
+  "key": "The Legislative Branch – Establishes Congress (House of Representative and Senate) and defines its powers and limits."
+ },
+ {
+  "sec": "const",
+  "secName": "Constitution",
+  "prompt": "Article II of the Constitution",
+  "full": "The Executive Branch – Establishes the presidency, outlines presidential powers, duties, and the process for election and removal.",
+  "id": "const-010",
+  "lead": "",
+  "answer": "The Executive Branch – Establishes the presidency, outlines presidential powers, duties, and the process for election and removal.",
+  "key": "The Executive Branch – Establishes the presidency, outlines presidential powers, duties, and the process for election and removal."
+ },
+ {
+  "sec": "const",
+  "secName": "Constitution",
+  "prompt": "Article III of the Constitution",
+  "full": "The Judicial Branch – Establishes the federal judiciary, including Supreme Court, and defines judicial power.",
+  "id": "const-011",
+  "lead": "",
+  "answer": "The Judicial Branch – Establishes the federal judiciary, including Supreme Court, and defines judicial power.",
+  "key": "The Judicial Branch – Establishes the federal judiciary, including Supreme Court, and defines judicial power."
+ },
+ {
+  "sec": "const",
+  "secName": "Constitution",
+  "prompt": "Article IV of the Constitution",
+  "full": "The States – Addresses the relationship among states and between states and the federal government.",
+  "id": "const-012",
+  "lead": "",
+  "answer": "The States – Addresses the relationship among states and between states and the federal government.",
+  "key": "The States – Addresses the relationship among states and between states and the federal government."
+ },
+ {
+  "sec": "const",
+  "secName": "Constitution",
+  "prompt": "Article V of the Constitution",
+  "full": "The Amendment Process – Describes how the Constitution can be amended.",
+  "id": "const-013",
+  "lead": "",
+  "answer": "The Amendment Process – Describes how the Constitution can be amended.",
+  "key": "The Amendment Process – Describes how the Constitution can be amended."
+ },
+ {
+  "sec": "const",
+  "secName": "Constitution",
+  "prompt": "Article VI of the Constitution",
+  "full": "Federal Supremacy – Establishes the Constitution, federal laws, and treaties as the supreme law of the land.",
+  "id": "const-014",
+  "lead": "",
+  "answer": "Federal Supremacy – Establishes the Constitution, federal laws, and treaties as the supreme law of the land.",
+  "key": "Federal Supremacy – Establishes the Constitution, federal laws, and treaties as the supreme law of the land."
+ },
+ {
+  "sec": "const",
+  "secName": "Constitution",
+  "prompt": "Article VII of the Constitution",
+  "full": "Ratification – Explains the process by which the Constitution would take effect.",
+  "id": "const-015",
+  "lead": "",
+  "answer": "Ratification – Explains the process by which the Constitution would take effect.",
+  "key": "Ratification – Explains the process by which the Constitution would take effect."
+ },
+ {
+  "sec": "go",
+  "secName": "General Orders",
+  "prompt": "General Order #1",
+  "full": "Sir/Ma'am, the first general order of a sentry is to: Take charge of this post and all government property in view.",
+  "id": "go-016",
+  "lead": "Sir/Ma'am, the first general order of a sentry is to:",
+  "answer": "Take charge of this post and all government property in view.",
+  "key": "Take charge of this post and all government property in view."
+ },
+ {
+  "sec": "go",
+  "secName": "General Orders",
+  "prompt": "General Order #2",
+  "full": "Sir/Ma'am, the second general order of a sentry is to: Walk my post in a military manner, keeping always on the alert, and observing everything that takes place within sight or hearing.",
+  "id": "go-017",
+  "lead": "Sir/Ma'am, the second general order of a sentry is to:",
+  "answer": "Walk my post in a military manner, keeping always on the alert, and observing everything that takes place within sight or hearing.",
+  "key": "Walk my post in a military manner, keeping always on the alert, and observing everything that takes place within sight or hearing."
+ },
+ {
+  "sec": "go",
+  "secName": "General Orders",
+  "prompt": "General Order #3",
+  "full": "Sir/Ma'am, the third general order of a sentry is to: Report all violations of orders I am instructed to enforce.",
+  "id": "go-018",
+  "lead": "Sir/Ma'am, the third general order of a sentry is to:",
+  "answer": "Report all violations of orders I am instructed to enforce.",
+  "key": "Report all violations of orders I am instructed to enforce."
+ },
+ {
+  "sec": "go",
+  "secName": "General Orders",
+  "prompt": "General Order #4",
+  "full": "Sir/Ma'am, the fourth general order of a sentry is to: Repeat all calls from any post more distant from the guard house than my own.",
+  "id": "go-019",
+  "lead": "Sir/Ma'am, the fourth general order of a sentry is to:",
+  "answer": "Repeat all calls from any post more distant from the guard house than my own.",
+  "key": "Repeat all calls from any post more distant from the guard house than my own."
+ },
+ {
+  "sec": "go",
+  "secName": "General Orders",
+  "prompt": "General Order #5",
+  "full": "Sir/Ma'am, the fifth general order of a sentry is to: Quit my post only when properly relieved.",
+  "id": "go-020",
+  "lead": "Sir/Ma'am, the fifth general order of a sentry is to:",
+  "answer": "Quit my post only when properly relieved.",
+  "key": "Quit my post only when properly relieved."
+ },
+ {
+  "sec": "go",
+  "secName": "General Orders",
+  "prompt": "General Order #6",
+  "full": "Sir/Ma'am, the sixth general order of a sentry is to: Receive, obey, and pass on to the sentry who relieves me all orders from the Commanding Officer, Command Duty Officer, Officer of the Deck, and Officers and Petty Officers of the Watch only.",
+  "id": "go-021",
+  "lead": "Sir/Ma'am, the sixth general order of a sentry is to:",
+  "answer": "Receive, obey, and pass on to the sentry who relieves me all orders from the Commanding Officer, Command Duty Officer, Officer of the Deck, and Officers and Petty Officers of the Watch only.",
+  "key": "Receive, obey, and pass on to the sentry who relieves me all orders from the Commanding Officer, Command Duty Officer, Officer of the Deck, and Officers and Petty Officers of the Watch only."
+ },
+ {
+  "sec": "go",
+  "secName": "General Orders",
+  "prompt": "General Order #7",
+  "full": "Sir/Ma'am, the seventh general order of a sentry is to: Talk to no one except in the line of duty.",
+  "id": "go-022",
+  "lead": "Sir/Ma'am, the seventh general order of a sentry is to:",
+  "answer": "Talk to no one except in the line of duty.",
+  "key": "Talk to no one except in the line of duty."
+ },
+ {
+  "sec": "go",
+  "secName": "General Orders",
+  "prompt": "General Order #8",
+  "full": "Sir/Ma'am, the eighth general order of a sentry is to: Give the alarm in case of fire or disorder.",
+  "id": "go-023",
+  "lead": "Sir/Ma'am, the eighth general order of a sentry is to:",
+  "answer": "Give the alarm in case of fire or disorder.",
+  "key": "Give the alarm in case of fire or disorder."
+ },
+ {
+  "sec": "go",
+  "secName": "General Orders",
+  "prompt": "General Order #9",
+  "full": "Sir/Ma'am, the ninth general order of a sentry is to: Call the Officer of the Deck in any case not covered by instructions.",
+  "id": "go-024",
+  "lead": "Sir/Ma'am, the ninth general order of a sentry is to:",
+  "answer": "Call the Officer of the Deck in any case not covered by instructions.",
+  "key": "Call the Officer of the Deck in any case not covered by instructions."
+ },
+ {
+  "sec": "go",
+  "secName": "General Orders",
+  "prompt": "General Order #10",
+  "full": "Sir/Ma'am, the tenth general order of a sentry is to: Salute all officers and all colors and standards not cased.",
+  "id": "go-025",
+  "lead": "Sir/Ma'am, the tenth general order of a sentry is to:",
+  "answer": "Salute all officers and all colors and standards not cased.",
+  "key": "Salute all officers and all colors and standards not cased."
+ },
+ {
+  "sec": "go",
+  "secName": "General Orders",
+  "prompt": "General Order #11",
+  "full": "Sir/Ma'am, the eleventh general order of a sentry is to: Be especially watchful at night, and during the time for challenging, challenge all persons on or near my post, and to allow no one to pass without proper authority.",
+  "id": "go-026",
+  "lead": "Sir/Ma'am, the eleventh general order of a sentry is to:",
+  "answer": "Be especially watchful at night, and during the time for challenging, challenge all persons on or near my post, and to allow no one to pass without proper authority.",
+  "key": "Be especially watchful at night, and during the time for challenging, challenge all persons on or near my post, and to allow no one to pass without proper authority."
+ },
+ {
+  "sec": "chain",
+  "secName": "Chain of Command",
+  "prompt": "Chain of Command #1",
+  "full": "Sir/Ma'am, the first person in my chain of command is the: Class Commanding Officer",
+  "id": "chain-027",
+  "lead": "Sir/Ma'am, the first person in my chain of command is the:",
+  "answer": "Class Commanding Officer",
+  "key": "Class Commanding Officer"
+ },
+ {
+  "sec": "chain",
+  "secName": "Chain of Command",
+  "prompt": "Chain of Command #2",
+  "full": "Sir/Ma'am, the second person in my chain of command is the: Class Recruit Division Commander(s) and Class Drill Instructor(s)",
+  "id": "chain-028",
+  "lead": "Sir/Ma'am, the second person in my chain of command is the:",
+  "answer": "Class Recruit Division Commander(s) and Class Drill Instructor(s)",
+  "key": "Class Recruit Division Commander(s) and Class Drill Instructor(s)"
+ },
+ {
+  "sec": "chain",
+  "secName": "Chain of Command",
+  "prompt": "Chain of Command #3",
+  "full": "Sir/Ma'am, the third person in my chain of command is the: Assistant Class Officer",
+  "id": "chain-029",
+  "lead": "Sir/Ma'am, the third person in my chain of command is the:",
+  "answer": "Assistant Class Officer",
+  "key": "Assistant Class Officer"
+ },
+ {
+  "sec": "chain",
+  "secName": "Chain of Command",
+  "prompt": "Chain of Command #4",
+  "full": "Sir/Ma'am, the fourth person in my chain of command is the: Class Officer",
+  "id": "chain-030",
+  "lead": "Sir/Ma'am, the fourth person in my chain of command is the:",
+  "answer": "Class Officer",
+  "key": "Class Officer"
+ },
+ {
+  "sec": "chain",
+  "secName": "Chain of Command",
+  "prompt": "Chain of Command #5",
+  "full": "Sir/Ma'am, the fifth person in my chain of command is the: Chief Drill Instructor, OCS",
+  "id": "chain-031",
+  "lead": "Sir/Ma'am, the fifth person in my chain of command is the:",
+  "answer": "Chief Drill Instructor, OCS",
+  "key": "Chief Drill Instructor, OCS"
+ },
+ {
+  "sec": "chain",
+  "secName": "Chain of Command",
+  "prompt": "Chain of Command #6",
+  "full": "Sir/Ma'am, the sixth person in my chain of command is the: Leading Chief Petty Officer, OCS",
+  "id": "chain-032",
+  "lead": "Sir/Ma'am, the sixth person in my chain of command is the:",
+  "answer": "Leading Chief Petty Officer, OCS",
+  "key": "Leading Chief Petty Officer, OCS"
+ },
+ {
+  "sec": "chain",
+  "secName": "Chain of Command",
+  "prompt": "Chain of Command #7",
+  "full": "Sir/Ma'am, the seventh person in my chain of command is the: Deputy Director, OCS",
+  "id": "chain-033",
+  "lead": "Sir/Ma'am, the seventh person in my chain of command is the:",
+  "answer": "Deputy Director, OCS",
+  "key": "Deputy Director, OCS"
+ },
+ {
+  "sec": "chain",
+  "secName": "Chain of Command",
+  "prompt": "Chain of Command #8",
+  "full": "Sir/Ma'am, the eighth person in my chain of command is the: Director, OCS",
+  "id": "chain-034",
+  "lead": "Sir/Ma'am, the eighth person in my chain of command is the:",
+  "answer": "Director, OCS",
+  "key": "Director, OCS"
+ },
+ {
+  "sec": "chain",
+  "secName": "Chain of Command",
+  "prompt": "Chain of Command #9",
+  "full": "Sir/Ma'am, the ninth person in my chain of command is the: Command Master Chief, Officer Training Command Newport",
+  "id": "chain-035",
+  "lead": "Sir/Ma'am, the ninth person in my chain of command is the:",
+  "answer": "Command Master Chief, Officer Training Command Newport",
+  "key": "Command Master Chief, Officer Training Command Newport"
+ },
+ {
+  "sec": "chain",
+  "secName": "Chain of Command",
+  "prompt": "Chain of Command #10",
+  "full": "Sir/Ma'am, the tenth person in my chain of command is the: Executive Officer, Officer Training Command Newport",
+  "id": "chain-036",
+  "lead": "Sir/Ma'am, the tenth person in my chain of command is the:",
+  "answer": "Executive Officer, Officer Training Command Newport",
+  "key": "Executive Officer, Officer Training Command Newport"
+ },
+ {
+  "sec": "chain",
+  "secName": "Chain of Command",
+  "prompt": "Chain of Command #11",
+  "full": "Sir/Ma'am, the eleventh person in my chain of command is the: Commanding Officer, Officer Training Command Newport",
+  "id": "chain-037",
+  "lead": "Sir/Ma'am, the eleventh person in my chain of command is the:",
+  "answer": "Commanding Officer, Officer Training Command Newport",
+  "key": "Commanding Officer, Officer Training Command Newport"
+ },
+ {
+  "sec": "chain",
+  "secName": "Chain of Command",
+  "prompt": "Chain of Command #12",
+  "full": "Sir/Ma'am, the twelfth person in my chain of command is the: Commander, Naval Service Training Command",
+  "id": "chain-038",
+  "lead": "Sir/Ma'am, the twelfth person in my chain of command is the:",
+  "answer": "Commander, Naval Service Training Command",
+  "key": "Commander, Naval Service Training Command"
+ },
+ {
+  "sec": "chain",
+  "secName": "Chain of Command",
+  "prompt": "Chain of Command #13",
+  "full": "Sir/Ma'am, the thirteenth person in my chain of command is the: Commander, Naval Education and Training Command",
+  "id": "chain-039",
+  "lead": "Sir/Ma'am, the thirteenth person in my chain of command is the:",
+  "answer": "Commander, Naval Education and Training Command",
+  "key": "Commander, Naval Education and Training Command"
+ },
+ {
+  "sec": "chain",
+  "secName": "Chain of Command",
+  "prompt": "Chain of Command #14",
+  "full": "Sir/Ma'am, the fourteenth person in my chain of command is the: Chief of Naval Personnel",
+  "id": "chain-040",
+  "lead": "Sir/Ma'am, the fourteenth person in my chain of command is the:",
+  "answer": "Chief of Naval Personnel",
+  "key": "Chief of Naval Personnel"
+ },
+ {
+  "sec": "chain",
+  "secName": "Chain of Command",
+  "prompt": "Chain of Command #15",
+  "full": "Sir/Ma'am, the fifteenth person in my chain of command is the: Chief of Naval Operations",
+  "id": "chain-041",
+  "lead": "Sir/Ma'am, the fifteenth person in my chain of command is the:",
+  "answer": "Chief of Naval Operations",
+  "key": "Chief of Naval Operations"
+ },
+ {
+  "sec": "chain",
+  "secName": "Chain of Command",
+  "prompt": "Chain of Command #16",
+  "full": "Sir/Ma'am, the sixteenth person in my chain of command is the: Secretary of the Navy",
+  "id": "chain-042",
+  "lead": "Sir/Ma'am, the sixteenth person in my chain of command is the:",
+  "answer": "Secretary of the Navy",
+  "key": "Secretary of the Navy"
+ },
+ {
+  "sec": "chain",
+  "secName": "Chain of Command",
+  "prompt": "Chain of Command #17",
+  "full": "Sir/Ma'am, the seventeenth person in my chain of command is the: Secretary of War",
+  "id": "chain-043",
+  "lead": "Sir/Ma'am, the seventeenth person in my chain of command is the:",
+  "answer": "Secretary of War",
+  "key": "Secretary of War"
+ },
+ {
+  "sec": "chain",
+  "secName": "Chain of Command",
+  "prompt": "Chain of Command #18",
+  "full": "Sir/Ma'am, the eighteenth person in my chain of command is the: President of the United States",
+  "id": "chain-044",
+  "lead": "Sir/Ma'am, the eighteenth person in my chain of command is the:",
+  "answer": "President of the United States",
+  "key": "President of the United States"
+ },
+ {
+  "sec": "watch",
+  "secName": "Watchstanding",
+  "prompt": "Watchstanding Principle #1",
+  "full": "Watchstanders will: Receive sufficient training to perform the duties of the watch station prior to assignment.",
+  "id": "watch-045",
+  "lead": "Watchstanders will:",
+  "answer": "Receive sufficient training to perform the duties of the watch station prior to assignment.",
+  "key": "Receive sufficient training to perform the duties of the watch station prior to assignment."
+ },
+ {
+  "sec": "watch",
+  "secName": "Watchstanding",
+  "prompt": "Watchstanding Principle #2",
+  "full": "Watchstanders will: Be fully attentive to the duties and responsibilities of the assigned watch station.",
+  "id": "watch-046",
+  "lead": "Watchstanders will:",
+  "answer": "Be fully attentive to the duties and responsibilities of the assigned watch station.",
+  "key": "Be fully attentive to the duties and responsibilities of the assigned watch station."
+ },
+ {
+  "sec": "watch",
+  "secName": "Watchstanding",
+  "prompt": "Watchstanding Principle #3",
+  "full": "Watchstanders will: Frequently review all of the emergency procedures of their watch station in order to be ready to execute emergency procedures without delay.",
+  "id": "watch-047",
+  "lead": "Watchstanders will:",
+  "answer": "Frequently review all of the emergency procedures of their watch station in order to be ready to execute emergency procedures without delay.",
+  "key": "Frequently review all of the emergency procedures of their watch station in order to be ready to execute emergency procedures without delay."
+ },
+ {
+  "sec": "watch",
+  "secName": "Watchstanding",
+  "prompt": "Watchstanding Principle #4",
+  "full": "Watchstanders will: Not leave their watch station unless properly relieved or so ordered by the officer in charge of the watch station.",
+  "id": "watch-048",
+  "lead": "Watchstanders will:",
+  "answer": "Not leave their watch station unless properly relieved or so ordered by the officer in charge of the watch station.",
+  "key": "Not leave their watch station unless properly relieved or so ordered by the officer in charge of the watch station."
+ },
+ {
+  "sec": "watch",
+  "secName": "Watchstanding",
+  "prompt": "Watchstanding Principle #5",
+  "full": "Watchstanders will: Know whom to report to in the watch organization and all watch standers who shall report to them.",
+  "id": "watch-049",
+  "lead": "Watchstanders will:",
+  "answer": "Know whom to report to in the watch organization and all watch standers who shall report to them.",
+  "key": "Know whom to report to in the watch organization and all watch standers who shall report to them."
+ },
+ {
+  "sec": "watch",
+  "secName": "Watchstanding",
+  "prompt": "Watchstanding Principle #6",
+  "full": "Watchstanders will: Not be assigned or assume any other duties which may distract them from their watch function.",
+  "id": "watch-050",
+  "lead": "Watchstanders will:",
+  "answer": "Not be assigned or assume any other duties which may distract them from their watch function.",
+  "key": "Not be assigned or assume any other duties which may distract them from their watch function."
+ },
+ {
+  "sec": "watch",
+  "secName": "Watchstanding",
+  "prompt": "Watchstanding Principle #7",
+  "full": "Watchstanders will: Shall report all violations of the unit's regulations, directives, and other breaches of good order and discipline; shall try to the utmost to suppress such violations; shall report any known or probable violation of safety precautions or safety regulations; shall try to the utmost to suppress such violations and other malpractice which may endanger the safety or security of a naval unit and its personnel.",
+  "id": "watch-051",
+  "lead": "Watchstanders will:",
+  "answer": "Shall report all violations of the unit's regulations, directives, and other breaches of good order and discipline; shall try to the utmost to suppress such violations; shall report any known or probable violation of safety precautions or safety regulations; shall try to the utmost to suppress such violations and other malpractice which may endanger the safety or security of a naval unit and its personnel.",
+  "key": "Shall report all violations of the unit's regulations, directives, and other breaches of good order and discipline; shall try to the utmost to suppress such violations; shall report any known or probable violation of safety precautions or safety regulations; shall try to the utmost to suppress such violations and other malpractice which may endanger the safety or security of a naval unit and its personnel."
+ },
+ {
+  "sec": "watch",
+  "secName": "Watchstanding",
+  "prompt": "Watchstanding Principle #8",
+  "full": "Watchstanders will: If authorized to carry arms, shall be instructed on the following orders to sentries and the circumstances under which a weapon may be fired. Watches requiring the carrying of arms Will be assigned only to persons who have been trained in the firing of the weapon assigned.",
+  "id": "watch-052",
+  "lead": "Watchstanders will:",
+  "answer": "If authorized to carry arms, shall be instructed on the following orders to sentries and the circumstances under which a weapon may be fired. Watches requiring the carrying of arms Will be assigned only to persons who have been trained in the firing of the weapon assigned.",
+  "key": "If authorized to carry arms, shall be instructed on the following orders to sentries and the circumstances under which a weapon may be fired. Watches requiring the carrying of arms Will be assigned only to persons who have been trained in the firing of the weapon assigned."
+ },
+ {
+  "sec": "phon",
+  "secName": "Phonetic Alphabet",
+  "prompt": "Letter A",
+  "full": "Alpha (AL fah)",
+  "id": "phon-053",
+  "lead": "",
+  "answer": "Alpha (AL fah)",
+  "key": "Alpha"
+ },
+ {
+  "sec": "phon",
+  "secName": "Phonetic Alphabet",
+  "prompt": "Letter B",
+  "full": "Bravo (BRAH voh)",
+  "id": "phon-054",
+  "lead": "",
+  "answer": "Bravo (BRAH voh)",
+  "key": "Bravo"
+ },
+ {
+  "sec": "phon",
+  "secName": "Phonetic Alphabet",
+  "prompt": "Letter C",
+  "full": "Charlie (CHAR lee)",
+  "id": "phon-055",
+  "lead": "",
+  "answer": "Charlie (CHAR lee)",
+  "key": "Charlie"
+ },
+ {
+  "sec": "phon",
+  "secName": "Phonetic Alphabet",
+  "prompt": "Letter D",
+  "full": "Delta (DELL tah)",
+  "id": "phon-056",
+  "lead": "",
+  "answer": "Delta (DELL tah)",
+  "key": "Delta"
+ },
+ {
+  "sec": "phon",
+  "secName": "Phonetic Alphabet",
+  "prompt": "Letter E",
+  "full": "Echo (ECK oh)",
+  "id": "phon-057",
+  "lead": "",
+  "answer": "Echo (ECK oh)",
+  "key": "Echo"
+ },
+ {
+  "sec": "phon",
+  "secName": "Phonetic Alphabet",
+  "prompt": "Letter F",
+  "full": "Foxtrot (FOKS trot)",
+  "id": "phon-058",
+  "lead": "",
+  "answer": "Foxtrot (FOKS trot)",
+  "key": "Foxtrot"
+ },
+ {
+  "sec": "phon",
+  "secName": "Phonetic Alphabet",
+  "prompt": "Letter G",
+  "full": "Golf (GOLF)",
+  "id": "phon-059",
+  "lead": "",
+  "answer": "Golf (GOLF)",
+  "key": "Golf"
+ },
+ {
+  "sec": "phon",
+  "secName": "Phonetic Alphabet",
+  "prompt": "Letter H",
+  "full": "Hotel (hoh TELL)",
+  "id": "phon-060",
+  "lead": "",
+  "answer": "Hotel (hoh TELL)",
+  "key": "Hotel"
+ },
+ {
+  "sec": "phon",
+  "secName": "Phonetic Alphabet",
+  "prompt": "Letter I",
+  "full": "India (IN dee ah)",
+  "id": "phon-061",
+  "lead": "",
+  "answer": "India (IN dee ah)",
+  "key": "India"
+ },
+ {
+  "sec": "phon",
+  "secName": "Phonetic Alphabet",
+  "prompt": "Letter J",
+  "full": "Juliet (JUU lee et)",
+  "id": "phon-062",
+  "lead": "",
+  "answer": "Juliet (JUU lee et)",
+  "key": "Juliet"
+ },
+ {
+  "sec": "phon",
+  "secName": "Phonetic Alphabet",
+  "prompt": "Letter K",
+  "full": "Kilo (KEY loh)",
+  "id": "phon-063",
+  "lead": "",
+  "answer": "Kilo (KEY loh)",
+  "key": "Kilo"
+ },
+ {
+  "sec": "phon",
+  "secName": "Phonetic Alphabet",
+  "prompt": "Letter L",
+  "full": "Lima (LEE mah)",
+  "id": "phon-064",
+  "lead": "",
+  "answer": "Lima (LEE mah)",
+  "key": "Lima"
+ },
+ {
+  "sec": "phon",
+  "secName": "Phonetic Alphabet",
+  "prompt": "Letter M",
+  "full": "Mike (MIKE)",
+  "id": "phon-065",
+  "lead": "",
+  "answer": "Mike (MIKE)",
+  "key": "Mike"
+ },
+ {
+  "sec": "phon",
+  "secName": "Phonetic Alphabet",
+  "prompt": "Letter N",
+  "full": "November (no VEM ber)",
+  "id": "phon-066",
+  "lead": "",
+  "answer": "November (no VEM ber)",
+  "key": "November"
+ },
+ {
+  "sec": "phon",
+  "secName": "Phonetic Alphabet",
+  "prompt": "Letter O",
+  "full": "Oscar (OSS cah)",
+  "id": "phon-067",
+  "lead": "",
+  "answer": "Oscar (OSS cah)",
+  "key": "Oscar"
+ },
+ {
+  "sec": "phon",
+  "secName": "Phonetic Alphabet",
+  "prompt": "Letter P",
+  "full": "Papa (pah PAH)",
+  "id": "phon-068",
+  "lead": "",
+  "answer": "Papa (pah PAH)",
+  "key": "Papa"
+ },
+ {
+  "sec": "phon",
+  "secName": "Phonetic Alphabet",
+  "prompt": "Letter Q",
+  "full": "Quebec (kay BECK)",
+  "id": "phon-069",
+  "lead": "",
+  "answer": "Quebec (kay BECK)",
+  "key": "Quebec"
+ },
+ {
+  "sec": "phon",
+  "secName": "Phonetic Alphabet",
+  "prompt": "Letter R",
+  "full": "Romeo (ROW me oh)",
+  "id": "phon-070",
+  "lead": "",
+  "answer": "Romeo (ROW me oh)",
+  "key": "Romeo"
+ },
+ {
+  "sec": "phon",
+  "secName": "Phonetic Alphabet",
+  "prompt": "Letter S",
+  "full": "Sierra (see AIR rah)",
+  "id": "phon-071",
+  "lead": "",
+  "answer": "Sierra (see AIR rah)",
+  "key": "Sierra"
+ },
+ {
+  "sec": "phon",
+  "secName": "Phonetic Alphabet",
+  "prompt": "Letter T",
+  "full": "Tango (TANG go)",
+  "id": "phon-072",
+  "lead": "",
+  "answer": "Tango (TANG go)",
+  "key": "Tango"
+ },
+ {
+  "sec": "phon",
+  "secName": "Phonetic Alphabet",
+  "prompt": "Letter U",
+  "full": "Uniform (YOU nee form)",
+  "id": "phon-073",
+  "lead": "",
+  "answer": "Uniform (YOU nee form)",
+  "key": "Uniform"
+ },
+ {
+  "sec": "phon",
+  "secName": "Phonetic Alphabet",
+  "prompt": "Letter V",
+  "full": "Victor (VIK tah)",
+  "id": "phon-074",
+  "lead": "",
+  "answer": "Victor (VIK tah)",
+  "key": "Victor"
+ },
+ {
+  "sec": "phon",
+  "secName": "Phonetic Alphabet",
+  "prompt": "Letter W",
+  "full": "Whiskey (WISS key)",
+  "id": "phon-075",
+  "lead": "",
+  "answer": "Whiskey (WISS key)",
+  "key": "Whiskey"
+ },
+ {
+  "sec": "phon",
+  "secName": "Phonetic Alphabet",
+  "prompt": "Letter X",
+  "full": "X-Ray (ECKS ray)",
+  "id": "phon-076",
+  "lead": "",
+  "answer": "X-Ray (ECKS ray)",
+  "key": "X-Ray"
+ },
+ {
+  "sec": "phon",
+  "secName": "Phonetic Alphabet",
+  "prompt": "Letter Y",
+  "full": "Yankee (YANG key)",
+  "id": "phon-077",
+  "lead": "",
+  "answer": "Yankee (YANG key)",
+  "key": "Yankee"
+ },
+ {
+  "sec": "phon",
+  "secName": "Phonetic Alphabet",
+  "prompt": "Letter Z",
+  "full": "Zulu (ZOO loo)",
+  "id": "phon-078",
+  "lead": "",
+  "answer": "Zulu (ZOO loo)",
+  "key": "Zulu"
+ },
+ {
+  "sec": "nvo",
+  "secName": "Navy Officer Ranks",
+  "prompt": "Navy W-1",
+  "full": "Warrant Officer (WO1) Collar: Gold bar with two blue breaks Shoulder board: One gold 1/4-inch stripe with three blue breaks outboard a specialty insignia Sleeve: One gold 1/4-inch stripe with three blue breaks below a specialty insignia",
+  "id": "nvo-079",
+  "lead": "",
+  "answer": "Warrant Officer (WO1) Collar: Gold bar with two blue breaks Shoulder board: One gold 1/4-inch stripe with three blue breaks outboard a specialty insignia Sleeve: One gold 1/4-inch stripe with three blue breaks below a specialty insignia",
+  "key": "Warrant Officer (WO1) Collar: Gold bar with two blue breaks"
+ },
+ {
+  "sec": "nvo",
+  "secName": "Navy Officer Ranks",
+  "prompt": "Navy W-2",
+  "full": "Chief Warrant Officer Two (CWO2) Collar: Gold bar with three blue breaks Shoulder board: One gold 1/2-inch stripe with three blue breaks outboard a specialty insignia Sleeve: One gold 1/2-inch stripe with three blue breaks below a specialty insignia",
+  "id": "nvo-080",
+  "lead": "",
+  "answer": "Chief Warrant Officer Two (CWO2) Collar: Gold bar with three blue breaks Shoulder board: One gold 1/2-inch stripe with three blue breaks outboard a specialty insignia Sleeve: One gold 1/2-inch stripe with three blue breaks below a specialty insignia",
+  "key": "Chief Warrant Officer Two (CWO2) Collar: Gold bar with three blue breaks"
+ },
+ {
+  "sec": "nvo",
+  "secName": "Navy Officer Ranks",
+  "prompt": "Navy W-3",
+  "full": "Chief Warrant Officer Three (CWO3) Collar: Silver bar with two blue breaks Shoulder board: One gold 1/2-inch stripe with two blue breaks outboard a specialty insignia Sleeve: One gold 1/2-inch stripe with two blue breaks below a specialty insignia",
+  "id": "nvo-081",
+  "lead": "",
+  "answer": "Chief Warrant Officer Three (CWO3) Collar: Silver bar with two blue breaks Shoulder board: One gold 1/2-inch stripe with two blue breaks outboard a specialty insignia Sleeve: One gold 1/2-inch stripe with two blue breaks below a specialty insignia",
+  "key": "Chief Warrant Officer Three (CWO3) Collar: Silver bar with two blue breaks"
+ },
+ {
+  "sec": "nvo",
+  "secName": "Navy Officer Ranks",
+  "prompt": "Navy W-4",
+  "full": "Chief Warrant Officer Four (CWO4) Collar: Silver bar with three blue breaks Shoulder board: One gold 1/2-inch stripe with one blue break outboard a specialty insignia Sleeve: One gold 1/2-inch stripe with one blue break below a specialty insignia",
+  "id": "nvo-082",
+  "lead": "",
+  "answer": "Chief Warrant Officer Four (CWO4) Collar: Silver bar with three blue breaks Shoulder board: One gold 1/2-inch stripe with one blue break outboard a specialty insignia Sleeve: One gold 1/2-inch stripe with one blue break below a specialty insignia",
+  "key": "Chief Warrant Officer Four (CWO4) Collar: Silver bar with three blue breaks"
+ },
+ {
+  "sec": "nvo",
+  "secName": "Navy Officer Ranks",
+  "prompt": "Navy W-5",
+  "full": "Chief Warrant Officer Five (CWO5) Collar: Silver bar with one 1/8th inch horizontal blue line Shoulder board: Two thin gold stripes with one blue break outboard a specialty insignia Sleeve: Two thin gold stripes with one blue break below a specialty insignia",
+  "id": "nvo-083",
+  "lead": "",
+  "answer": "Chief Warrant Officer Five (CWO5) Collar: Silver bar with one 1/8th inch horizontal blue line Shoulder board: Two thin gold stripes with one blue break outboard a specialty insignia Sleeve: Two thin gold stripes with one blue break below a specialty insignia",
+  "key": "Chief Warrant Officer Five (CWO5) Collar: Silver bar with one 1/8th inch horizontal blue line"
+ },
+ {
+  "sec": "nvo",
+  "secName": "Navy Officer Ranks",
+  "prompt": "Navy O-1",
+  "full": "Ensign (ENS) Collar: One gold bar Shoulder board: One gold 1/2-inch stripe outboard a gold five pointed star Sleeve: One gold 1/2-inch stripe below a gold five pointed star",
+  "id": "nvo-084",
+  "lead": "",
+  "answer": "Ensign (ENS) Collar: One gold bar Shoulder board: One gold 1/2-inch stripe outboard a gold five pointed star Sleeve: One gold 1/2-inch stripe below a gold five pointed star",
+  "key": "Ensign (ENS) Collar: One gold bar"
+ },
+ {
+  "sec": "nvo",
+  "secName": "Navy Officer Ranks",
+  "prompt": "Navy O-2",
+  "full": "Lieutenant Junior Grade (LTJG) Collar: One silver bar Shoulder board: One gold 1/2-inch stripe outboard one 1/4-inch gold stripe outboard a gold five pointed star Sleeve: One gold 1/2-inch stripe below one 1/4-inch stripe below a gold five pointed star",
+  "id": "nvo-085",
+  "lead": "",
+  "answer": "Lieutenant Junior Grade (LTJG) Collar: One silver bar Shoulder board: One gold 1/2-inch stripe outboard one 1/4-inch gold stripe outboard a gold five pointed star Sleeve: One gold 1/2-inch stripe below one 1/4-inch stripe below a gold five pointed star",
+  "key": "Lieutenant Junior Grade (LTJG) Collar: One silver bar"
+ },
+ {
+  "sec": "nvo",
+  "secName": "Navy Officer Ranks",
+  "prompt": "Navy O-3",
+  "full": "Lieutenant (LT) Collar: Two silver bars Shoulder board: Two gold 1/2-inch stripes outboard a gold five pointed star Sleeve: Two gold 1/2-inch stripes below a gold five pointed star",
+  "id": "nvo-086",
+  "lead": "",
+  "answer": "Lieutenant (LT) Collar: Two silver bars Shoulder board: Two gold 1/2-inch stripes outboard a gold five pointed star Sleeve: Two gold 1/2-inch stripes below a gold five pointed star",
+  "key": "Lieutenant (LT) Collar: Two silver bars"
+ },
+ {
+  "sec": "nvo",
+  "secName": "Navy Officer Ranks",
+  "prompt": "Navy O-4",
+  "full": "Lieutenant Commander (LCDR) Collar: Gold oak leaf Shoulder board: One gold 1/2-inch stripe outboard one gold 1/4-inch stripe outboard one gold 1/2-inch stripe outboard a gold five pointed star Sleeve: One gold 1/2-inch stripe below one gold 1/4-inch stripe below one gold 1/2-inch stripe below a gold five pointed star",
+  "id": "nvo-087",
+  "lead": "",
+  "answer": "Lieutenant Commander (LCDR) Collar: Gold oak leaf Shoulder board: One gold 1/2-inch stripe outboard one gold 1/4-inch stripe outboard one gold 1/2-inch stripe outboard a gold five pointed star Sleeve: One gold 1/2-inch stripe below one gold 1/4-inch stripe below one gold 1/2-inch stripe below a gold five pointed star",
+  "key": "Lieutenant Commander (LCDR) Collar: Gold oak leaf"
+ },
+ {
+  "sec": "nvo",
+  "secName": "Navy Officer Ranks",
+  "prompt": "Navy O-5",
+  "full": "Commander (CDR) Collar: Silver oak leaf Shoulder board: Three gold 1/2-inch stripes outboard a gold five pointed star Sleeve: Three gold 1/2-inch stripes below a gold five pointed star",
+  "id": "nvo-088",
+  "lead": "",
+  "answer": "Commander (CDR) Collar: Silver oak leaf Shoulder board: Three gold 1/2-inch stripes outboard a gold five pointed star Sleeve: Three gold 1/2-inch stripes below a gold five pointed star",
+  "key": "Commander (CDR) Collar: Silver oak leaf"
+ },
+ {
+  "sec": "nvo",
+  "secName": "Navy Officer Ranks",
+  "prompt": "Navy O-6",
+  "full": "Captain (CAPT) Collar: Silver eagle Shoulder board: Four gold 1/2-inch stripes outboard a gold five pointed star Sleeve: Four gold 1/2-inch stripes below a gold five pointed star",
+  "id": "nvo-089",
+  "lead": "",
+  "answer": "Captain (CAPT) Collar: Silver eagle Shoulder board: Four gold 1/2-inch stripes outboard a gold five pointed star Sleeve: Four gold 1/2-inch stripes below a gold five pointed star",
+  "key": "Captain (CAPT) Collar: Silver eagle"
+ },
+ {
+  "sec": "nvo",
+  "secName": "Navy Officer Ranks",
+  "prompt": "Navy O-7",
+  "full": "Rear Admiral Lower Half (RDML) Collar: One silver five pointed star Shoulder board: Gold shoulder boards with one silver five pointed star outboard a silver fouled anchor Sleeve: One gold 2-inch stripe below a gold five pointed star",
+  "id": "nvo-090",
+  "lead": "",
+  "answer": "Rear Admiral Lower Half (RDML) Collar: One silver five pointed star Shoulder board: Gold shoulder boards with one silver five pointed star outboard a silver fouled anchor Sleeve: One gold 2-inch stripe below a gold five pointed star",
+  "key": "Rear Admiral Lower Half (RDML) Collar: One silver five pointed star"
+ },
+ {
+  "sec": "nvo",
+  "secName": "Navy Officer Ranks",
+  "prompt": "Navy O-8",
+  "full": "Rear Admiral (RADM) Collar: Two silver five pointed stars Shoulder board: Gold shoulder boards with two silver five pointed stars outboard a silver fouled anchor Sleeve: One gold 2-inch stripe below one gold 1/2-inch stripe below a gold five pointed star",
+  "id": "nvo-091",
+  "lead": "",
+  "answer": "Rear Admiral (RADM) Collar: Two silver five pointed stars Shoulder board: Gold shoulder boards with two silver five pointed stars outboard a silver fouled anchor Sleeve: One gold 2-inch stripe below one gold 1/2-inch stripe below a gold five pointed star",
+  "key": "Rear Admiral (RADM) Collar: Two silver five pointed stars"
+ },
+ {
+  "sec": "nvo",
+  "secName": "Navy Officer Ranks",
+  "prompt": "Navy O-9",
+  "full": "Vice Admiral (VADM) Collar: Three silver five pointed stars Shoulder board: Gold shoulder boards with three silver five pointed stars outboard a silver fouled anchor Sleeve: One gold 2-inch stripe below two gold 1/2-inch stripes below a gold five pointed star",
+  "id": "nvo-092",
+  "lead": "",
+  "answer": "Vice Admiral (VADM) Collar: Three silver five pointed stars Shoulder board: Gold shoulder boards with three silver five pointed stars outboard a silver fouled anchor Sleeve: One gold 2-inch stripe below two gold 1/2-inch stripes below a gold five pointed star",
+  "key": "Vice Admiral (VADM) Collar: Three silver five pointed stars"
+ },
+ {
+  "sec": "nvo",
+  "secName": "Navy Officer Ranks",
+  "prompt": "Navy O-10",
+  "full": "Admiral (ADM) Collar: Four silver five pointed stars Shoulder board: Gold shoulder boards with four silver five pointed stars outboard a silver fouled anchor Sleeve: One gold 2-inch stripe below three gold 1/2-inch stripes below a gold five pointed star",
+  "id": "nvo-093",
+  "lead": "",
+  "answer": "Admiral (ADM) Collar: Four silver five pointed stars Shoulder board: Gold shoulder boards with four silver five pointed stars outboard a silver fouled anchor Sleeve: One gold 2-inch stripe below three gold 1/2-inch stripes below a gold five pointed star",
+  "key": "Admiral (ADM) Collar: Four silver five pointed stars"
+ },
+ {
+  "sec": "nvo",
+  "secName": "Navy Officer Ranks",
+  "prompt": "Navy O-11",
+  "full": "Fleet Admiral (FADM) Collar: Five silver five pointed stars Shoulder board: Gold shoulder boards with five silver five pointed stars outboard a silver fouled anchor Sleeve: One gold 2-inch stripe below four gold 1/2-inch stripes below a gold five pointed star",
+  "id": "nvo-094",
+  "lead": "",
+  "answer": "Fleet Admiral (FADM) Collar: Five silver five pointed stars Shoulder board: Gold shoulder boards with five silver five pointed stars outboard a silver fouled anchor Sleeve: One gold 2-inch stripe below four gold 1/2-inch stripes below a gold five pointed star",
+  "key": "Fleet Admiral (FADM) Collar: Five silver five pointed stars"
+ },
+ {
+  "sec": "mco",
+  "secName": "USMC Officer Ranks",
+  "prompt": "USMC W-1",
+  "full": "Warrant Officer (W1) Collar: Single bar device with a red background and one gold break",
+  "id": "mco-095",
+  "lead": "",
+  "answer": "Warrant Officer (W1) Collar: Single bar device with a red background and one gold break",
+  "key": "Warrant Officer (W1) Collar: Single bar device with a red background and one gold break"
+ },
+ {
+  "sec": "mco",
+  "secName": "USMC Officer Ranks",
+  "prompt": "USMC W-2",
+  "full": "Chief Warrant Officer Two (CWO2) Collar: Single bar device with a red background and two gold breaks",
+  "id": "mco-096",
+  "lead": "",
+  "answer": "Chief Warrant Officer Two (CWO2) Collar: Single bar device with a red background and two gold breaks",
+  "key": "Chief Warrant Officer Two (CWO2) Collar: Single bar device with a red background and two gold breaks"
+ },
+ {
+  "sec": "mco",
+  "secName": "USMC Officer Ranks",
+  "prompt": "USMC W-3",
+  "full": "Chief Warrant Officer Three (CWO3) Collar: Single bar device with a red background and one silver break",
+  "id": "mco-097",
+  "lead": "",
+  "answer": "Chief Warrant Officer Three (CWO3) Collar: Single bar device with a red background and one silver break",
+  "key": "Chief Warrant Officer Three (CWO3) Collar: Single bar device with a red background and one silver break"
+ },
+ {
+  "sec": "mco",
+  "secName": "USMC Officer Ranks",
+  "prompt": "USMC W-4",
+  "full": "Chief Warrant Officer Four (CWO4) Collar: Single bar device with a red background and two silver breaks",
+  "id": "mco-098",
+  "lead": "",
+  "answer": "Chief Warrant Officer Four (CWO4) Collar: Single bar device with a red background and two silver breaks",
+  "key": "Chief Warrant Officer Four (CWO4) Collar: Single bar device with a red background and two silver breaks"
+ },
+ {
+  "sec": "mco",
+  "secName": "USMC Officer Ranks",
+  "prompt": "USMC W-5",
+  "full": "Chief Warrant Officer Five (CWO5) Collar: Single silver bar device with a thin red break in the center",
+  "id": "mco-099",
+  "lead": "",
+  "answer": "Chief Warrant Officer Five (CWO5) Collar: Single silver bar device with a thin red break in the center",
+  "key": "Chief Warrant Officer Five (CWO5) Collar: Single silver bar device with a thin red break in the center"
+ },
+ {
+  "sec": "mco",
+  "secName": "USMC Officer Ranks",
+  "prompt": "USMC O-1",
+  "full": "Second Lieutenant (2ndLt) Collar: One gold bar",
+  "id": "mco-100",
+  "lead": "",
+  "answer": "Second Lieutenant (2ndLt) Collar: One gold bar",
+  "key": "Second Lieutenant (2ndLt) Collar: One gold bar"
+ },
+ {
+  "sec": "mco",
+  "secName": "USMC Officer Ranks",
+  "prompt": "USMC O-2",
+  "full": "First Lieutenant (1stLt) Collar: One silver bar",
+  "id": "mco-101",
+  "lead": "",
+  "answer": "First Lieutenant (1stLt) Collar: One silver bar",
+  "key": "First Lieutenant (1stLt) Collar: One silver bar"
+ },
+ {
+  "sec": "mco",
+  "secName": "USMC Officer Ranks",
+  "prompt": "USMC O-3",
+  "full": "Captain (Capt) Collar: Two silver bars",
+  "id": "mco-102",
+  "lead": "",
+  "answer": "Captain (Capt) Collar: Two silver bars",
+  "key": "Captain (Capt) Collar: Two silver bars"
+ },
+ {
+  "sec": "mco",
+  "secName": "USMC Officer Ranks",
+  "prompt": "USMC O-4",
+  "full": "Major (Maj) Collar: Gold oak leaf",
+  "id": "mco-103",
+  "lead": "",
+  "answer": "Major (Maj) Collar: Gold oak leaf",
+  "key": "Major (Maj) Collar: Gold oak leaf"
+ },
+ {
+  "sec": "mco",
+  "secName": "USMC Officer Ranks",
+  "prompt": "USMC O-5",
+  "full": "Lieutenant Colonel (LtCol) Collar: Silver oak leaf",
+  "id": "mco-104",
+  "lead": "",
+  "answer": "Lieutenant Colonel (LtCol) Collar: Silver oak leaf",
+  "key": "Lieutenant Colonel (LtCol) Collar: Silver oak leaf"
+ },
+ {
+  "sec": "mco",
+  "secName": "USMC Officer Ranks",
+  "prompt": "USMC O-6",
+  "full": "Colonel (Col) Collar: Silver eagle",
+  "id": "mco-105",
+  "lead": "",
+  "answer": "Colonel (Col) Collar: Silver eagle",
+  "key": "Colonel (Col) Collar: Silver eagle"
+ },
+ {
+  "sec": "mco",
+  "secName": "USMC Officer Ranks",
+  "prompt": "USMC O-7",
+  "full": "Brigadier General (BGen) Collar: One silver five pointed star",
+  "id": "mco-106",
+  "lead": "",
+  "answer": "Brigadier General (BGen) Collar: One silver five pointed star",
+  "key": "Brigadier General (BGen) Collar: One silver five pointed star"
+ },
+ {
+  "sec": "mco",
+  "secName": "USMC Officer Ranks",
+  "prompt": "USMC O-8",
+  "full": "Major General (MajGen) Collar: Two silver five pointed stars",
+  "id": "mco-107",
+  "lead": "",
+  "answer": "Major General (MajGen) Collar: Two silver five pointed stars",
+  "key": "Major General (MajGen) Collar: Two silver five pointed stars"
+ },
+ {
+  "sec": "mco",
+  "secName": "USMC Officer Ranks",
+  "prompt": "USMC O-9",
+  "full": "Lieutenant General (LtGen) Collar: Three silver five pointed stars",
+  "id": "mco-108",
+  "lead": "",
+  "answer": "Lieutenant General (LtGen) Collar: Three silver five pointed stars",
+  "key": "Lieutenant General (LtGen) Collar: Three silver five pointed stars"
+ },
+ {
+  "sec": "mco",
+  "secName": "USMC Officer Ranks",
+  "prompt": "USMC O-10",
+  "full": "General (Gen) Collar: Four silver five pointed stars",
+  "id": "mco-109",
+  "lead": "",
+  "answer": "General (Gen) Collar: Four silver five pointed stars",
+  "key": "General (Gen) Collar: Four silver five pointed stars"
+ },
+ {
+  "sec": "nve",
+  "secName": "Navy Enlisted Ranks",
+  "prompt": "Navy E-1",
+  "full": "Seaman Recruit (SR) Collar: None Sleeve: None",
+  "id": "nve-110",
+  "lead": "",
+  "answer": "Seaman Recruit (SR) Collar: None Sleeve: None",
+  "key": "Seaman Recruit (SR) Collar: None"
+ },
+ {
+  "sec": "nve",
+  "secName": "Navy Enlisted Ranks",
+  "prompt": "Navy E-2",
+  "full": "Seaman Apprentice (SA) Collar: Two diagonal bars Sleeve: Two diagonal stripes",
+  "id": "nve-111",
+  "lead": "",
+  "answer": "Seaman Apprentice (SA) Collar: Two diagonal bars Sleeve: Two diagonal stripes",
+  "key": "Seaman Apprentice (SA) Collar: Two diagonal bars"
+ },
+ {
+  "sec": "nve",
+  "secName": "Navy Enlisted Ranks",
+  "prompt": "Navy E-3",
+  "full": "Seaman (SN) Collar: Three diagonal bars Sleeve: Three diagonal stripes",
+  "id": "nve-112",
+  "lead": "",
+  "answer": "Seaman (SN) Collar: Three diagonal bars Sleeve: Three diagonal stripes",
+  "key": "Seaman (SN) Collar: Three diagonal bars"
+ },
+ {
+  "sec": "nve",
+  "secName": "Navy Enlisted Ranks",
+  "prompt": "Navy E-4",
+  "full": "Petty Officer Third Class (PO3) Collar: One eagle above one chevron Sleeve: One eagle above one chevron",
+  "id": "nve-113",
+  "lead": "",
+  "answer": "Petty Officer Third Class (PO3) Collar: One eagle above one chevron Sleeve: One eagle above one chevron",
+  "key": "Petty Officer Third Class (PO3) Collar: One eagle above one chevron"
+ },
+ {
+  "sec": "nve",
+  "secName": "Navy Enlisted Ranks",
+  "prompt": "Navy E-5",
+  "full": "Petty Officer Second Class (PO2) Collar: One eagle above two chevrons Sleeve: One eagle above two chevrons",
+  "id": "nve-114",
+  "lead": "",
+  "answer": "Petty Officer Second Class (PO2) Collar: One eagle above two chevrons Sleeve: One eagle above two chevrons",
+  "key": "Petty Officer Second Class (PO2) Collar: One eagle above two chevrons"
+ },
+ {
+  "sec": "nve",
+  "secName": "Navy Enlisted Ranks",
+  "prompt": "Navy E-6",
+  "full": "Petty Officer First Class (PO1) Collar: One eagle over three chevrons Sleeve: One eagle above three chevrons",
+  "id": "nve-115",
+  "lead": "",
+  "answer": "Petty Officer First Class (PO1) Collar: One eagle over three chevrons Sleeve: One eagle above three chevrons",
+  "key": "Petty Officer First Class (PO1) Collar: One eagle over three chevrons"
+ },
+ {
+  "sec": "nve",
+  "secName": "Navy Enlisted Ranks",
+  "prompt": "Navy E-7",
+  "full": "Chief Petty Officer (CPO) Collar: Gold fouled anchor with silver USN centered across the anchor Sleeve: One eagle above one rocker above three chevrons",
+  "id": "nve-116",
+  "lead": "",
+  "answer": "Chief Petty Officer (CPO) Collar: Gold fouled anchor with silver USN centered across the anchor Sleeve: One eagle above one rocker above three chevrons",
+  "key": "Chief Petty Officer (CPO) Collar: Gold fouled anchor with silver USN centered across the anchor"
+ },
+ {
+  "sec": "nve",
+  "secName": "Navy Enlisted Ranks",
+  "prompt": "Navy E-8",
+  "full": "Senior Chief Petty Officer (SCPO) Collar: Gold fouled anchor with silver USN centered across the anchor below one silver star Sleeve: One silver star above one eagle above one rocker above three chevrons",
+  "id": "nve-117",
+  "lead": "",
+  "answer": "Senior Chief Petty Officer (SCPO) Collar: Gold fouled anchor with silver USN centered across the anchor below one silver star Sleeve: One silver star above one eagle above one rocker above three chevrons",
+  "key": "Senior Chief Petty Officer (SCPO) Collar: Gold fouled anchor with silver USN centered across the anchor below one silver star"
+ },
+ {
+  "sec": "nve",
+  "secName": "Navy Enlisted Ranks",
+  "prompt": "Navy E-9",
+  "full": "Master Chief Petty Officer (MCPO) Collar: Gold fouled anchor with silver USN centered across the anchor below two silver stars Sleeve: Two silver stars above one eagle above one rocker above three chevrons",
+  "id": "nve-118",
+  "lead": "",
+  "answer": "Master Chief Petty Officer (MCPO) Collar: Gold fouled anchor with silver USN centered across the anchor below two silver stars Sleeve: Two silver stars above one eagle above one rocker above three chevrons",
+  "key": "Master Chief Petty Officer (MCPO) Collar: Gold fouled anchor with silver USN centered across the anchor below two silver stars"
+ },
+ {
+  "sec": "nve",
+  "secName": "Navy Enlisted Ranks",
+  "prompt": "Navy E-9 (MCPON)",
+  "full": "Master Chief Petty Officer of the Navy (MCPON) Collar: Gold fouled anchor with silver USN centered across the anchor below three silver stars Sleeve: Three gold stars above one eagle above one rocker above three chevrons with a gold star specialty mark",
+  "id": "nve-119",
+  "lead": "",
+  "answer": "Master Chief Petty Officer of the Navy (MCPON) Collar: Gold fouled anchor with silver USN centered across the anchor below three silver stars Sleeve: Three gold stars above one eagle above one rocker above three chevrons with a gold star specialty mark",
+  "key": "Master Chief Petty Officer of the Navy (MCPON) Collar: Gold fouled anchor with silver USN centered across the anchor below three silver stars"
+ },
+ {
+  "sec": "mce",
+  "secName": "USMC Enlisted Ranks",
+  "prompt": "USMC E-1: Private",
+  "full": "Private Insignia: None",
+  "id": "mce-120",
+  "lead": "",
+  "answer": "Private Insignia: None",
+  "key": "Private Insignia: None"
+ },
+ {
+  "sec": "mce",
+  "secName": "USMC Enlisted Ranks",
+  "prompt": "USMC E-2: Private First Class",
+  "full": "Private First Class (PFC) Insignia: One stripe",
+  "id": "mce-121",
+  "lead": "",
+  "answer": "Private First Class (PFC) Insignia: One stripe",
+  "key": "Private First Class (PFC) Insignia: One stripe"
+ },
+ {
+  "sec": "mce",
+  "secName": "USMC Enlisted Ranks",
+  "prompt": "USMC E-3: Lance Corporal",
+  "full": "Lance Corporal (LCpl) Insignia: One stripe over crossed rifles",
+  "id": "mce-122",
+  "lead": "",
+  "answer": "Lance Corporal (LCpl) Insignia: One stripe over crossed rifles",
+  "key": "Lance Corporal (LCpl) Insignia: One stripe over crossed rifles"
+ },
+ {
+  "sec": "mce",
+  "secName": "USMC Enlisted Ranks",
+  "prompt": "USMC E-4: Corporal",
+  "full": "Corporal (Cpl) Insignia: Two stripes over crossed rifles",
+  "id": "mce-123",
+  "lead": "",
+  "answer": "Corporal (Cpl) Insignia: Two stripes over crossed rifles",
+  "key": "Corporal (Cpl) Insignia: Two stripes over crossed rifles"
+ },
+ {
+  "sec": "mce",
+  "secName": "USMC Enlisted Ranks",
+  "prompt": "USMC E-5: Sergeant",
+  "full": "Sergeant (Sgt) Insignia: Three stripes over crossed rifles",
+  "id": "mce-124",
+  "lead": "",
+  "answer": "Sergeant (Sgt) Insignia: Three stripes over crossed rifles",
+  "key": "Sergeant (Sgt) Insignia: Three stripes over crossed rifles"
+ },
+ {
+  "sec": "mce",
+  "secName": "USMC Enlisted Ranks",
+  "prompt": "USMC E-6: Staff Sergeant",
+  "full": "Staff Sergeant (SSgt) Insignia: Three stripes over crossed rifles over one rocker",
+  "id": "mce-125",
+  "lead": "",
+  "answer": "Staff Sergeant (SSgt) Insignia: Three stripes over crossed rifles over one rocker",
+  "key": "Staff Sergeant (SSgt) Insignia: Three stripes over crossed rifles over one rocker"
+ },
+ {
+  "sec": "mce",
+  "secName": "USMC Enlisted Ranks",
+  "prompt": "USMC E-7: Gunnery Sergeant",
+  "full": "Gunnery Sergeant (GySgt) Insignia: Three stripes over crossed rifles over two rockers",
+  "id": "mce-126",
+  "lead": "",
+  "answer": "Gunnery Sergeant (GySgt) Insignia: Three stripes over crossed rifles over two rockers",
+  "key": "Gunnery Sergeant (GySgt) Insignia: Three stripes over crossed rifles over two rockers"
+ },
+ {
+  "sec": "mce",
+  "secName": "USMC Enlisted Ranks",
+  "prompt": "USMC E-8: Master Sergeant",
+  "full": "Master Sergeant (MSgt) Insignia: Three stripes over crossed rifles over three rockers",
+  "id": "mce-127",
+  "lead": "",
+  "answer": "Master Sergeant (MSgt) Insignia: Three stripes over crossed rifles over three rockers",
+  "key": "Master Sergeant (MSgt) Insignia: Three stripes over crossed rifles over three rockers"
+ },
+ {
+  "sec": "mce",
+  "secName": "USMC Enlisted Ranks",
+  "prompt": "USMC E-8: First Sergeant",
+  "full": "First Sergeant (1stSgt) Insignia: Three stripes over one diamond over three rockers",
+  "id": "mce-128",
+  "lead": "",
+  "answer": "First Sergeant (1stSgt) Insignia: Three stripes over one diamond over three rockers",
+  "key": "First Sergeant (1stSgt) Insignia: Three stripes over one diamond over three rockers"
+ },
+ {
+  "sec": "mce",
+  "secName": "USMC Enlisted Ranks",
+  "prompt": "USMC E-9: Master Gunnery Sergeant",
+  "full": "Master Gunnery Sergeant (MGySgt) Insignia: Three stripes over a bursting bomb over four rockers",
+  "id": "mce-129",
+  "lead": "",
+  "answer": "Master Gunnery Sergeant (MGySgt) Insignia: Three stripes over a bursting bomb over four rockers",
+  "key": "Master Gunnery Sergeant (MGySgt) Insignia: Three stripes over a bursting bomb over four rockers"
+ },
+ {
+  "sec": "mce",
+  "secName": "USMC Enlisted Ranks",
+  "prompt": "USMC E-9: Sergeant Major",
+  "full": "Sergeant Major (SgtMaj) Insignia: Three stripes over one star over four rockers",
+  "id": "mce-130",
+  "lead": "",
+  "answer": "Sergeant Major (SgtMaj) Insignia: Three stripes over one star over four rockers",
+  "key": "Sergeant Major (SgtMaj) Insignia: Three stripes over one star over four rockers"
+ },
+ {
+  "sec": "mce",
+  "secName": "USMC Enlisted Ranks",
+  "prompt": "USMC E-9: Sergeant Major of the Marine Corps",
+  "full": "Sergeant Major of the Marine Corps (SMMC) Insignia: Three stripes over the Marine Corps emblem centered between two five pointed stars over four rockers",
+  "id": "mce-131",
+  "lead": "",
+  "answer": "Sergeant Major of the Marine Corps (SMMC) Insignia: Three stripes over the Marine Corps emblem centered between two five pointed stars over four rockers",
+  "key": "Sergeant Major of the Marine Corps (SMMC) Insignia: Three stripes over the Marine Corps emblem centered between two five pointed stars over four rockers"
+ },
+ {
+  "sec": "dev",
+  "secName": "Officer Devices",
+  "prompt": "Line and Restricted Staff device",
+  "full": "Sleeve/shoulder board: A gold embroidered five-pointed star. Collar: Rank insignia are worn on both collars",
+  "id": "dev-132",
+  "lead": "",
+  "answer": "Sleeve/shoulder board: A gold embroidered five-pointed star. Collar: Rank insignia are worn on both collars",
+  "key": "Sleeve/shoulder board: A gold embroidered five-pointed star. Collar: Rank insignia are worn on both collars"
+ },
+ {
+  "sec": "dev",
+  "secName": "Officer Devices",
+  "prompt": "Supply Corps device",
+  "full": "Sleeve/shoulder board: A gold embroidered sprig of three oak leaves and three acorns. Collar: A gold metal sprig of three oak leaves and three acorns worn on the left collar. Rank insignia is worn on the right collar.",
+  "id": "dev-133",
+  "lead": "",
+  "answer": "Sleeve/shoulder board: A gold embroidered sprig of three oak leaves and three acorns. Collar: A gold metal sprig of three oak leaves and three acorns worn on the left collar. Rank insignia is worn on the right collar.",
+  "key": "Sleeve/shoulder board: A gold embroidered sprig of three oak leaves and three acorns. Collar: A gold metal sprig of three oak leaves and three acorns worn on the left collar. Rank insignia is worn on the right collar."
+ },
+ {
+  "sec": "dev",
+  "secName": "Officer Devices",
+  "prompt": "Civil Engineer Corps device",
+  "full": "Sleeve/shoulder board: Two gold embroidered sprigs of two oak leaves and a silver acorn in each sprig. Collar: A gold metal pin with two sprigs of two oak leaves and a silver acorn in each sprig worn on the left collar. Rank insignia is worn on the right collar",
+  "id": "dev-134",
+  "lead": "",
+  "answer": "Sleeve/shoulder board: Two gold embroidered sprigs of two oak leaves and a silver acorn in each sprig. Collar: A gold metal pin with two sprigs of two oak leaves and a silver acorn in each sprig worn on the left collar. Rank insignia is worn on the right collar",
+  "key": "Sleeve/shoulder board: Two gold embroidered sprigs of two oak leaves and a silver acorn in each sprig. Collar: A gold metal pin with two sprigs of two oak leaves and a silver acorn in each sprig worn on the left collar. Rank insignia is worn on the right collar"
+ }
+]
