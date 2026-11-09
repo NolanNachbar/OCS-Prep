@@ -26,7 +26,7 @@ export default function App() {
   const cur = TABS.find((t) => t.v === tab)!
   return (
     <Tabs value={tab} onValueChange={setTab} className="min-h-dvh gap-0">
-      <header className="sticky top-0 z-20 border-b-2 border-[#088199] bg-black text-white">
+      <header className="sticky top-0 z-20 bg-black text-white">
         <div className="mx-auto flex max-w-3xl items-center justify-between px-4 pt-[max(0.75rem,env(safe-area-inset-top))] pb-3">
           <button type="button" className="mr-3 -ml-2 flex size-11 shrink-0 items-center justify-center sm:hidden" aria-label="Menu" aria-expanded={menu} onClick={() => setMenu((m) => !m)}>{menu ? <X /> : <Menu />}</button>
           <div className="slab mr-auto text-lg font-bold uppercase leading-tight tracking-[0.14em]">OCS Recite<span className="block font-sans text-xs font-medium tracking-[0.12em] text-[#C6CCD0]">Appendix B trainer</span></div>
@@ -47,10 +47,10 @@ export default function App() {
           ))}
         </TabsList>
       </header>
-      <section className="border-b-4 border-gold bg-[#003B4F] px-4 py-3 text-center text-white">
+      <section className="border-b border-white/15 py-3 text-left text-white"><div className="mx-auto max-w-3xl px-4">
         <h1 className="slab text-3xl font-bold uppercase leading-none tracking-[0.12em]">{cur.label}</h1>
         <p className="mt-1 text-xs text-[#C6CCD0]">{cur.sub}</p>
-      </section>
+      </div></section>
       <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-4">
         {tab === "study" && <Study />}
         {tab === "test" && <Test />}
