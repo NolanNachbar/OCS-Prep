@@ -54,7 +54,7 @@ export default function Test() {
         <Eyebrow>Test complete</Eyebrow>
         <h2 className="slab mt-2 text-3xl font-bold">{run.right} of {run.q.length}</h2>
         {run.missed.length > 0 && <p className="mt-2 text-muted-foreground">Missed: {run.missed.join(", ")}. They are due again today.</p>}
-        {run.targeted && run.right > 0 && <p className="mt-2 text-muted-foreground">Cards you passed that were new are now marked known and come back for review in a few days.</p>}
+        {run.targeted && run.right > 0 && <p className="mt-2 text-muted-foreground">Cards you passed that were new that you got word for word are now marked known and come back for review in 2 days.</p>}
         <Button className="mt-5" onClick={() => setRun(null)}>Done</Button>
       </Panel>
     )
@@ -63,7 +63,7 @@ export default function Test() {
   const check = () => {
     const r = L.score(c, text, store.settings.threshold) as Score
     setRes(r)
-    if (r.ok && run?.targeted) update((s) => { if (!s.cards[c.id]) s.cards[c.id] = { box: 3, reps: 1, lapses: 0, misses: 0, due: L.addDays(L.ymd(new Date()), L.STEPS[3]) }; return s })
+    if (r.ok && r.ratio >= 1 && r.extra.length === 0 && run?.targeted) update((s) => { if (!s.cards[c.id]) s.cards[c.id] = { box: 2, reps: 1, lapses: 0, misses: 0, due: L.addDays(L.ymd(new Date()), L.STEPS[2]) }; return s })
     if (!r.ok) update((s) => { s.cards[c.id] = { ...(s.cards[c.id] || { reps: 0, lapses: 0, misses: 0 }), box: 0, due: L.ymd(new Date()), misses: (s.cards[c.id]?.misses || 0) + 1 }; return s })
   }
   const next = (ok: boolean) => { setRun({ ...run, i: run.i + 1, right: run.right + (ok ? 1 : 0), missed: ok ? run.missed : [...run.missed, c.prompt] }); setText(""); setRes(null) }

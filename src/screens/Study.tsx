@@ -211,11 +211,11 @@ function Step({ item, level, card: c, hook, onIntro, onNext }: { item: Item; lev
       )}
       {res ? (
         <div>
-          <Verdict ok={res.r.ok} note={res.note} />
+          <Verdict ok={res.r.ok} note={hint && level === 4 && res.r.ok ? "Correct, but you used the hint, so it does not count. Try it again without." : res.note} />
           <Diff r={res.r} />
           {!res.r.ok && hook && <Hook text={hook} />}
           <div className="mt-4 flex flex-col gap-6">
-            <Button onClick={() => onNext(res.r.ok)} autoFocus>Next</Button>
+            <Button onClick={() => onNext(res.r.ok && !(hint && level === 4))} autoFocus>Next</Button>
             {!res.r.ok && !res.peeked && level < 4 && <Button variant="outline" onClick={() => onNext(true)}>Count as correct</Button>}
           </div>
         </div>
