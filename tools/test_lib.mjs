@@ -71,4 +71,11 @@ t("scheduler: miss resets, hit climbs, deadline caps the gap", () => {
   const c = L.schedule(s, true, "2026-11-24", "2026-12-04");
   assert(L.daysBetween("2026-11-24", c.due) <= 2, c.due);
 });
+t("answers of 20 words or fewer must be exact; more than two extra words fail", () => {
+  const c = cards.find((x) => L.words(x.key).length > 5 && L.words(x.key).length <= 20);
+  const w = L.words(c.key);
+  assert(L.score(c, w.join(" ")).ok);
+  assert(!L.score(c, w.slice(1).join(" "), 0.5).ok, "one missing word must fail");
+  assert(!L.score(c, "um uh like " + w.join(" ")).ok, "three extra words must fail");
+});
 console.log(n, "tests passed");

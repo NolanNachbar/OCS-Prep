@@ -23,14 +23,15 @@ export default function More() {
         <div className="mt-4 grid gap-4">
           <div className="grid gap-2"><Label htmlFor="ship">Ship date</Label><Input id="ship" type="date" value={st.ship} onChange={(e) => set("ship", e.target.value)} className="h-12" /></div>
           <div className="grid gap-2"><Label htmlFor="npd">New cards per day</Label><Input id="npd" type="number" min={1} max={30} value={st.newPerDay} onChange={(e) => set("newPerDay", Math.max(1, +e.target.value || 1))} className="h-12" /></div>
-          <div className="grid gap-2"><Label>Pass mark</Label>
+          <div className="grid gap-2"><Label htmlFor="mr">Max reviews per session</Label><Input id="mr" type="number" min={10} max={200} value={st.maxReviews ?? 60} onChange={(e) => set("maxReviews", Math.max(10, +e.target.value || 60))} className="h-12" /></div>
+          <div className="grid gap-2"><Label>Pass mark (answers over 20 words)</Label>
             <Select value={String(st.threshold)} onValueChange={(v) => set("threshold", +v)}>
-              <SelectTrigger className="h-12"><SelectValue /></SelectTrigger>
+              <SelectTrigger className="h-12! w-full"><SelectValue /></SelectTrigger>
               <SelectContent><SelectItem value="1">100%</SelectItem><SelectItem value="0.95">95%</SelectItem><SelectItem value="0.9">90%</SelectItem></SelectContent>
             </Select></div>
           <div className="grid gap-2"><Label>Voice speed</Label>
             <Select value={String(st.rate)} onValueChange={(v) => set("rate", +v)}>
-              <SelectTrigger className="h-12"><SelectValue /></SelectTrigger>
+              <SelectTrigger className="h-12! w-full"><SelectValue /></SelectTrigger>
               <SelectContent><SelectItem value="0.85">Slow</SelectItem><SelectItem value="1">Normal</SelectItem><SelectItem value="1.2">Fast</SelectItem></SelectContent>
             </Select></div>
           <div className="grid gap-2"><Label htmlFor="gap">Listen gap (seconds)</Label><Input id="gap" type="number" min={2} max={30} value={st.gap} onChange={(e) => set("gap", Math.max(2, +e.target.value || 6))} className="h-12" /></div>

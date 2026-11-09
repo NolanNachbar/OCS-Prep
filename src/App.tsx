@@ -23,10 +23,10 @@ export default function App() {
   const cur = TABS.find((t) => t.v === tab)!
   return (
     <Tabs value={tab} onValueChange={setTab} className="min-h-dvh gap-0">
-      <header className="bg-black text-white">
+      <header className="sticky top-0 z-20 bg-black text-white">
         <div className="mx-auto flex max-w-3xl items-center justify-between px-4 pt-[max(0.75rem,env(safe-area-inset-top))] pb-3">
-          <div className="slab text-lg font-bold uppercase leading-tight tracking-[0.14em]">OCS Recite<span className="block font-sans text-[0.65rem] font-medium tracking-[0.2em] text-[#C6CCD0]">Appendix B, Recruit Learning Program</span></div>
-          <div className="text-right text-[0.65rem] font-bold uppercase tracking-[0.16em] text-[#C6CCD0]"><span className="slab block text-2xl leading-none text-gold">{days}</span>days to ship</div>
+          <div className="slab text-lg font-bold uppercase leading-tight tracking-[0.14em]">OCS Recite<span className="block font-sans text-xs font-medium tracking-[0.12em] text-[#C6CCD0]">Appendix B, Recruit Learning Program</span></div>
+          <div className="text-right text-xs font-bold uppercase tracking-[0.16em] text-[#C6CCD0]"><span className="slab block text-2xl leading-none text-gold">{days}</span>days to ship</div>
         </div>
         <TabsList className="mx-auto grid h-auto! w-full max-w-3xl grid-cols-5 rounded-none border-t border-white/15 bg-transparent p-0">
           {TABS.map(({ v, label }) => (
@@ -36,11 +36,11 @@ export default function App() {
           ))}
         </TabsList>
       </header>
-      <section className="bg-gradient-to-b from-[#04283a] to-[#03141c] px-4 py-7 text-center text-white">
-        <h1 className="slab text-4xl font-bold uppercase tracking-[0.12em]">{cur.label}</h1>
-        <p className="mt-1 text-sm text-[#C6CCD0]">{cur.sub}</p>
+      <section className="bg-gradient-to-b from-[#04283a] to-[#03141c] px-4 py-3 text-center text-white">
+        <h1 className="slab text-3xl font-bold uppercase leading-none tracking-[0.12em]">{cur.label}</h1>
+        <p className="mt-1 text-xs text-[#C6CCD0]">{cur.sub}</p>
       </section>
-      <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-6">
+      <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-4">
         {tab === "study" && <Study />}
         {tab === "test" && <Test />}
         {tab === "listen" && <Listen />}
