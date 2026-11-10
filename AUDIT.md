@@ -78,3 +78,6 @@ Rollback: `git reset --hard audit-2026-11-09-r1` on main, then push with lease.
 
 ## Round 32 (2026-11-10), tag audit-2026-11-10-r32
 - Study no longer includes the four rank sections (Navy and USMC officer and enlisted, 53 cards); it works on the other 82. Ranks are learned and reviewed in the Ranks tab. Rank cards stay in Cards, Test and Listen. Verified headless: "0 of 82 started".
+
+## Round 33 (2026-11-10), tag audit-2026-11-10-r33
+- The slider now sets only how many words are blank (Read it, Some words, Most words, All words, From memory). The old "First letters" level is "All words"; whether each blank shows its first letter is a checkbox in the slider box ("Show the first letter in each blank", on by default, saved in settings.letters). Same box in Ranks Recall, where it also masks the title letters. Verified headless: toggling clears the blank hints and saves.

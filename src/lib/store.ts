@@ -25,6 +25,7 @@ export function sanitize(raw: unknown): Store {
     newPerDay: num(st.newPerDay, d.settings.newPerDay, 1, 30),
     rate: num(st.rate, d.settings.rate, 0.5, 2),
     gap: num(st.gap, d.settings.gap, 2, 30),
+    ...(typeof st.letters === "boolean" ? { letters: st.letters } : {}),
     ...(st.maxReviews === undefined ? {} : { maxReviews: num(st.maxReviews, 60, 10, 200) }),
   }
   const cards: Store["cards"] = {}

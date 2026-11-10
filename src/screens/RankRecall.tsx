@@ -5,12 +5,12 @@ import { Slider } from "@/components/ui/slider"
 import { Textarea } from "@/components/ui/textarea"
 import { Panel, Eyebrow, Diff, Verdict } from "@/components/shared"
 import { Insignia, Drawing, rankName, views } from "@/components/Insignia"
-import { update } from "@/lib/store"
+import { update, useStore } from "@/lib/store"
 import * as L from "@/lib/ocs.js"
 import type { Card, Score } from "@/lib/types"
 
 // Same fill-in ladder as the Study tab. A rank is learned when both its steps are answered clean at "From memory".
-const LEVELS = ["Read it", "Some words", "Most words", "First letters", "From memory"]
+const LEVELS = ["Read it", "Some words", "Most words", "All words", "From memory"]
 const FRAC = [0, 0.35, 0.7, 1, 1]
 type Stage = "name" | "desc"
 type Item = { uid: number; id: string; stage: Stage; level: number }
@@ -32,8 +32,9 @@ function gradeName(c: Card, text: string): Score {
   return tries.find((r) => r.ok) ?? tries[0]
 }
 // Title masks for the slider: half the letters, first letter only, letter count only.
-function mask(title: string, level: number) {
+function mask(title: string, level: number, letters: boolean) {
   return title.split(" ").map((w) => {
+    if (!letters) return "_".repeat(w.length)
     if (level === 1) return w.slice(0, Math.ceil(w.length / 2)) + "_".repeat(Math.floor(w.length / 2))
     if (level === 2) return w[0] + "_".repeat(w.length - 1)
     return "_".repeat(w.length)
@@ -49,6 +50,7 @@ export default function RankRecall({ cards, teach, onExit }: { cards: Card[]; te
     missed: [], done: 0, total: cards.length * 2, miss: 0,
   }))
   const [manual, setManual] = useState<number | null>(null)
+  const letters = useStore().settings.letters !== false
   const byId = new Map(cards.map((c) => [c.id, c]))
 
   if (!cards.length) return <Panel><p>Nothing to drill here.</p><Button className="mt-4" onClick={onExit}>Back</Button></Panel>
@@ -125,15 +127,16 @@ export default function RankRecall({ cards, teach, onExit }: { cards: Card[]; te
         </div>
         <Slider min={0} max={4} step={1} value={[level]} onValueChange={(v) => setManual(v[0])} aria-label="How much to fill in" aria-valuetext={LEVELS[level]} />
         <div className="mt-2 flex justify-between text-xs uppercase tracking-wider text-muted-foreground"><span>Nothing blank</span><span>Everything blank</span></div>
+            <label className="mt-3 flex min-h-11 items-center gap-3 text-sm"><input type="checkbox" className="size-5 accent-[#D8B24A]" checked={letters} onChange={(e) => update((st) => { st.settings.letters = e.target.checked; return st })} />Show the first letter in each blank</label>
         {manual !== null && <Button variant="ghost" size="sm" className="mt-1 px-0" onClick={() => setManual(null)}>Back to auto</Button>}
       </div>
-      <Step key={`${item.uid}-${level}`} item={item} level={level} card={c} onNext={advance} onEasier={() => setManual(Math.max(0, level - 1))} onHarder={() => setManual(Math.min(4, level + 1))} />
+      <Step key={`${item.uid}-${level}`} letters={letters} item={item} level={level} card={c} onNext={advance} onEasier={() => setManual(Math.max(0, level - 1))} onHarder={() => setManual(Math.min(4, level + 1))} />
       <Button variant="ghost" className="mt-2" onClick={onExit}>Exit</Button>
     </Panel>
   )
 }
 
-function Step({ item, level, card: c, onNext, onEasier, onHarder }: { item: Item; level: number; card: Card; onNext: (ok: boolean, clean: boolean) => void; onEasier: () => void; onHarder: () => void }) {
+function Step({ item, level, letters, card: c, onNext, onEasier, onHarder }: { item: Item; level: number; letters: boolean; card: Card; onNext: (ok: boolean, clean: boolean) => void; onEasier: () => void; onHarder: () => void }) {
   const [text, setText] = useState("")
   const [vals, setVals] = useState<Record<number, string>>({})
   const [hint, setHint] = useState(false)
@@ -183,7 +186,7 @@ function Step({ item, level, card: c, onNext, onEasier, onHarder }: { item: Item
   return (
     <div>
       {head}
-      {name && level >= 1 && level <= 3 && !res && <p className="mt-3 font-mono text-2xl tracking-widest text-gold">{mask(bare(c), level)}</p>}
+      {name && level >= 1 && level <= 3 && !res && <p className="mt-3 font-mono text-2xl tracking-widest text-gold">{mask(bare(c), level, letters)}</p>}
       {!name && level < 4 ? (
         <p className="mt-3 text-xl leading-[2.4]">
           {toks.map((t: { text: string; blank: boolean }, i: number) => {
@@ -195,7 +198,7 @@ function Step({ item, level, card: c, onNext, onEasier, onHarder }: { item: Item
                 onChange={(e) => setVals({ ...vals, [k]: e.target.value })}
                 size={Math.min(Math.max(3, L.norm(t.text).length), 14)}
                 autoCapitalize="none" autoComplete="off" autoCorrect="off" spellCheck={false} aria-label={`blank ${k + 1}`}
-                placeholder={t.text.replace(/^[^A-Za-z0-9]*/, "").slice(0, 1)}
+                placeholder={letters ? t.text.replace(/^[^A-Za-z0-9]*/, "").slice(0, 1) : ""}
                 className={`mx-1 min-h-11 rounded-none border-0 border-b-2 bg-secondary px-2 py-1 text-center text-xl text-foreground outline-none placeholder:text-gold placeholder:font-bold focus:bg-muted ${state}`} />
             )
           })}
