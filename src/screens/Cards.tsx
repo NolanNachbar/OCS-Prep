@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Textarea } from "@/components/ui/textarea"
 import * as L from "@/lib/ocs.js"
+import { Insignia } from "@/components/Insignia"
 import { useCards } from "@/lib/cards"
 import { hookFor } from "@/lib/hooks"
 import { update, useStore } from "@/lib/store"
@@ -40,6 +41,7 @@ export default function Cards({ onTest }: { onTest: () => void }) {
                   <div key={c.id} className="rounded-md border border-border bg-background/50 p-3">
                     <div className="flex items-center justify-between gap-2"><b>{c.prompt}</b>{chip(c)}</div>
                     <p className="mt-1 text-muted-foreground">{c.answer}</p>
+                    <Insignia card={c} />
                     {hookFor(c, i) && <p className="mt-2 border-l-2 border-gold pl-2 text-sm">{hookFor(c, i)}</p>}
                     <Button variant={(store.pinned || []).includes(c.id) ? "default" : "outline"} className="mt-2 mr-2" aria-pressed={(store.pinned || []).includes(c.id)}
                       onClick={() => update((s) => { const p = s.pinned || []; s.pinned = p.includes(c.id) ? p.filter((x) => x !== c.id) : [...p, c.id]; return s })}>

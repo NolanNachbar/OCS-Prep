@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { Textarea } from "@/components/ui/textarea"
 import { Slider } from "@/components/ui/slider"
+import { Insignia } from "@/components/Insignia"
 import { Diff, Eyebrow, MicButton, Panel, StatTile, Verdict } from "@/components/shared"
 import { useCards } from "@/lib/cards"
 import { hookFor } from "@/lib/hooks"
@@ -203,6 +204,7 @@ function Step({ item, level, card: c, hook, onIntro, onHarder, onEasier, onNext 
       <div>
         {c.lead && <p className="italic text-muted-foreground">{c.lead}</p>}
         <p className="text-lg leading-relaxed">{c.answer}</p>
+        <Insignia card={c} />
         {hook && <Hook text={hook} />}
         <p className="mt-4 text-sm text-muted-foreground">Read it, then say it out loud once without looking.</p>
         <div className="mt-2 flex flex-wrap gap-3">
@@ -252,6 +254,7 @@ function Step({ item, level, card: c, hook, onIntro, onHarder, onEasier, onNext 
         <div>
           <Verdict ok={res.r.ok} note={hint && level === 4 && res.r.ok ? "Correct, but you used the hint, so it does not count. Try it again without." : res.note} />
           <Diff r={res.r} />
+          <Insignia card={c} />
           {!res.r.ok && hook && <Hook text={hook} />}
           <div className="mt-4 flex flex-col gap-6">
             <Button onClick={() => onNext(res.r.ok && !(hint && level === 4))} autoFocus>Next</Button>

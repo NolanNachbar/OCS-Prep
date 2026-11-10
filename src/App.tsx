@@ -5,6 +5,7 @@ import Study from "@/screens/Study"
 import Test from "@/screens/Test"
 import Listen from "@/screens/Listen"
 import Cards from "@/screens/Cards"
+import Ranks from "@/screens/Ranks"
 import More from "@/screens/More"
 import { useStore } from "@/lib/store"
 import * as L from "@/lib/ocs.js"
@@ -13,6 +14,7 @@ const TABS = [
   { v: "study", label: "Study", sub: "Learn and review Appendix B" },
   { v: "test", label: "Test", sub: "Ten cards, no hints" },
   { v: "listen", label: "Listen", sub: "Hands-free, for the run" },
+  { v: "ranks", label: "Ranks", sub: "Rank pictures, groups and matching" },
   { v: "cards", label: "Cards", sub: "All 135 cards by section" },
   { v: "more", label: "Settings", sub: "Dates, pass mark, your data" },
 ]
@@ -39,7 +41,7 @@ export default function App() {
             ))}
           </nav>
         )}
-        <TabsList className="mx-auto hidden h-auto! sm:grid w-full max-w-3xl grid-cols-5 rounded-none border-t border-white/15 bg-transparent p-0">
+        <TabsList className="mx-auto hidden h-auto! sm:grid w-full max-w-3xl grid-cols-6 rounded-none border-t border-white/15 bg-transparent p-0">
           {TABS.map(({ v, label }) => (
             <TabsTrigger key={v} value={v} data-nav={v} className="h-12 rounded-none border-0 border-b-4 border-transparent bg-transparent text-[0.78rem] font-bold uppercase tracking-[0.12em] text-[#C6CCD0] shadow-none data-[state=active]:border-gold data-[state=active]:bg-transparent data-[state=active]:text-white">
               {label}
@@ -55,6 +57,7 @@ export default function App() {
         <div hidden={tab !== "study"}><Study /></div>
         {tab === "test" && <Test />}
         {tab === "listen" && <Listen />}
+        {tab === "ranks" && <Ranks />}
         {tab === "cards" && <Cards onTest={() => go("test")} />}
         {tab === "more" && <More />}
       </main>
