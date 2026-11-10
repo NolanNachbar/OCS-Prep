@@ -23,3 +23,23 @@ Rollback: `git reset --hard audit-2026-11-09-r1` on main, then push with lease.
 - Tags r3 to r8: section/card tests, hamburger nav, hooks, audio, font swap, flat design tried and reverted. Tag audit-2026-11-09-r7 points at the flat-design commit c9d29b3 by mistake; r8 is the correct state. Roll back to r8 or r5, never r7.
 - Round 3 critics (learning, content, phone/look) fixes (tag r9): import validates, confirms and clears the file input; settings deep-merge with ship date validation; sir/ma'am and hyphen-tolerant answer matching; stage-0 correct routes through introduce; Study stays mounted across tabs; cloze varies per attempt; speech utterance retained; header shows -- for a bad ship date; USMC warrant hook wording; stat labels raised to 12px; scroll-padding under the sticky header.
 - Skipped on purpose: color changes (owner reverted the teal and flat looks), fat-finger spacing, Watchstanding heading (content frozen).
+
+## Rounds 10 to 20 (2026-11-10)
+- Tags r10 to r20: real Appendix B rank images (cropped from the PDF, drawing fallback), blocky Anton wordmark, rank quiz and Ranks screen groundwork. r20 (b8bc616) pushed the PDF crops to the public repo; the owner knows and accepted the risk for study use. The history purge was not run.
+
+## Round 21 (2026-11-10), tag audit-2026-11-10-r21: four-agent audit, first fixes
+- Scoring is word for word at every length; the pass-mark setting is gone. Only um, uh, er, sir and ma'am are forgiven as extras. A spaced hyphen ("X ray") is accepted.
+- A failed or peeked card cannot graduate through Try again. A Test failure no longer creates a record for an unseen card. The manual level resets after each card.
+- Saved and imported state is validated; an error boundary offers Reload and Reset; other tabs sync; service worker v5 with a 3 second network timeout and a cached shell fallback.
+- Listen shows audio errors; the Ranks quiz no longer leaks the answer to screen readers or sticks a missing image to the next question.
+
+## Round 22 (2026-11-10), tag audit-2026-11-10-r22
+- Last-week review: gaps never drop below 2 days, and reviews are served oldest due first so no card is starved.
+- Pins added mid-session join the queue; the due list recomputes after midnight; a banner appears when progress cannot be saved.
+- A rank file manifest (tools/rank_manifest.py) stops 404s for the three missing PNGs, with a test. Opaque apple-touch-icon. About panel with a non-affiliation note and the PDF link.
+- Gate: fails if the browse binary is missing or the app does not render, and asserts each tab renders and fits 390px (the old per-tab check could never fail). Content checks moved to scripts/content-check.sh and run in CI, which now also runs on pull requests.
+- Repo: dist/ untracked; removed the cn, rajdhani, roboto-slab and geist packages; shadcn moved to devDependencies.
+- Held on purpose (owner decision): chain of command and Songs cards, since the videos said to hold off.
+- Skipped on purpose: tap targets under 44px and border contrast (earlier owner calls: fat-finger spacing and colours are frozen).
+- Known limits: tools/appendix-b-source.txt was pasted from a study guide, not the PDF, so the content gate proves the cards match that file only; Marine/Navy rank crops are small (about 110 to 360 px) and soft on retina; real-iPhone behavior (keyboard overlap, autocorrect, lock-screen audio) is untested; the 2018 PDF (OTCNINST 1530.6K) differs from the cards on the chain of command, GO9, GO11 and Juliet.
+- Rollback: `git reset --hard audit-2026-11-10-r21`, push with lease (the guard hook blocks force pushes; run it yourself).

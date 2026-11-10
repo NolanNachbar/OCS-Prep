@@ -57,6 +57,10 @@ export default function More() {
           <input ref={file} type="file" accept="application/json" hidden onChange={(e) => importJson(e.target.files?.[0])} />
         </div>
       </Panel>
+      <Panel>
+        <Eyebrow>About</Eyebrow>
+        <p className="mt-2 text-muted-foreground">A personal study aid. It is not affiliated with or endorsed by the U.S. Navy or any government agency. Check every card against the current official Appendix B from your class before relying on it. Source document: <a className="underline" href="https://www.netc.navy.mil/Portals/46/NSTC/OTCN/docs/OCR%20Appendix%20B.pdf" target="_blank" rel="noreferrer">NETC Appendix B (PDF)</a>.</p>
+      </Panel>
     </div>
   )
 }

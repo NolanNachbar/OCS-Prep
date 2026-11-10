@@ -7,7 +7,7 @@ import Listen from "@/screens/Listen"
 import Cards from "@/screens/Cards"
 import Ranks from "@/screens/Ranks"
 import More from "@/screens/More"
-import { useStore } from "@/lib/store"
+import { saveFailed, useStore } from "@/lib/store"
 import * as L from "@/lib/ocs.js"
 
 const TABS = [
@@ -34,6 +34,7 @@ export default function App() {
           <div className="block-mark mr-auto text-3xl uppercase leading-none">OCS Recite<span className="block font-sans text-xs font-bold tracking-[0.3em] text-[#C6CCD0]">APPENDIX B TRAINER</span></div>
           <div className="text-right text-xs font-bold uppercase tracking-[0.16em] text-[#C6CCD0]"><span className="slab block text-2xl leading-none text-gold">{Number.isFinite(days) ? days : "--"}</span>days to ship</div>
         </div>
+        {saveFailed && <div role="alert" className="bg-destructive px-4 py-2 text-center text-sm font-bold text-white">Progress could not be saved on this device. Export it from More now.</div>}
         {menu && (
           <nav className="border-t border-white/15 sm:hidden">
             {TABS.map(({ v, label }) => (

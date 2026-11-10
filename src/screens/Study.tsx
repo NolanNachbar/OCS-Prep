@@ -60,7 +60,13 @@ export default function Study() {
   const [s, setS] = useState<Session | null>(null)
   const [manual, setManual] = useState<number | null>(null)
 
-  const due = useMemo(() => order.filter((c) => store.cards[c.id]?.due && store.cards[c.id].due <= today()), [order, store.cards])
+  const [day, setDay] = useState(today())
+  useEffect(() => {
+    const f = () => setDay(today())
+    document.addEventListener("visibilitychange", f); window.addEventListener("focus", f)
+    return () => { document.removeEventListener("visibilitychange", f); window.removeEventListener("focus", f) }
+  }, [])
+  const due = useMemo(() => order.filter((c) => store.cards[c.id]?.due && store.cards[c.id].due <= day), [order, store.cards, day])
   const fresh = useMemo(() => order.filter((c) => !store.cards[c.id]), [order, store.cards])
 
   const start = (extra: number) => {
@@ -71,13 +77,21 @@ export default function Study() {
     const pinned: Item[] = pins.filter((id) => byId.has(id)).map((id) => ({ uid: uid++, id, stage: store.cards[id] ? (store.cards[id].box >= 2 ? 4 : 2) : 0 }))
     if (pins.length) update((x) => { x.pinned = []; return x })
     const reviews: Item[] = due.filter((c) => !pins.includes(c.id))
-      .sort((a, b) => store.cards[a.id].box - store.cards[b.id].box || store.cards[a.id].due.localeCompare(store.cards[b.id].due))
+      .sort((a, b) => store.cards[a.id].due.localeCompare(store.cards[b.id].due) || store.cards[a.id].box - store.cards[b.id].box)
       .slice(0, store.settings.maxReviews ?? 60).map((c) => ({ uid: uid++, id: c.id, stage: store.cards[c.id].box >= 2 ? 4 : 2 }))
     const room = Math.max(0, store.settings.newPerDay + extra - intro.n)
     const news: Item[] = fresh.filter((c) => !pins.includes(c.id)).slice(0, room).map((c) => ({ uid: uid++, id: c.id, stage: 0 }))
     setS({ queue: [...pinned, ...reviews, ...news], total: pinned.length + reviews.length + news.length, done: 0, miss: 0 })
   }
   const started = useRef(false)
+  // "Learn this next" pins added while a session is open go to the front of the queue.
+  useEffect(() => {
+    const pins = (store.pinned || []).filter((id) => byId.has(id))
+    if (!started.current || !s || !pins.length) return
+    const add: Item[] = pins.map((id) => ({ uid: uid++, id, stage: store.cards[id] ? (store.cards[id].box >= 2 ? 4 : 2) : 0 }))
+    setS({ ...s, queue: [...add, ...s.queue.filter((i) => !pins.includes(i.id))], total: s.total + add.length })
+    update((x) => { x.pinned = []; return x })
+  }, [store.pinned]) // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => { if (!started.current) { started.current = true; start(0) } })
 
   const requeue = (q: Item[], item: Item, gap: number) => { const at = Math.min(q.length, gap); q.splice(at, 0, item) }
@@ -166,7 +180,7 @@ export default function Study() {
               <span className="text-muted-foreground">Fill in the blank</span>
               <span className="text-gold">{LEVELS[level]}{manual === null ? " (auto)" : ""}</span>
             </div>
-            <Slider min={0} max={4} step={1} value={[level]} onValueChange={(v) => setManual(v[0])} aria-label="How much to fill in" />
+            <Slider min={0} max={4} step={1} value={[level]} onValueChange={(v) => setManual(v[0])} aria-label="How much to fill in" aria-valuetext={LEVELS[level]} />
             <div className="mt-2 flex justify-between text-xs uppercase tracking-wider text-muted-foreground"><span>Nothing blank</span><span>Everything blank</span></div>
             {manual !== null && <Button variant="ghost" size="sm" className="mt-1 px-0" onClick={() => setManual(null)}>Back to auto</Button>}
           </div>

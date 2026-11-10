@@ -160,7 +160,7 @@
     // Never let the next review slip past a quarter of the time left before shipping.
     if (ship && /^\d{4}-\d{2}-\d{2}$/.test(ship)) {
       const left = daysBetween(today, ship);
-      gap = Math.min(gap, Math.max(1, Math.floor(left / 4)));
+      gap = Math.min(gap, Math.max(2, Math.floor(left / 4)));
     }
     s.due = addDays(today, Math.max(1, gap));
     return s;

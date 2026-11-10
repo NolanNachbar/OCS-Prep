@@ -1,4 +1,7 @@
 import { useState, type ReactNode } from "react"
+import rankFiles from "@/data/rank-files.json"
+
+const RANK_FILES = new Set<string>(rankFiles)
 import type { Card } from "@/lib/types"
 
 // Diagrams drawn from the Appendix B wording, not copies of the official art.
@@ -137,8 +140,8 @@ export const primary = (card: Card): View => (card.sec === "nve" ? "sleeve" : ca
 // Real Appendix B images live in public/ranks ; the drawing is the fallback.
 export function Drawing({ card, view, className = "size-28", label }: { card: Card; view: View; className?: string; label?: string }) {
   const [missing, setMissing] = useState(false)
-  if (!missing) {
-    const kind = view === "collar" ? "collar" : "sleeve"
+  const kind = view === "collar" ? "collar" : "sleeve"
+  if (!missing && RANK_FILES.has(`${card.id}-${kind}`)) {
     return (
       <div className={`${className} flex items-center justify-center bg-white p-1`}>
         <img src={`${import.meta.env.BASE_URL}ranks/${card.id}-${kind}.png`} alt={label ?? `${card.prompt} ${view}`} className="max-h-full max-w-full object-contain" onError={() => setMissing(true)} />

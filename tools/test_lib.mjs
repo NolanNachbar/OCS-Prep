@@ -1,5 +1,5 @@
 // Run: node tools/test_lib.mjs
-import assert from "assert"; import { readFileSync } from "fs";
+import assert from "assert"; import { readFileSync, readdirSync } from "fs";
 const L = await import("../src/lib/ocs.js");
 const cards = JSON.parse(readFileSync(new URL("../src/data/cards.json", import.meta.url)));
 const by = (id) => cards.find((c) => c.id.startsWith(id));
@@ -90,5 +90,10 @@ t("answers of 20 words or fewer must be exact; more than two extra words fail", 
   assert(L.score(c, w.join(" ")).ok);
   assert(!L.score(c, w.slice(1).join(" ")).ok, "one missing word must fail");
   assert(!L.score(c, "um uh like " + w.join(" ")).ok, "three extra words must fail");
+});
+t("rank manifest lists exactly the PNGs in public/ranks", () => {
+  const onDisk = readdirSync(new URL("../public/ranks/", import.meta.url)).filter((f) => f.endsWith(".png")).map((f) => f.slice(0, -4)).sort();
+  const listed = JSON.parse(readFileSync(new URL("../src/data/rank-files.json", import.meta.url), "utf8"));
+  assert(JSON.stringify(onDisk) === JSON.stringify(listed), "run python3 tools/rank_manifest.py");
 });
 console.log(n, "tests passed");

@@ -2,6 +2,7 @@ name: Deploy
 on:
   push:
     branches: [main]
+  pull_request:
 permissions:
   contents: read
   pages: write
@@ -20,9 +21,12 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: 22, cache: npm }
       - run: npm ci
+      - run: scripts/content-check.sh
       - run: node tools/test_lib.mjs
       - run: npm run build
-      - uses: actions/upload-pages-artifact@v3
+      - if: github.event_name == 'push'
+        uses: actions/upload-pages-artifact@v3
         with: { path: dist }
-      - id: deployment
+      - if: github.event_name == 'push'
+        id: deployment
         uses: actions/deploy-pages@v4
