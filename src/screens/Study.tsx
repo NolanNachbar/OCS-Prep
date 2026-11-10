@@ -16,6 +16,7 @@ import { getStore, update, useStore } from "@/lib/store"
 import type { Card, Score } from "@/lib/types"
 
 // Each rung is strictly harder: more words blanked, then the letter cues go, then typing it cold.
+const RANK_SECS = ["nve", "nvo", "mce", "mco"]
 const LEVELS = ["Read it", "Some words", "Most words", "First letters", "From memory"]
 const FRAC = [0, 0.35, 0.7, 1, 1]
 // stage is the level a card is due to be tried at next; lvl overrides it for one card (Next level up / Easier)
@@ -57,7 +58,10 @@ function logResult(ok: boolean) {
 
 export default function Study() {
   const store = useStore()
-  const { order, byId, secIdx } = useCards()
+  const { order: every, secIdx } = useCards()
+  // Ranks are learned in the Ranks tab (pictures, groups, recall), so Study leaves them out.
+  const order = useMemo(() => every.filter((c) => !RANK_SECS.includes(c.sec)), [every])
+  const byId = useMemo(() => new Map(order.map((c) => [c.id, c])), [order])
   const [s, setS] = useState<Session | null>(null)
   const [manual, setManual] = useState<number | null>(null)
   const [trail, setTrail] = useState<Trail[]>([])

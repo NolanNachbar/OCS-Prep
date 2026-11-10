@@ -75,3 +75,6 @@ Rollback: `git reset --hard audit-2026-11-09-r1` on main, then push with lease.
 
 ## Round 30 (2026-11-10), pending push
 - Study: Back reopens the card you just answered (Skip no longer feeds Back); a cleared card redone via Back does not re-schedule. Session is now due-today plus pins; new cards only via "Learn N more", or when nothing is due.
+
+## Round 32 (2026-11-10), tag audit-2026-11-10-r32
+- Study no longer includes the four rank sections (Navy and USMC officer and enlisted, 53 cards); it works on the other 82. Ranks are learned and reviewed in the Ranks tab. Rank cards stay in Cards, Test and Listen. Verified headless: "0 of 82 started".
