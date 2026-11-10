@@ -9,6 +9,7 @@ export type Store = {
   intro: { date: string; n: number }
   pinned?: string[]
   testIds?: string[]
+  runs?: Record<string, { streak: number; clean: number; last: string }>
   edits: Record<string, string>
   log: LogEntry[]
 }

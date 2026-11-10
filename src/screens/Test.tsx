@@ -17,7 +17,9 @@ export default function Test() {
   const { all } = useCards()
   const [learnedOnly, setLearnedOnly] = useState(() => all.filter((c) => getStore().cards[c.id]).length >= 10)
   const [count, setCount] = useState("10")
-  const [run, setRun] = useState<{ q: Card[]; i: number; right: number; missed: string[]; targeted?: boolean } | null>(null)
+  const [run, setRun] = useState<{ q: Card[]; i: number; right: number; missed: string[]; targeted?: boolean; section?: string } | null>(null)
+  const secs = useMemo(() => { const m = new Map<string, string>(); all.forEach((c) => m.set(c.sec, c.secName)); return [...m] }, [all])
+  const [sec, setSec] = useState(secs[0]?.[0] ?? "")
   const [text, setText] = useState("")
   const [res, setRes] = useState<Score | null>(null)
   useEffect(() => {
@@ -45,6 +47,13 @@ export default function Test() {
         <Button disabled={pool.length === 0} onClick={() => { setRun({ q: shuffle(pool).slice(0, count === "all" ? pool.length : +count), i: 0, right: 0, missed: [] }); setText(""); setRes(null) }}>Start test</Button>
         {learnedOnly && pool.length < 10 && pool.length > 0 && <p className="mt-3 text-sm text-gold">Only {pool.length} started card{pool.length === 1 ? "" : "s"} so the test is short. Turn the switch off to test all {all.length}.</p>}
         {pool.length === 0 && <p className="mt-3 text-sm text-muted-foreground">Learn a few cards in Study first, or turn the switch off.</p>}
+        <hr className="my-6 border-border" />
+        <h2 className="slab text-2xl font-bold">Recite a section in order</h2>
+        <p className="mt-1 text-muted-foreground">The real recital is one continuous run. Every card in the section, in Appendix B order, no hints. A run is clean only if every card is word for word.</p>
+        <div className="mt-4 grid max-w-xs gap-2"><Label>Section</Label>
+          <Select value={sec} onValueChange={setSec}><SelectTrigger className="h-12! w-full"><SelectValue /></SelectTrigger>
+            <SelectContent>{secs.map(([id, name]) => <SelectItem key={id} value={id}>{name}{store.runs?.[id]?.streak ? ` (${store.runs[id].streak} clean in a row)` : ""}</SelectItem>)}</SelectContent></Select></div>
+        <Button className="mt-4" onClick={() => { setRun({ q: all.filter((c) => c.sec === sec), i: 0, right: 0, missed: [], targeted: true, section: sec }); setText(""); setRes(null) }}>Start section run</Button>
       </Panel>
     )
   }
@@ -53,9 +62,13 @@ export default function Test() {
       <Panel>
         <Eyebrow>Test complete</Eyebrow>
         <h2 className="slab mt-2 text-3xl font-bold">{run.right} of {run.q.length}</h2>
+        {run.section && <p className="mt-2 text-lg">{run.missed.length === 0 ? `Clean run. ${store.runs?.[run.section]?.streak ?? 0} in a row for this section. Aim for 3 clean runs on different days.` : "Not clean. The streak starts over."}</p>}
         {run.missed.length > 0 && <p className="mt-2 text-muted-foreground">Missed: {run.missed.join(", ")}. They are due again today.</p>}
         {run.targeted && run.right > 0 && <p className="mt-2 text-muted-foreground">Cards you passed that were new that you got word for word are now marked known and come back for review in 2 days.</p>}
-        <Button className="mt-5" onClick={() => setRun(null)}>Done</Button>
+        <div className="mt-5 flex gap-3">
+          {run.section && <Button onClick={() => { setRun({ ...run, q: all.filter((x) => x.sec === run.section), i: 0, right: 0, missed: [] }); setText(""); setRes(null) }}>Run it again</Button>}
+          <Button variant={run.section ? "outline" : "default"} onClick={() => setRun(null)}>Done</Button>
+        </div>
       </Panel>
     )
   }
@@ -66,7 +79,14 @@ export default function Test() {
     if (r.ok && r.ratio >= 1 && r.extra.length === 0 && run?.targeted) update((s) => { if (!s.cards[c.id]) s.cards[c.id] = { box: 2, reps: 1, lapses: 0, misses: 0, due: L.addDays(L.ymd(new Date()), L.STEPS[2]) }; return s })
     if (!r.ok) update((s) => { s.cards[c.id] = { ...(s.cards[c.id] || { reps: 0, lapses: 0, misses: 0 }), box: 0, due: L.ymd(new Date()), misses: (s.cards[c.id]?.misses || 0) + 1 }; return s })
   }
-  const next = (ok: boolean) => { setRun({ ...run, i: run.i + 1, right: run.right + (ok ? 1 : 0), missed: ok ? run.missed : [...run.missed, c.prompt] }); setText(""); setRes(null) }
+  const next = (ok: boolean) => {
+    if (run.section && run.i + 1 >= run.q.length) {
+      const clean = ok && run.missed.length === 0
+      const id = run.section
+      update((st) => { const r = st.runs?.[id] || { streak: 0, clean: 0, last: "" }; st.runs = { ...(st.runs || {}), [id]: { streak: clean ? r.streak + 1 : 0, clean: r.clean + (clean ? 1 : 0), last: L.ymd(new Date()) } }; return st })
+    }
+    setRun({ ...run, i: run.i + 1, right: run.right + (ok ? 1 : 0), missed: ok ? run.missed : [...run.missed, c.prompt] }); setText(""); setRes(null)
+  }
   return (
     <Panel>
       <Eyebrow>Card {run.i + 1} of {run.q.length}</Eyebrow>
