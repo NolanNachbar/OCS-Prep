@@ -54,3 +54,6 @@ Rollback: `git reset --hard audit-2026-11-09-r1` on main, then push with lease.
 ## Round 25 (2026-11-10), tag audit-2026-11-10-r25
 - Navy officer and warrant rows now show collar, shoulder board and sleeve side by side (16 public-domain board files from Commons). The four warrant collars (W-1, W-2, W-4, W-5) are the top bar cropped from the Commons composite files (public domain), so they now have real pictures.
 - Still drawings: Navy E-2 and E-3 sleeve, E-7 to MCPON sleeve (no Commons art found).
+
+## Round 26 (2026-11-10), tag audit-2026-11-10-r26
+- Ranks tab: each rank is now a collapsed dropdown row (rank and title). Tapping opens its pictures and exact Appendix B wording. Group pattern notes and the Match button stay visible. Content files untouched.

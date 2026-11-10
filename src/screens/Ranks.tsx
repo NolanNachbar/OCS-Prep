@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react"
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Button } from "@/components/ui/button"
 import { Panel, Eyebrow } from "@/components/shared"
 import { Drawing, Insignia, primary, rankName } from "@/components/Insignia"
@@ -113,15 +114,19 @@ export default function Ranks() {
           <Panel key={g.name}>
             <h3 className="slab text-xl font-bold">{g.name}</h3>
             <p className="mt-1 text-muted-foreground">Pattern: {g.note}</p>
-            <div className="mt-3 divide-y divide-border">
+            <Accordion type="multiple" className="mt-3">
               {cs.map((c) => (
-                <div key={c.id} className="py-4 first:pt-0">
-                  <h4 className="slab text-lg font-bold">{c.prompt}</h4>
-                  <Insignia card={c} compact />
-                  <p className="mt-2 text-[0.95rem]">{c.answer}</p>
-                </div>
+                <AccordionItem key={c.id} value={c.id}>
+                  <AccordionTrigger className="items-center text-left">
+                    <span><span className="slab block text-lg font-bold">{c.prompt}</span><span className="block text-sm font-normal text-muted-foreground">{rankName(c)}</span></span>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <Insignia card={c} compact />
+                    <p className="mt-2 text-[0.95rem]">{c.answer}</p>
+                  </AccordionContent>
+                </AccordionItem>
               ))}
-            </div>
+            </Accordion>
             <Button className="mt-4" variant="outline" onClick={() => start(cs)}>Match this group</Button>
           </Panel>
         )
