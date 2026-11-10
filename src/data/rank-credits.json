@@ -1,0 +1,102 @@
+{
+ "nve-116-collar": {
+  "file": "USN CPO collar.svg",
+  "author": "USCG PTC Developer and Officer781",
+  "license": "CC BY-SA 4.0"
+ },
+ "nve-117-collar": {
+  "file": "USN SCPO collar.svg",
+  "author": "USCG PTC Developer and Officer781",
+  "license": "CC BY-SA 4.0"
+ },
+ "nve-118-collar": {
+  "file": "USN MCPO collar.svg",
+  "author": "USCG PTC Developer and Officer781",
+  "license": "CC BY-SA 4.0"
+ },
+ "nve-119-collar": {
+  "file": "USN MCPON collar.svg",
+  "author": "USCG PTC Developer and Officer781",
+  "license": "CC BY-SA 4.0"
+ },
+ "nvo-079-sleeve": {
+  "file": "US-Navy-W-1.svg",
+  "author": "Skjoldbro",
+  "license": "CC BY-SA 4.0"
+ },
+ "nvo-080-sleeve": {
+  "file": "US-Navy-W-2.svg",
+  "author": "Skjoldbro",
+  "license": "CC BY-SA 4.0"
+ },
+ "nvo-081-sleeve": {
+  "file": "US-Navy-W-3.svg",
+  "author": "Skjoldbro",
+  "license": "CC BY-SA 4.0"
+ },
+ "nvo-082-sleeve": {
+  "file": "US-Navy-W-4.svg",
+  "author": "Skjoldbro",
+  "license": "CC BY-SA 4.0"
+ },
+ "nvo-083-sleeve": {
+  "file": "US-Navy-W-5.svg",
+  "author": "Skjoldbro",
+  "license": "CC BY-SA 4.0"
+ },
+ "nvo-084-sleeve": {
+  "file": "US-Navy-Sleeve-O1-ENS.svg",
+  "author": "碧海风",
+  "license": "CC BY-SA 4.0"
+ },
+ "nvo-085-sleeve": {
+  "file": "US-Navy-Sleeve-O2-LTJG.svg",
+  "author": "碧海风",
+  "license": "CC BY-SA 4.0"
+ },
+ "nvo-086-sleeve": {
+  "file": "US-Navy-Sleeve-O3-LT.svg",
+  "author": "碧海风",
+  "license": "CC BY-SA 4.0"
+ },
+ "nvo-087-sleeve": {
+  "file": "US-Navy-Sleeve-O4-LCDR.svg",
+  "author": "碧海风",
+  "license": "CC BY-SA 4.0"
+ },
+ "nvo-088-sleeve": {
+  "file": "US-Navy-Sleeve-O5-CDR.svg",
+  "author": "碧海风",
+  "license": "CC BY-SA 4.0"
+ },
+ "nvo-089-sleeve": {
+  "file": "US-Navy-Sleeve-O6-CAPT.svg",
+  "author": "碧海风",
+  "license": "CC BY-SA 4.0"
+ },
+ "nvo-090-sleeve": {
+  "file": "US-Navy-Sleeve-O7-RDML.svg",
+  "author": "碧海风",
+  "license": "CC BY-SA 4.0"
+ },
+ "nvo-091-sleeve": {
+  "file": "US-Navy-Sleeve-O8-RADM.svg",
+  "author": "碧海风",
+  "license": "CC BY-SA 4.0"
+ },
+ "nvo-092-sleeve": {
+  "file": "US-Navy-Sleeve-O9-VADM.svg",
+  "author": "碧海风",
+  "license": "CC BY-SA 4.0"
+ },
+ "nvo-093-sleeve": {
+  "file": "US-Navy-Sleeve-O10-ADM.svg",
+  "author": "碧海风",
+  "license": "CC BY-SA 4.0"
+ },
+ "nvo-094-sleeve": {
+  "file": "US-Navy-Sleeve-O11-FADM.svg",
+  "author": "碧海风",
+  "license": "CC BY-SA 4.0"
+ }
+}

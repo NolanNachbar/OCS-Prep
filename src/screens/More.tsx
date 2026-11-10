@@ -1,3 +1,4 @@
+import credits from "@/data/rank-credits.json"
 import { useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -60,6 +61,13 @@ export default function More() {
       <Panel>
         <Eyebrow>About</Eyebrow>
         <p className="mt-2 text-muted-foreground">A personal study aid. It is not affiliated with or endorsed by the U.S. Navy or any government agency. Check every card against the current official Appendix B from your class before relying on it. Source document: <a className="underline" href="https://www.netc.navy.mil/Portals/46/NSTC/OTCN/docs/OCR%20Appendix%20B.pdf" target="_blank" rel="noreferrer">NETC Appendix B (PDF)</a>.</p>
+        <h3 className="slab mt-4 text-lg font-bold">Insignia image credits</h3>
+        <p className="mt-1 text-muted-foreground">Rank images are from Wikimedia Commons and were resized. Most are public domain. These are licensed <a className="underline" href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noreferrer">CC BY-SA 4.0</a>:</p>
+        <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-muted-foreground">
+          {[...new Map(Object.values(credits).map((c) => [c.file, c])).values()].map((c) => (
+            <li key={c.file}><a className="underline" href={`https://commons.wikimedia.org/wiki/File:${encodeURIComponent(c.file.replace(/ /g, "_"))}`} target="_blank" rel="noreferrer">{c.file}</a> by {c.author}</li>
+          ))}
+        </ul>
       </Panel>
     </div>
   )

@@ -43,3 +43,7 @@ Rollback: `git reset --hard audit-2026-11-09-r1` on main, then push with lease.
 - Skipped on purpose: tap targets under 44px and border contrast (earlier owner calls: fat-finger spacing and colours are frozen).
 - Known limits: tools/appendix-b-source.txt was pasted from a study guide, not the PDF, so the content gate proves the cards match that file only; Marine/Navy rank crops are small (about 110 to 360 px) and soft on retina; real-iPhone behavior (keyboard overlap, autocorrect, lock-screen audio) is untested; the 2018 PDF (OTCNINST 1530.6K) differs from the cards on the chain of command, GO9, GO11 and Juliet.
 - Rollback: `git reset --hard audit-2026-11-10-r21`, push with lease (the guard hook blocks force pushes; run it yourself).
+
+## Round 23 (2026-11-10), tag audit-2026-11-10-r23: image swap
+- Rank images now come from Wikimedia Commons (66 files, 300 px wide, 46 public domain and 20 CC BY-SA 4.0 with credits in Settings, data in src/data/rank-credits.json). The Appendix B PDF crops are removed from the app (they remain in git history up to r22; a purge needs a force push the owner must run).
+- Not used: Navy W-1, W-2, W-4, W-5 collar files (Commons has only collar-plus-board composites); those four show the drawing. No generic Navy sleeve badge exists for E-7 to MCPON, E-1 to E-3 or USMC Private, so those show the drawing too.
