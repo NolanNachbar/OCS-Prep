@@ -134,7 +134,7 @@ export function views(card: Card): View[] {
 // the one drawing used in match quizzes
 export const primary = (card: Card): View => (card.sec === "nve" ? "sleeve" : card.sec === "nvo" || card.sec === "mco" ? "collar" : "insignia")
 
-// Real Appendix B images live in public/ranks (local only, see .gitignore); the drawing is the fallback.
+// Real Appendix B images live in public/ranks ; the drawing is the fallback.
 export function Drawing({ card, view, className = "size-28" }: { card: Card; view: View; className?: string }) {
   const [missing, setMissing] = useState(false)
   if (!missing) {
