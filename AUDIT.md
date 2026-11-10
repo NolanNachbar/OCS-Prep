@@ -47,3 +47,6 @@ Rollback: `git reset --hard audit-2026-11-09-r1` on main, then push with lease.
 ## Round 23 (2026-11-10), tag audit-2026-11-10-r23: image swap
 - Rank images now come from Wikimedia Commons (66 files, 300 px wide, 46 public domain and 20 CC BY-SA 4.0 with credits in Settings, data in src/data/rank-credits.json). The Appendix B PDF crops are removed from the app (they remain in git history up to r22; a purge needs a force push the owner must run).
 - Not used: Navy W-1, W-2, W-4, W-5 collar files (Commons has only collar-plus-board composites); those four show the drawing. No generic Navy sleeve badge exists for E-7 to MCPON, E-1 to E-3 or USMC Private, so those show the drawing too.
+
+## Round 24 (2026-11-10), tag audit-2026-11-10-r24
+- Ranks tab: every rank now lists its exact Appendix B wording (the card answer, unchanged) under its collar and sleeve pictures side by side. Group notes are labelled "Pattern:" because they are study aids, not Appendix B text. Content files untouched.

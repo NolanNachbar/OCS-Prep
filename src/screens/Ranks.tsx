@@ -101,7 +101,7 @@ export default function Ranks() {
       <Panel>
         <Eyebrow>Ranks</Eyebrow>
         <h2 className="slab mt-2 text-2xl font-bold">Learn them in groups, then match them</h2>
-        <p className="mt-1 text-muted-foreground">Insignia images come from Wikimedia Commons (credits under Settings); any rank without one shows a drawing from the Appendix B wording. Rank by rank: Navy officers, Marine officers, Navy enlisted, Marine enlisted. E-7 to E-9 in both services get asked the most.</p>
+        <p className="mt-1 text-muted-foreground">Each rank shows its Appendix B wording exactly, with the collar and sleeve side by side. Pictures come from Wikimedia Commons (credits under Settings); a rank without one shows a drawing from the wording. Rank by rank: Navy officers, Marine officers, Navy enlisted, Marine enlisted. E-7 to E-9 in both services get asked the most.</p>
         <div className="mt-4 flex flex-wrap gap-3">
           <Button onClick={() => start(every)}>Match all {every.length}</Button>
           <Button variant="outline" onClick={() => start(["nve-116", "nve-117", "nve-118", "nve-119", "mce-126", "mce-127", "mce-128", "mce-129", "mce-130", "mce-131"].map((i) => rank.get(i)!).filter(Boolean))}>Match E-7 to E-9</Button>
@@ -112,13 +112,14 @@ export default function Ranks() {
         return (
           <Panel key={g.name}>
             <h3 className="slab text-xl font-bold">{g.name}</h3>
-            <p className="mt-1 text-muted-foreground">{g.note}</p>
-            <div className="mt-3 grid grid-cols-3 gap-3 sm:grid-cols-5">
+            <p className="mt-1 text-muted-foreground">Pattern: {g.note}</p>
+            <div className="mt-3 divide-y divide-border">
               {cs.map((c) => (
-                <figure key={c.id} className="m-0 text-center">
-                  <Drawing key={c.id} card={c} view={primary(c)} className="aspect-square w-full" />
-                  <figcaption className="mt-1 text-xs leading-tight text-muted-foreground">{c.prompt}{c.sec.startsWith("mce") ? null : <><br />{rankName(c).replace(/\s*\(.*\)/, "")}</>}</figcaption>
-                </figure>
+                <div key={c.id} className="py-4 first:pt-0">
+                  <h4 className="slab text-lg font-bold">{c.prompt}</h4>
+                  <Insignia card={c} />
+                  <p className="mt-2 text-[0.95rem]">{c.answer}</p>
+                </div>
               ))}
             </div>
             <Button className="mt-4" variant="outline" onClick={() => start(cs)}>Match this group</Button>
