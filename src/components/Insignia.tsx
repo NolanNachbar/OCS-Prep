@@ -135,13 +135,13 @@ export function views(card: Card): View[] {
 export const primary = (card: Card): View => (card.sec === "nve" ? "sleeve" : card.sec === "nvo" || card.sec === "mco" ? "collar" : "insignia")
 
 // Real Appendix B images live in public/ranks ; the drawing is the fallback.
-export function Drawing({ card, view, className = "size-28" }: { card: Card; view: View; className?: string }) {
+export function Drawing({ card, view, className = "size-28", label }: { card: Card; view: View; className?: string; label?: string }) {
   const [missing, setMissing] = useState(false)
   if (!missing) {
     const kind = view === "collar" ? "collar" : "sleeve"
     return (
       <div className={`${className} flex items-center justify-center bg-white p-1`}>
-        <img src={`${import.meta.env.BASE_URL}ranks/${card.id}-${kind}.png`} alt={`${card.prompt} ${view}`} className="max-h-full max-w-full object-contain" onError={() => setMissing(true)} />
+        <img src={`${import.meta.env.BASE_URL}ranks/${card.id}-${kind}.png`} alt={label ?? `${card.prompt} ${view}`} className="max-h-full max-w-full object-contain" onError={() => setMissing(true)} />
       </div>
     )
   }
@@ -153,7 +153,7 @@ export function Drawing({ card, view, className = "size-28" }: { card: Card; vie
   else if (card.sec === "mco") body = collarOfficer(card, t)
   else if (/diagonal/i.test(t)) body = diagonals(count(t))
   else body = stack(rating(t))
-  return <div className={className}><Frame label={`${card.prompt} ${view}`}>{body}</Frame></div>
+  return <div className={className}><Frame label={label ?? `${card.prompt} ${view}`}>{body}</Frame></div>
 }
 
 export function Insignia({ card }: { card: Card }) {

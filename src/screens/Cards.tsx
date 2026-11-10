@@ -58,7 +58,7 @@ export default function Cards({ onTest }: { onTest: () => void }) {
       <Dialog open={!!edit} onOpenChange={(o) => !o && setEdit(null)}>
         <DialogContent>
           <DialogHeader><DialogTitle>{edit?.prompt}</DialogTitle></DialogHeader>
-          <Textarea value={val} onChange={(e) => setVal(e.target.value)} className="min-h-28" />
+          <Textarea value={val} onChange={(e) => setVal(e.target.value)} autoCapitalize="none" autoCorrect="off" spellCheck={false} aria-label="Card text" className="min-h-28" />
           <div className="flex gap-3">
             <Button onClick={() => { update((s) => { s.edits[edit!.id] = val; return s }); setEdit(null) }}>Save</Button>
             <Button variant="outline" onClick={() => { update((s) => { delete s.edits[edit!.id]; return s }); setEdit(null) }}>Reset</Button>

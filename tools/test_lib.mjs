@@ -15,11 +15,24 @@ t("exact recital without lead-in passes", () => {
   const c = cards.find((x) => x.prompt === "General Order #1");
   assert(L.score(c, "take charge of this post and all government property in view").ok);
 });
-t("one missing word fails a long answer at 100 percent, passes at 90", () => {
-  const c = cards.find((x) => x.prompt === "Code of Conduct, Article 2");
-  const bad = "I will never surrender of my own free will. If in command, I will never surrender the members of my command while they still have means to resist.";
-  assert(!L.score(c, bad, 1).ok);
-  assert(L.score(c, bad, 0.9).ok);
+t("long answers are word for word too: a dropped, swapped or replaced word fails", () => {
+  const c = cards.find((x) => L.words(x.key).length > 20);
+  const w = L.words(c.key);
+  assert(L.score(c, w.join(" ")).ok);
+  assert(!L.score(c, [...w.slice(0, 10), ...w.slice(11)].join(" ")).ok, "dropped word");
+  assert(!L.score(c, w.map((x, i) => (i === 10 ? "banana" : x)).join(" ")).ok, "replaced word");
+  const sw = w.slice(); [sw[10], sw[11]] = [sw[11], sw[10]];
+  if (sw.join(" ") !== w.join(" ")) assert(!L.score(c, sw.join(" ")).ok, "swapped words");
+});
+t("an inserted real word fails; spoken filler is forgiven", () => {
+  const c = cards.find((x) => x.prompt.includes("Core Values")) || cards.find((x) => L.words(x.key).length <= 6);
+  const w = L.words(c.key);
+  assert(!L.score(c, [w[0], "the", ...w.slice(1)].join(" ")).ok, "inserted word");
+  assert(L.score(c, "um " + w.join(" ")).ok, "filler");
+});
+t("a hyphenated answer typed with a space still passes", () => {
+  const c = cards.find((x) => x.key === "X-Ray");
+  assert(c && L.score(c, "X ray").ok && L.score(c, "X-Ray").ok);
 });
 t("short answers must be exact", () => {
   const c = cards.find((x) => x.prompt === "Navy Core Values");
@@ -75,7 +88,7 @@ t("answers of 20 words or fewer must be exact; more than two extra words fail", 
   const c = cards.find((x) => L.words(x.key).length > 5 && L.words(x.key).length <= 20);
   const w = L.words(c.key);
   assert(L.score(c, w.join(" ")).ok);
-  assert(!L.score(c, w.slice(1).join(" "), 0.5).ok, "one missing word must fail");
+  assert(!L.score(c, w.slice(1).join(" ")).ok, "one missing word must fail");
   assert(!L.score(c, "um uh like " + w.join(" ")).ok, "three extra words must fail");
 });
 console.log(n, "tests passed");

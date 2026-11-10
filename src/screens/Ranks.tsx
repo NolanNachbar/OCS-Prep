@@ -60,7 +60,7 @@ export default function Ranks() {
         {q.mode === "pic" ? (
           <>
             <h2 className="slab mt-3 mb-3 text-xl font-bold">Which rank is this?</h2>
-            <Drawing card={q.c} view={primary(q.c)} className="mb-4 size-36" />
+            <Drawing key={q.c.id} card={q.c} view={primary(q.c)} className="mb-4 size-36" label="Insignia" />
             <div className="grid gap-3">
               {q.opts.map((o) => (
                 <Button key={o.id} variant={answered && o.id === q.c.id ? "default" : "outline"} className={`h-auto min-h-12 justify-start whitespace-normal py-3 text-left ${answered && quiz.pick === o.id && o.id !== q.c.id ? "border-destructive text-destructive" : ""}`} onClick={() => choose(o.id)}>
@@ -74,10 +74,10 @@ export default function Ranks() {
             <h2 className="slab mt-3 mb-3 text-2xl font-bold">{rankName(q.c)}</h2>
             <p className="mb-3 text-muted-foreground">Tap the matching insignia.</p>
             <div className="grid grid-cols-2 gap-3">
-              {q.opts.map((o) => (
-                <button key={o.id} type="button" onClick={() => choose(o.id)} aria-label={`option`}
+              {q.opts.map((o, n) => (
+                <button key={o.id} type="button" onClick={() => choose(o.id)} aria-label={`Option ${n + 1}`}
                   className={`border-2 p-1 ${answered && o.id === q.c.id ? "border-gold" : answered && quiz.pick === o.id ? "border-destructive" : "border-border"}`}>
-                  <Drawing card={o} view={primary(o)} className="aspect-square w-full" />
+                  <Drawing key={o.id} card={o} view={primary(o)} className="aspect-square w-full" label="Insignia" />
                 </button>
               ))}
             </div>
@@ -116,7 +116,7 @@ export default function Ranks() {
             <div className="mt-3 grid grid-cols-3 gap-3 sm:grid-cols-5">
               {cs.map((c) => (
                 <figure key={c.id} className="m-0 text-center">
-                  <Drawing card={c} view={primary(c)} className="aspect-square w-full" />
+                  <Drawing key={c.id} card={c} view={primary(c)} className="aspect-square w-full" />
                   <figcaption className="mt-1 text-xs leading-tight text-muted-foreground">{c.prompt}{c.sec.startsWith("mce") ? null : <><br />{rankName(c).replace(/\s*\(.*\)/, "")}</>}</figcaption>
                 </figure>
               ))}

@@ -20,6 +20,7 @@ export default function Listen() {
   const [loop, setLoop] = useState(true)
   const [aSec, setASec] = useState(secs[0]?.[0] ?? "")
   const [aMode, setAMode] = useState("read")
+  const [aErr, setAErr] = useState(false)
   const [tips, setTips] = useState(false)
   const [playing, setPlaying] = useState(false)
   const [idx, setIdx] = useState(0)
@@ -109,7 +110,7 @@ export default function Listen() {
       </div>
       <div className="mt-8 border-t border-border pt-5">
         <div className="text-xs font-bold uppercase tracking-[0.18em] text-gold">Audio files, for the run</div>
-        <p className="mt-2 text-sm text-muted-foreground">Real recordings that keep playing with the screen locked or the phone in your pocket. Pick a section, press play, and it loops. Needs a connection the first time you play each one.</p>
+        <p className="mt-2 text-sm text-muted-foreground">Real recordings that keep playing with the screen locked or the phone in your pocket. Pick a section, press play, and it loops. Needs a connection every time you play one.</p>
         <div className="mt-3 flex flex-wrap gap-2">
           {secs.map(([k, name]) => (
             <button key={k} onClick={() => setASec(k)} aria-pressed={aSec === k}
@@ -122,7 +123,8 @@ export default function Listen() {
             <TabsTrigger value="quiz" className="h-11 rounded-none font-bold uppercase tracking-wider">Quiz (6 s gap)</TabsTrigger>
           </TabsList>
         </Tabs>
-        <audio key={aSec + aMode} className="mt-3 w-full" controls loop preload="none" src={`${import.meta.env.BASE_URL}audio/${aSec}-${aMode}.mp3`} />
+        <audio key={aSec + aMode} className="mt-3 w-full" controls loop preload="none" onError={() => setAErr(true)} onPlay={() => setAErr(false)} src={`${import.meta.env.BASE_URL}audio/${aSec}-${aMode}.mp3`} />
+        {aErr && <p className="mt-2 text-destructive" role="alert">Audio unavailable right now. Check your connection, or use Read to me above.</p>}
       </div>
     </Panel>
   )

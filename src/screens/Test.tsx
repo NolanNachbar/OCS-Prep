@@ -74,10 +74,10 @@ export default function Test() {
   }
   const c = run.q[run.i]
   const check = () => {
-    const r = L.score(c, text, store.settings.threshold) as Score
+    const r = L.score(c, text) as Score
     setRes(r)
     if (r.ok && r.ratio >= 1 && r.extra.length === 0 && run?.targeted) update((s) => { if (!s.cards[c.id]) s.cards[c.id] = { box: 2, reps: 1, lapses: 0, misses: 0, due: L.addDays(L.ymd(new Date()), L.STEPS[2]) }; return s })
-    if (!r.ok) update((s) => { s.cards[c.id] = { ...(s.cards[c.id] || { reps: 0, lapses: 0, misses: 0 }), box: 0, due: L.ymd(new Date()), misses: (s.cards[c.id]?.misses || 0) + 1 }; return s })
+    if (!r.ok) update((s) => { const e = s.cards[c.id]; if (e) s.cards[c.id] = { ...e, box: 0, due: L.ymd(new Date()), lapses: e.lapses + 1, misses: (e.misses || 0) + 1 }; return s }) // never create a record for an unseen card
   }
   const next = (ok: boolean) => {
     if (run.section && run.i + 1 >= run.q.length) {
@@ -91,7 +91,7 @@ export default function Test() {
     <Panel>
       <Eyebrow>Card {run.i + 1} of {run.q.length}</Eyebrow>
       <h2 className="slab mt-3 mb-4 text-2xl font-bold">{c.prompt}</h2>
-      <Textarea value={text} disabled={!!res} onChange={(e) => setText(e.target.value)} autoFocus className="min-h-32 bg-background/60 text-lg" placeholder="Type or dictate" />
+      <Textarea value={text} disabled={!!res} onChange={(e) => setText(e.target.value)} autoFocus autoCapitalize="none" autoCorrect="off" spellCheck={false} aria-label="Your recital" className="min-h-32 bg-background/60 text-lg" placeholder="Type or dictate" />
       {res ? (
         <>
           <Verdict ok={res.ok} /><Diff r={res} />

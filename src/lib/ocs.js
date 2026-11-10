@@ -49,16 +49,24 @@
     return { hit, extra, matched: dp[0][0] };
   }
 
-  // threshold: fraction of expected words that must be present, in order. Answers of 20 words or fewer must be exact.
-  function score(card, userText, threshold) {
-    const exp = words(card.key);
+  // Word for word: every expected word, in order, nothing inserted. Only spoken filler is forgiven.
+  // `threshold` is kept for old callers and ignored.
+  const FILLER = new Set(["um", "uh", "er", "erm", "sir", "maam"]);
+  function scoreKey(key, card, userText) {
+    const exp = words(key);
     const usr = stripLead(userText, card.lead || "");
     const d = diff(exp, usr);
     const total = exp.length;
     const ratio = total ? d.matched / total : 0;
-    const need = total <= 20 ? 1 : (threshold == null ? 0.95 : threshold);
-    // A couple of filler words ("um", "sir") are tolerated; more than that is a wrong recital.
-    return { ok: ratio >= need - 1e-9 && d.extra.length <= 2, ratio, expected: exp, hit: d.hit, extra: d.extra };
+    const extra = d.extra.filter((w) => !FILLER.has(w));
+    return { ok: d.matched === total && total > 0 && extra.length === 0, ratio, expected: exp, hit: d.hit, extra: d.extra };
+  }
+  function score(card, userText) {
+    const r = scoreKey(card.key, card, userText);
+    if (r.ok || !/[a-z0-9]-[a-z0-9]/i.test(card.key)) return r;
+    // dictation and autocorrect often turn "X-Ray" into "X ray"
+    const alt = scoreKey(card.key.replace(/([a-z0-9])-([a-z0-9])/gi, "$1 $2"), card, userText);
+    return alt.ok ? alt : r;
   }
 
   // ---- cloze -----------------------------------------------------------------------------

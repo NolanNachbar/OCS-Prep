@@ -84,6 +84,7 @@ export default function Study() {
 
   const advance = (item: Item, ok: boolean, level = 4) => {
     if (!s) return
+    setManual(null) // a leftover manual level must not trap the session below level 4
     if (item.stage === 0 && ok) return introduce(item)
     const c = byId.get(item.id)!
     const q = s.queue.slice(1)
@@ -190,6 +191,7 @@ function Step({ item, level, card: c, hook, onIntro, onHarder, onEasier, onNext 
   const store = useStore()
   const [res, setRes] = useState<{ r: Score; note?: string; peeked?: boolean } | null>(null)
   const [text, setText] = useState("")
+  const [tainted, setTainted] = useState(false) // a failed or peeked attempt can never graduate the card
   const [vals, setVals] = useState<Record<number, string>>({})
   const toks = useMemo(() => (level >= 1 && level <= 3 ? L.cloze(c, FRAC[level], item.uid) : []), [level, c, item.uid])
 
@@ -223,7 +225,7 @@ function Step({ item, level, card: c, hook, onIntro, onHarder, onEasier, onNext 
       const ok = good === blanks.length
       const base = peekScore(c)
       record({ ...base, ok, ratio: blanks.length ? good / blanks.length : 1, hit: base.hit.map(() => ok) }, `${good} of ${blanks.length} blanks right`)
-    } else record(L.score(c, text, store.settings.threshold))
+    } else record(L.score(c, text))
   }
 
   let bi = 0
@@ -240,14 +242,14 @@ function Step({ item, level, card: c, hook, onIntro, onHarder, onEasier, onNext 
               <input key={i} value={vals[k] || ""} disabled={!!res} autoFocus={k === 0}
                 onChange={(e) => setVals({ ...vals, [k]: e.target.value })}
                 size={Math.min(Math.max(3, L.norm(t.text).length), 14)}
-                autoCapitalize="none" autoComplete="off" spellCheck={false} aria-label={`blank ${k + 1}`}
+                autoCapitalize="none" autoComplete="off" autoCorrect="off" spellCheck={false} aria-label={`blank ${k + 1}`}
                 placeholder={level >= 1 ? t.text.replace(/^[^A-Za-z0-9]*/, "").slice(0, 1) : ""}
                 className={`mx-1 min-h-11 rounded-none border-0 border-b-2 bg-secondary px-2 py-1 text-center text-xl text-foreground outline-none placeholder:text-gold placeholder:font-bold focus:bg-muted ${state}`} />
             )
           })}
         </p>
       ) : (
-        <Textarea value={text} disabled={!!res} onChange={(e) => { setText(e.target.value); setPeek(null) }} autoFocus autoCapitalize="none" spellCheck={false}
+        <Textarea value={text} disabled={!!res} onChange={(e) => { setText(e.target.value); setPeek(null) }} autoFocus autoCapitalize="none" autoCorrect="off" spellCheck={false} aria-label="Your recital"
           placeholder="Type it, or use the keyboard microphone (dictation)" className="min-h-32 bg-background/60 text-lg" />
       )}
       {res ? (
@@ -257,10 +259,10 @@ function Step({ item, level, card: c, hook, onIntro, onHarder, onEasier, onNext 
           <Insignia card={c} />
           {!res.r.ok && hook && <Hook text={hook} />}
           <div className="mt-4 flex flex-col gap-6">
-            <Button onClick={() => onNext(res.r.ok && !(hint && level === 4))} autoFocus>Next</Button>
+            <Button onClick={() => onNext(res.r.ok && !(hint && level === 4) && !tainted)} autoFocus>Next</Button>
             {res.r.ok && level < 4 && <Button variant="outline" onClick={onHarder}>Next level up</Button>}
             {!res.r.ok && level > 1 && <Button variant="outline" onClick={onEasier}>Easier level</Button>}
-            {!res.r.ok && <Button variant="outline" onClick={() => { setRes(null); setText(""); setVals({}) }}>Try again</Button>}
+            {!res.r.ok && <Button variant="outline" onClick={() => { setTainted(true); setRes(null); setText(""); setVals({}) }}>Try again</Button>}
             {!res.r.ok && !res.peeked && level < 4 && <Button variant="outline" onClick={() => onNext(true)}>Count as correct</Button>}
           </div>
         </div>
