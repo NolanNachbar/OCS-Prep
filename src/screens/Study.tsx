@@ -143,7 +143,7 @@ export default function Study() {
             <div className="mt-2 flex justify-between text-xs uppercase tracking-wider text-muted-foreground"><span>Nothing blank</span><span>Everything blank</span></div>
             {manual !== null && <Button variant="ghost" size="sm" className="mt-1 px-0" onClick={() => setManual(null)}>Back to auto</Button>}
           </div>
-          <Step key={item.uid + "-" + level} item={item} level={level} card={c} hook={hookFor(c, secIdx(c))} onIntro={() => introduce(item)} onNext={(ok) => advance(item, ok, level)} />
+          <Step key={item.uid + "-" + level} item={item} level={level} card={c} hook={hookFor(c, secIdx(c))} onIntro={() => introduce(item)} onHarder={() => setManual(level + 1)} onNext={(ok) => advance(item, ok, level)} />
         </Panel>
       ) : s ? (
         <Panel>
@@ -158,7 +158,7 @@ export default function Study() {
   )
 }
 
-function Step({ item, level, card: c, hook, onIntro, onNext }: { item: Item; level: number; card: Card; hook: string; onIntro: () => void; onNext: (ok: boolean) => void }) {
+function Step({ item, level, card: c, hook, onIntro, onHarder, onNext }: { item: Item; level: number; card: Card; hook: string; onIntro: () => void; onHarder: () => void; onNext: (ok: boolean) => void }) {
   const [hint, setHint] = useState(false)
   const store = useStore()
   const [res, setRes] = useState<{ r: Score; note?: string; peeked?: boolean } | null>(null)
@@ -180,7 +180,7 @@ function Step({ item, level, card: c, hook, onIntro, onNext }: { item: Item; lev
         {hook && <Hook text={hook} />}
         <p className="mt-4 text-sm text-muted-foreground">Read it, then say it out loud once without looking.</p>
         <div className="mt-2 flex flex-wrap gap-3">
-          {item.stage === 0 ? <Button onClick={onIntro}>I said it aloud</Button> : <Button onClick={() => onNext(true)}>Next card</Button>}
+          {item.stage === 0 ? <><Button onClick={onIntro}>I said it aloud</Button><Button variant="outline" onClick={onHarder}>Make it harder</Button></> : <Button onClick={() => onNext(true)}>Next card</Button>}
           <Button variant="outline" onClick={() => speak((c.lead ? c.lead + " " : "") + c.answer, store.settings.rate)}><Volume2 /> Hear it</Button>
         </div>
       </div>
@@ -229,6 +229,7 @@ function Step({ item, level, card: c, hook, onIntro, onNext }: { item: Item; lev
           {!res.r.ok && hook && <Hook text={hook} />}
           <div className="mt-4 flex flex-col gap-6">
             <Button onClick={() => onNext(res.r.ok && !(hint && level === 4))} autoFocus>Next</Button>
+            {res.r.ok && level < 4 && <Button variant="outline" onClick={onHarder}>Next level up</Button>}
             {!res.r.ok && <Button variant="outline" onClick={() => { setRes(null); setText(""); setVals({}) }}>Try again</Button>}
             {!res.r.ok && !res.peeked && level < 4 && <Button variant="outline" onClick={() => onNext(true)}>Count as correct</Button>}
           </div>
