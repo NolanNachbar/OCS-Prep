@@ -1,4 +1,4 @@
-import type { ReactNode } from "react"
+import { useState, type ReactNode } from "react"
 import type { Card } from "@/lib/types"
 
 // Diagrams drawn from the Appendix B wording, not copies of the official art.
@@ -134,7 +134,17 @@ export function views(card: Card): View[] {
 // the one drawing used in match quizzes
 export const primary = (card: Card): View => (card.sec === "nve" ? "sleeve" : card.sec === "nvo" || card.sec === "mco" ? "collar" : "insignia")
 
+// Real Appendix B images live in public/ranks (local only, see .gitignore); the drawing is the fallback.
 export function Drawing({ card, view, className = "size-28" }: { card: Card; view: View; className?: string }) {
+  const [missing, setMissing] = useState(false)
+  if (!missing) {
+    const kind = view === "collar" ? "collar" : "sleeve"
+    return (
+      <div className={`${className} flex items-center justify-center bg-white p-1`}>
+        <img src={`${import.meta.env.BASE_URL}ranks/${card.id}-${kind}.png`} alt={`${card.prompt} ${view}`} className="max-h-full max-w-full object-contain" onError={() => setMissing(true)} />
+      </div>
+    )
+  }
   const key = view === "collar" ? "Collar" : view === "sleeve" ? "Sleeve" : "Insignia"
   const t = clause(card, key)
   let body: ReactNode = null
