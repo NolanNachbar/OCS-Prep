@@ -3,7 +3,10 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Button } from "@/components/ui/button"
 import { Panel, Eyebrow } from "@/components/shared"
 import { Drawing, Insignia, primary, rankName } from "@/components/Insignia"
+import RankRecall from "@/screens/RankRecall"
 import { useCards } from "@/lib/cards"
+import { useStore } from "@/lib/store"
+import * as L from "@/lib/ocs.js"
 import type { Card } from "@/lib/types"
 
 const shuffle = <T,>(a: T[]) => { const b = a.slice(); for (let i = b.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [b[i], b[j]] = [b[j], b[i]] } return b }
@@ -26,11 +29,24 @@ const GROUPS: { name: string; note: string; ids: string[] }[] = [
   { name: "Marine enlisted: E-8 and E-9", note: "The confusable ones. First Sergeant has a diamond, Master Gunnery Sergeant a bursting bomb, Sergeant Major a star.", ids: ids("mce", 128, 131) },
 ]
 
+// The four big categories; each holds the pattern groups above (indexes into GROUPS), in learning order.
+const SECTIONS = [
+  { name: "Navy officers", groups: [0, 1, 2, 3] },
+  { name: "Navy enlisted", groups: [7, 8, 9] },
+  { name: "Marine officers", groups: [4, 5, 6] },
+  { name: "Marine enlisted", groups: [10, 11, 12] },
+]
+
 type Q = { c: Card; mode: "pic" | "name"; opts: Card[] }
 
 export default function Ranks() {
   const { all } = useCards()
   const rank = useMemo(() => new Map(all.map((c) => [c.id, c])), [all])
+  const store = useStore()
+  const [rec, setRec] = useState<{ cards: Card[]; teach: boolean } | null>(null)
+  const [open, setOpen] = useState<string[]>([])
+  const day = L.ymd(new Date())
+  const learned = (c: Card) => (store.cards[c.id]?.reps ?? 0) > 0
   const [quiz, setQuiz] = useState<{ qs: Q[]; i: number; right: number; pick: string | null } | null>(null)
 
   const make = (pool: Card[]): Q[] => shuffle(pool).map((c) => {
@@ -41,6 +57,13 @@ export default function Ranks() {
   })
   const start = (cards: Card[]) => setQuiz({ qs: make(cards), i: 0, right: 0, pick: null })
   const every = all.filter((c) => ["nve", "nvo", "mce", "mco"].includes(c.sec))
+
+  if (rec) return <RankRecall cards={rec.cards} teach={rec.teach} onExit={() => setRec(null)} />
+
+  const groupCards = (g: (typeof GROUPS)[number]) => g.ids.map((i) => rank.get(i)).filter(Boolean) as Card[]
+  const next = GROUPS.find((g) => groupCards(g).some((c) => !learned(c)))
+  const due = every.filter((c) => learned(c) && store.cards[c.id].due <= day)
+  const nLearned = every.filter(learned).length
 
   if (quiz) {
     if (quiz.i >= quiz.qs.length) {
@@ -103,34 +126,58 @@ export default function Ranks() {
         <Eyebrow>Ranks</Eyebrow>
         <h2 className="slab mt-2 text-2xl font-bold">Learn them in groups, then match them</h2>
         <p className="mt-1 text-muted-foreground">Each rank shows its Appendix B wording exactly, with the collar and sleeve side by side. Pictures come from Wikimedia Commons (credits under Settings); a rank without one shows a drawing from the wording. Rank by rank: Navy officers, Marine officers, Navy enlisted, Marine enlisted. E-7 to E-9 in both services get asked the most.</p>
-        <div className="mt-4 flex flex-wrap gap-3">
-          <Button onClick={() => start(every)}>Match all {every.length}</Button>
+        <p className="mt-3 font-bold">{nLearned} of {every.length} ranks learned</p>
+        <div className="mt-3 flex flex-wrap gap-3">
+          {next && <Button onClick={() => { setOpen([]); setRec({ cards: groupCards(next), teach: true }) }}>Learn next: {next.name}</Button>}
+          {due.length > 0 && <Button variant="outline" onClick={() => setRec({ cards: due, teach: false })}>Review {due.length} due</Button>}
+        </div>
+        <p className="mt-3 text-muted-foreground">How it works: Learn walks you through a group (picture, title, exact wording), then asks you to type the title from the picture and the wording from the title. Anything you miss comes back until you get it twice in a row, then it joins your review schedule. Match is only a warm-up. Open a category below and work through its groups top to bottom.</p>
+        <div className="mt-3 flex flex-wrap gap-3">
+          <Button variant="outline" onClick={() => start(every)}>Match all {every.length}</Button>
           <Button variant="outline" onClick={() => start(["nve-116", "nve-117", "nve-118", "nve-119", "mce-126", "mce-127", "mce-128", "mce-129", "mce-130", "mce-131"].map((i) => rank.get(i)!).filter(Boolean))}>Match E-7 to E-9</Button>
         </div>
       </Panel>
-      {GROUPS.map((g) => {
-        const cs = g.ids.map((i) => rank.get(i)).filter(Boolean) as Card[]
-        return (
-          <Panel key={g.name}>
-            <h3 className="slab text-xl font-bold">{g.name}</h3>
-            <p className="mt-1 text-muted-foreground">Pattern: {g.note}</p>
-            <Accordion type="multiple" className="mt-3">
-              {cs.map((c) => (
-                <AccordionItem key={c.id} value={c.id}>
-                  <AccordionTrigger className="items-center text-left">
-                    <span><span className="slab block text-lg font-bold">{c.prompt}</span><span className="block text-sm font-normal text-muted-foreground">{rankName(c)}</span></span>
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    <Insignia card={c} compact />
-                    <p className="mt-2 text-[0.95rem]">{c.answer}</p>
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
-            <Button className="mt-4" variant="outline" onClick={() => start(cs)}>Match this group</Button>
-          </Panel>
-        )
-      })}
+      <Accordion type="multiple" value={open} onValueChange={setOpen} className="rounded-md border border-border bg-card/70 px-4">
+        {SECTIONS.map((sec) => {
+          const all2 = sec.groups.flatMap((gi) => groupCards(GROUPS[gi]))
+          return (
+            <AccordionItem key={sec.name} value={sec.name}>
+              <AccordionTrigger className="items-center text-left">
+                <span><span className="slab block text-xl font-bold">{sec.name}</span><span className="block text-sm font-normal text-muted-foreground">{all2.filter(learned).length} of {all2.length} learned</span></span>
+              </AccordionTrigger>
+              <AccordionContent className="space-y-6">
+                {sec.groups.map((gi) => {
+                  const g = GROUPS[gi]
+                  const cs = groupCards(g)
+                  return (
+                    <div key={g.name}>
+                      <h3 className="slab text-lg font-bold">{g.name}</h3>
+                      <p className="mt-1 text-muted-foreground">Pattern: {g.note}</p>
+                      <Accordion type="multiple" className="mt-2">
+                        {cs.map((c) => (
+                          <AccordionItem key={c.id} value={c.id}>
+                            <AccordionTrigger className="items-center text-left">
+                              <span><span className="slab block text-base font-bold">{c.prompt}{learned(c) ? " (learned)" : ""}</span><span className="block text-sm font-normal text-muted-foreground">{rankName(c)}</span></span>
+                            </AccordionTrigger>
+                            <AccordionContent>
+                              <Insignia card={c} compact />
+                              <p className="mt-2 text-[0.95rem]">{c.answer}</p>
+                            </AccordionContent>
+                          </AccordionItem>
+                        ))}
+                      </Accordion>
+                      <div className="mt-3 flex flex-wrap gap-3">
+                        <Button onClick={() => setRec({ cards: cs, teach: true })}>Learn this group</Button>
+                        <Button variant="outline" onClick={() => start(cs)}>Match</Button>
+                      </div>
+                    </div>
+                  )
+                })}
+              </AccordionContent>
+            </AccordionItem>
+          )
+        })}
+      </Accordion>
     </div>
   )
 }

@@ -57,3 +57,8 @@ Rollback: `git reset --hard audit-2026-11-09-r1` on main, then push with lease.
 
 ## Round 26 (2026-11-10), tag audit-2026-11-10-r26
 - Ranks tab: each rank is now a collapsed dropdown row (rank and title). Tapping opens its pictures and exact Appendix B wording. Group pattern notes and the Match button stay visible. Content files untouched.
+
+## Round 27 (2026-11-10), tag audit-2026-11-10-r27: ranks Recall
+- Match was recognition only (four options, same-group distractors, one pass, no schedule). Added Learn: teach a group (picture, title, exact wording), then typed recall: title from the picture, then the Appendix B wording from the title, both scored word for word. A miss or a hint resets that step and it returns; two clean answers in a row finish it, and the rank then joins the same Leitner schedule as the card (lapse rule as in Study).
+- Ranks tab now opens on four collapsed categories (Navy officers, Navy enlisted, Marine officers, Marine enlisted) holding the pattern groups, each with Learn and Match. Top shows ranks learned, a "Learn next" button and "Review N due".
+- Verified in headless browse: teach, recall, wrong answer path. Full correct-answer path to the schedule write is code-reviewed only.
