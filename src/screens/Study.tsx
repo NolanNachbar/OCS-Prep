@@ -14,10 +14,11 @@ import { speak } from "@/lib/speech"
 import { getStore, update, useStore } from "@/lib/store"
 import type { Card, Score } from "@/lib/types"
 
-const LEVELS = ["Read it", "First letters", "Some words", "Most words", "From memory"]
-const FRAC = [0, 1, 0.35, 0.7, 1]
-const stageLevel = (stage: number) => [0, 2, 3, 4][stage]
-type Item = { uid: number; id: string; stage: number; missed?: boolean }
+// Each rung is strictly harder: more words blanked, then the letter cues go, then typing it cold.
+const LEVELS = ["Read it", "Some words", "Most words", "First letters", "From memory"]
+const FRAC = [0, 0.35, 0.7, 1, 1]
+// stage is the level a card is due to be tried at next; lvl overrides it for one card (Next level up / Easier)
+type Item = { uid: number; id: string; stage: number; missed?: boolean; lvl?: number }
 type Session = { queue: Item[]; total: number; done: number; miss: number }
 let uid = 1
 const today = () => L.ymd(new Date())
@@ -48,11 +49,11 @@ export default function Study() {
     const intro = getStore().intro.date === t ? getStore().intro : { date: t, n: 0 }
     if (intro !== getStore().intro) update((x) => { x.intro = intro; return x })
     const pins = getStore().pinned || []
-    const pinned: Item[] = pins.filter((id) => byId.has(id)).map((id) => ({ uid: uid++, id, stage: store.cards[id] ? (store.cards[id].box >= 2 ? 3 : 2) : 0 }))
+    const pinned: Item[] = pins.filter((id) => byId.has(id)).map((id) => ({ uid: uid++, id, stage: store.cards[id] ? (store.cards[id].box >= 2 ? 4 : 2) : 0 }))
     if (pins.length) update((x) => { x.pinned = []; return x })
     const reviews: Item[] = due.filter((c) => !pins.includes(c.id))
       .sort((a, b) => store.cards[a.id].box - store.cards[b.id].box || store.cards[a.id].due.localeCompare(store.cards[b.id].due))
-      .slice(0, store.settings.maxReviews ?? 60).map((c) => ({ uid: uid++, id: c.id, stage: store.cards[c.id].box >= 2 ? 3 : 2 }))
+      .slice(0, store.settings.maxReviews ?? 60).map((c) => ({ uid: uid++, id: c.id, stage: store.cards[c.id].box >= 2 ? 4 : 2 }))
     const room = Math.max(0, store.settings.newPerDay + extra - intro.n)
     const news: Item[] = fresh.filter((c) => !pins.includes(c.id)).slice(0, room).map((c) => ({ uid: uid++, id: c.id, stage: 0 }))
     setS({ queue: [...pinned, ...reviews, ...news], total: pinned.length + reviews.length + news.length, done: 0, miss: 0 })
@@ -70,9 +71,11 @@ export default function Study() {
     let { done, miss } = s
     if (!ok) {
       miss++
-      requeue(q, { uid: uid++, id: c.id, stage: Math.max(1, item.stage - 1), missed: true }, 3)
-    } else if (item.stage < 3 || level < 4) {
-      requeue(q, { uid: uid++, id: c.id, stage: Math.min(3, item.stage + 1), missed: item.missed }, 4)
+      requeue(q, { uid: uid++, id: c.id, stage: Math.max(1, level - 1), missed: true }, 3)
+    } else if (level === 0) {
+      requeue(q, { uid: uid++, id: c.id, stage: item.stage, missed: item.missed }, 4) // reading it is not a pass
+    } else if (level < 4) {
+      requeue(q, { uid: uid++, id: c.id, stage: Math.min(4, Math.max(item.stage, level) + 1), missed: item.missed }, 4)
     } else {
       update((st) => {
         let cs = st.cards[c.id] || { box: 0, reps: 0, lapses: 0, due: today(), misses: 0 }
@@ -90,6 +93,10 @@ export default function Study() {
     if (!s || s.queue.length < 2) return
     const q = dir === 1 ? [...s.queue.slice(1), s.queue[0]] : [s.queue[s.queue.length - 1], ...s.queue.slice(0, -1)]
     setS({ ...s, queue: q })
+  }
+
+  const setLevel = (item: Item, lv: number) => {
+    if (s) setS({ ...s, queue: [{ ...item, uid: uid++, lvl: lv }, ...s.queue.slice(1)] })
   }
 
   const introduce = (item: Item) => {
@@ -110,7 +117,7 @@ export default function Study() {
   const startedN = order.length - fresh.length
   const item = s?.queue[0]
   const c = item ? byId.get(item.id) : undefined
-  const level = item ? (manual ?? stageLevel(item.stage)) : 0
+  const level = item ? (manual ?? item.lvl ?? item.stage) : 0
 
   return (
     <div className="space-y-4">
@@ -143,7 +150,7 @@ export default function Study() {
             <div className="mt-2 flex justify-between text-xs uppercase tracking-wider text-muted-foreground"><span>Nothing blank</span><span>Everything blank</span></div>
             {manual !== null && <Button variant="ghost" size="sm" className="mt-1 px-0" onClick={() => setManual(null)}>Back to auto</Button>}
           </div>
-          <Step key={item.uid + "-" + level} item={item} level={level} card={c} hook={hookFor(c, secIdx(c))} onIntro={() => introduce(item)} onHarder={() => setManual(level + 1)} onNext={(ok) => advance(item, ok, level)} />
+          <Step key={item.uid + "-" + level} item={item} level={level} card={c} hook={hookFor(c, secIdx(c))} onIntro={() => introduce(item)} onHarder={() => setLevel(item, level + 1)} onEasier={() => setLevel(item, level - 1)} onNext={(ok) => advance(item, ok, level)} />
         </Panel>
       ) : s ? (
         <Panel>
@@ -158,7 +165,7 @@ export default function Study() {
   )
 }
 
-function Step({ item, level, card: c, hook, onIntro, onHarder, onNext }: { item: Item; level: number; card: Card; hook: string; onIntro: () => void; onHarder: () => void; onNext: (ok: boolean) => void }) {
+function Step({ item, level, card: c, hook, onIntro, onHarder, onEasier, onNext }: { item: Item; level: number; card: Card; hook: string; onIntro: () => void; onHarder: () => void; onEasier: () => void; onNext: (ok: boolean) => void }) {
   const [hint, setHint] = useState(false)
   const store = useStore()
   const [res, setRes] = useState<{ r: Score; note?: string; peeked?: boolean } | null>(null)
@@ -213,7 +220,7 @@ function Step({ item, level, card: c, hook, onIntro, onHarder, onNext }: { item:
                 onChange={(e) => setVals({ ...vals, [k]: e.target.value })}
                 size={Math.min(Math.max(3, L.norm(t.text).length), 14)}
                 autoCapitalize="none" autoComplete="off" spellCheck={false} aria-label={`blank ${k + 1}`}
-                placeholder={level === 1 ? t.text.replace(/^[^A-Za-z0-9]*/, "").slice(0, 1) : ""}
+                placeholder={level >= 1 ? t.text.replace(/^[^A-Za-z0-9]*/, "").slice(0, 1) : ""}
                 className={`mx-1 min-h-11 rounded-none border-0 border-b-2 bg-secondary px-2 py-1 text-center text-xl text-foreground outline-none placeholder:text-gold placeholder:font-bold focus:bg-muted ${state}`} />
             )
           })}
@@ -230,6 +237,7 @@ function Step({ item, level, card: c, hook, onIntro, onHarder, onNext }: { item:
           <div className="mt-4 flex flex-col gap-6">
             <Button onClick={() => onNext(res.r.ok && !(hint && level === 4))} autoFocus>Next</Button>
             {res.r.ok && level < 4 && <Button variant="outline" onClick={onHarder}>Next level up</Button>}
+            {!res.r.ok && level > 1 && <Button variant="outline" onClick={onEasier}>Easier level</Button>}
             {!res.r.ok && <Button variant="outline" onClick={() => { setRes(null); setText(""); setVals({}) }}>Try again</Button>}
             {!res.r.ok && !res.peeked && level < 4 && <Button variant="outline" onClick={() => onNext(true)}>Count as correct</Button>}
           </div>
