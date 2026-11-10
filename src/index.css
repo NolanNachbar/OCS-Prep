@@ -4,6 +4,7 @@
 
 @import "@fontsource/barlow-semi-condensed/600.css";
 @import "@fontsource/barlow-semi-condensed/700.css";
+@import "@fontsource/anton/latin-400.css";
 @import "@fontsource/roboto/400.css";
 @import "@fontsource/roboto/500.css";
 @import "@fontsource/roboto/700.css";
@@ -106,6 +107,7 @@
 /* Navy.mil / Navy.com look: uppercase, wide tracking, hairline rules */
 .eyebrow { font-weight: 700; font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); }
 .section-title { font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; text-align: center; }
+.block-mark { font-family: "Anton", "Barlow Semi Condensed", sans-serif; font-weight: 400; letter-spacing: 0.03em; }
 .slab { font-family: var(--font-heading); letter-spacing: 0.02em; }
 h1, h2, h3 { font-family: var(--font-heading); }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
