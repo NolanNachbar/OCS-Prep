@@ -117,7 +117,7 @@ export default function Ranks() {
               {cs.map((c) => (
                 <div key={c.id} className="py-4 first:pt-0">
                   <h4 className="slab text-lg font-bold">{c.prompt}</h4>
-                  <Insignia card={c} />
+                  <Insignia card={c} compact />
                   <p className="mt-2 text-[0.95rem]">{c.answer}</p>
                 </div>
               ))}

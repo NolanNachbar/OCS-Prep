@@ -127,10 +127,10 @@ function Frame({ label, children }: { label: string; children: ReactNode }) {
   return <svg viewBox="0 0 120 120" role="img" aria-label={label} className="size-full"><rect width="120" height="120" rx="6" fill="#0A1620" />{children}</svg>
 }
 
-export type View = "collar" | "sleeve" | "insignia"
+export type View = "collar" | "board" | "sleeve" | "insignia"
 
 export function views(card: Card): View[] {
-  if (card.sec === "nvo") return ["collar", "sleeve"]
+  if (card.sec === "nvo") return ["collar", "board", "sleeve"]
   if (card.sec === "nve") return ["collar", "sleeve"]
   return [card.sec === "mce" ? "insignia" : "collar"]
 }
@@ -140,7 +140,7 @@ export const primary = (card: Card): View => (card.sec === "nve" ? "sleeve" : ca
 // Real Appendix B images live in public/ranks ; the drawing is the fallback.
 export function Drawing({ card, view, className = "size-28", label }: { card: Card; view: View; className?: string; label?: string }) {
   const [missing, setMissing] = useState(false)
-  const kind = view === "collar" ? "collar" : "sleeve"
+  const kind = view === "collar" ? "collar" : view === "board" ? "board" : "sleeve"
   if (!missing && RANK_FILES.has(`${card.id}-${kind}`)) {
     return (
       <div className={`${className} flex items-center justify-center bg-white p-1`}>
@@ -148,6 +148,7 @@ export function Drawing({ card, view, className = "size-28", label }: { card: Ca
       </div>
     )
   }
+  if (view === "board") return <div className={`${className} flex items-center justify-center bg-secondary p-1 text-center text-xs text-muted-foreground`}>No picture</div>
   const key = view === "collar" ? "Collar" : view === "sleeve" ? "Sleeve" : "Insignia"
   const t = clause(card, key)
   let body: ReactNode = null
@@ -159,14 +160,14 @@ export function Drawing({ card, view, className = "size-28", label }: { card: Ca
   return <div className={className}><Frame label={label ?? `${card.prompt} ${view}`}>{body}</Frame></div>
 }
 
-export function Insignia({ card }: { card: Card }) {
+export function Insignia({ card, compact }: { card: Card; compact?: boolean }) {
   if (!hasInsignia(card)) return null
   return (
-    <div className="mt-3 flex flex-wrap gap-4">
+    <div className={`mt-3 flex flex-wrap ${compact ? "gap-3" : "gap-4"}`}>
       {views(card).map((v) => (
         <figure key={v} className="m-0">
-          <Drawing card={card} view={v} />
-          <figcaption className="mt-1 text-center text-xs text-muted-foreground">{v === "insignia" ? "Insignia" : v === "collar" ? "Collar" : "Sleeve"}</figcaption>
+          <Drawing card={card} view={v} className={v === "board" ? (compact ? "h-24 w-14" : "h-28 w-14") : compact ? "size-24" : undefined} />
+          <figcaption className="mt-1 text-center text-xs text-muted-foreground">{v === "insignia" ? "Insignia" : v === "collar" ? "Collar" : v === "board" ? "Shoulder board" : "Sleeve"}</figcaption>
         </figure>
       ))}
     </div>
