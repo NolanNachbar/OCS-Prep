@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Textarea } from "@/components/ui/textarea"
+import * as L from "@/lib/ocs.js"
 import { useCards } from "@/lib/cards"
 import { hookFor } from "@/lib/hooks"
 import { update, useStore } from "@/lib/store"
@@ -20,7 +21,9 @@ export default function Cards({ onTest }: { onTest: () => void }) {
     const s = store.cards[c.id]
     if (!s) return <Badge variant="outline">new</Badge>
     if (s.misses >= 3 && s.box < 3) return <Badge variant="destructive">weak</Badge>
-    return <Badge className={s.box >= 4 ? "bg-ok text-black" : ""}>{s.box >= 4 ? "solid" : `box ${s.box}`}</Badge>
+    const d = s.due ? L.daysBetween(L.ymd(new Date()), s.due) : 0
+    const when = d <= 0 ? "due today" : d === 1 ? "due tomorrow" : `due in ${d}d`
+    return <Badge className={s.box >= 4 ? "bg-ok text-black" : ""}>{s.box >= 4 ? `solid, ${when}` : when}</Badge>
   }
   return (
     <>
