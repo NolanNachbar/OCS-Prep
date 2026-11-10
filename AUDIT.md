@@ -69,3 +69,6 @@ Rollback: `git reset --hard audit-2026-11-09-r1` on main, then push with lease.
 
 ## Round 29 (2026-11-10), tag audit-2026-11-10-r29
 - Bug: expanding a rank inside a category hid the rows below it. The shared accordion wrapper had a fixed height from Radix (--radix-accordion-content-height), which breaks nested accordions. Removed it; height is now automatic. Verified headless: E-2 open, E-3 onward sit below it.
+
+## Round 30 (2026-11-10), tag audit-2026-11-10-r30
+- Reported "still does it" after r29. The deployed bundle matched my build and the nested-accordion layout was correct headless at 390 and 1235 px, so a stale cached copy on the device is the likely cause (Pages caches index.html for 10 minutes, and the service worker held the old shell). Bumped the service worker cache to v6 and added the commit hash under Settings > About ("Build xxxxxxx") so the running version can be read off the phone.

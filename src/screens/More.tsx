@@ -60,6 +60,7 @@ export default function More() {
       </Panel>
       <Panel>
         <Eyebrow>About</Eyebrow>
+        <p className="mt-2 text-xs text-muted-foreground">Build {__BUILD__}</p>
         <p className="mt-2 text-muted-foreground">A personal study aid. It is not affiliated with or endorsed by the U.S. Navy or any government agency. Check every card against the current official Appendix B from your class before relying on it. Source document: <a className="underline" href="https://www.netc.navy.mil/Portals/46/NSTC/OTCN/docs/OCR%20Appendix%20B.pdf" target="_blank" rel="noreferrer">NETC Appendix B (PDF)</a>.</p>
         <h3 className="slab mt-4 text-lg font-bold">Insignia image credits</h3>
         <p className="mt-1 text-muted-foreground">Rank images are from Wikimedia Commons and were resized. Most are public domain. These are licensed <a className="underline" href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noreferrer">CC BY-SA 4.0</a>:</p>
