@@ -22,6 +22,24 @@ type Item = { uid: number; id: string; stage: number; missed?: boolean; lvl?: nu
 type Session = { queue: Item[]; total: number; done: number; miss: number }
 let uid = 1
 const today = () => L.ymd(new Date())
+// Next-letter hint for the typed answer: what comes next, without showing more than one letter.
+function nextLetter(c: Card, typed: string): string {
+  const greet = (w: string) => w === "sir" || w === "maam"
+  const u = L.words(typed).filter((w: string, i: number, a: string[]) => !(greet(w) && a.slice(0, i).every(greet)))
+  const lead = L.words(c.lead || "").filter((w: string) => !greet(w))
+  const exp: string[] = lead.length && u[0] === lead[0] ? [...lead, ...L.words(c.key)] : L.words(c.key)
+  const midWord = typed.length > 0 && !/\s$/.test(typed)
+  const done = midWord ? u.slice(0, -1) : u
+  for (let i = 0; i < done.length; i++) if (done[i] !== exp[i]) return `Word ${i + 1} is off. Fix it before going on.`
+  if (midWord && u.length) {
+    const w = u[u.length - 1], e = exp[done.length]
+    if (!e) return "You already have every word."
+    if (w === e) return done.length + 1 >= exp.length ? "You already have every word." : `Next word starts with "${exp[done.length + 1][0]}".`
+    return e.startsWith(w) ? `Next letter: "${e[w.length]}"` : `Word ${done.length + 1} is off. Fix it before going on.`
+  }
+  const e = exp[done.length]
+  return e ? `Next word starts with "${e[0]}".` : "You already have every word."
+}
 const peekScore = (c: Card): Score => ({ ok: false, ratio: 0, expected: L.words(c.key), hit: L.words(c.key).map(() => false), extra: [] })
 
 function logResult(ok: boolean) {
@@ -167,6 +185,7 @@ export default function Study() {
 
 function Step({ item, level, card: c, hook, onIntro, onHarder, onEasier, onNext }: { item: Item; level: number; card: Card; hook: string; onIntro: () => void; onHarder: () => void; onEasier: () => void; onNext: (ok: boolean) => void }) {
   const [hint, setHint] = useState(false)
+  const [peek, setPeek] = useState<string | null>(null)
   const store = useStore()
   const [res, setRes] = useState<{ r: Score; note?: string; peeked?: boolean } | null>(null)
   const [text, setText] = useState("")
@@ -226,7 +245,7 @@ function Step({ item, level, card: c, hook, onIntro, onHarder, onEasier, onNext 
           })}
         </p>
       ) : (
-        <Textarea value={text} disabled={!!res} onChange={(e) => setText(e.target.value)} autoFocus autoCapitalize="none" spellCheck={false}
+        <Textarea value={text} disabled={!!res} onChange={(e) => { setText(e.target.value); setPeek(null) }} autoFocus autoCapitalize="none" spellCheck={false}
           placeholder="Type it, or use the keyboard microphone (dictation)" className="min-h-32 bg-background/60 text-lg" />
       )}
       {res ? (
@@ -244,10 +263,13 @@ function Step({ item, level, card: c, hook, onIntro, onHarder, onEasier, onNext 
         </div>
       ) : (
         <div className="mt-4 flex flex-wrap gap-3">
-          {hint && hook && <div className="w-full"><Hook text={hook} /></div>}
+          {hint && hook && level < 4 && <div className="w-full"><Hook text={hook} /></div>}
+          {level === 4 && peek && <p className="w-full text-gold">{peek}</p>}
           <Button onClick={check}>Check</Button>
           {level === 4 && <MicButton onText={(t) => setText(t)} />}
-          {hook && <Button variant="outline" onClick={() => setHint(true)} disabled={hint}>Hint</Button>}
+          {level === 4
+            ? <Button variant="outline" onClick={() => { setHint(true); setPeek(nextLetter(c, text)) }}>Hint</Button>
+            : hook && <Button variant="outline" onClick={() => setHint(true)} disabled={hint}>Hint</Button>}
           <Button variant="outline" onClick={() => record(peekScore(c), undefined, true)}>Show answer</Button>
         </div>
       )}
