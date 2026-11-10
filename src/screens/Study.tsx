@@ -19,7 +19,8 @@ import type { Card, Score } from "@/lib/types"
 const LEVELS = ["Read it", "Some words", "Most words", "First letters", "From memory"]
 const FRAC = [0, 0.35, 0.7, 1, 1]
 // stage is the level a card is due to be tried at next; lvl overrides it for one card (Next level up / Easier)
-type Item = { uid: number; id: string; stage: number; missed?: boolean; lvl?: number }
+type Item = { uid: number; id: string; stage: number; missed?: boolean; lvl?: number; redo?: boolean }
+type Trail = { item: Item; fin: boolean } // a card you just answered, and whether that answer cleared it
 type Session = { queue: Item[]; total: number; done: number; miss: number }
 let uid = 1
 const today = () => L.ymd(new Date())
@@ -59,6 +60,7 @@ export default function Study() {
   const { order, byId, secIdx } = useCards()
   const [s, setS] = useState<Session | null>(null)
   const [manual, setManual] = useState<number | null>(null)
+  const [trail, setTrail] = useState<Trail[]>([])
 
   const [day, setDay] = useState(today())
   useEffect(() => {
@@ -69,7 +71,8 @@ export default function Study() {
   const due = useMemo(() => order.filter((c) => store.cards[c.id]?.due && store.cards[c.id].due <= day), [order, store.cards, day])
   const fresh = useMemo(() => order.filter((c) => !store.cards[c.id]), [order, store.cards])
 
-  const start = (extra: number) => {
+  // The session is what is due today (plus any cards you pinned). New cards come in only when you ask, or when nothing is due so the screen is never empty.
+  const start = (extra: number, withNew = false) => {
     const t = today()
     const intro = getStore().intro.date === t ? getStore().intro : { date: t, n: 0 }
     if (intro !== getStore().intro) update((x) => { x.intro = intro; return x })
@@ -80,7 +83,8 @@ export default function Study() {
       .sort((a, b) => store.cards[a.id].due.localeCompare(store.cards[b.id].due) || store.cards[a.id].box - store.cards[b.id].box)
       .slice(0, store.settings.maxReviews ?? 60).map((c) => ({ uid: uid++, id: c.id, stage: store.cards[c.id].box >= 2 ? 4 : 2 }))
     const room = Math.max(0, store.settings.newPerDay + extra - intro.n)
-    const news: Item[] = fresh.filter((c) => !pins.includes(c.id)).slice(0, room).map((c) => ({ uid: uid++, id: c.id, stage: 0 }))
+    const news: Item[] = !withNew && pinned.length + reviews.length > 0 ? [] : fresh.filter((c) => !pins.includes(c.id)).slice(0, room).map((c) => ({ uid: uid++, id: c.id, stage: 0 }))
+    setTrail([])
     setS({ queue: [...pinned, ...reviews, ...news], total: pinned.length + reviews.length + news.length, done: 0, miss: 0 })
   }
   const started = useRef(false)
@@ -103,6 +107,7 @@ export default function Study() {
     const c = byId.get(item.id)!
     const q = s.queue.slice(1)
     let { done, miss } = s
+    let fin = false
     if (!ok) {
       miss++
       requeue(q, { uid: uid++, id: c.id, stage: Math.max(1, level - 1), missed: true }, 3)
@@ -111,7 +116,8 @@ export default function Study() {
     } else if (level < 4) {
       requeue(q, { uid: uid++, id: c.id, stage: Math.min(4, Math.max(item.stage, level) + 1), missed: item.missed }, 4)
     } else {
-      update((st) => {
+      fin = true
+      if (!item.redo) update((st) => {
         let cs = st.cards[c.id] || { box: 0, reps: 0, lapses: 0, due: today(), misses: 0 }
         if (item.missed && cs.reps > 0) cs = { ...cs, box: 1, lapses: cs.lapses + 1 }
         st.cards[c.id] = { misses: cs.misses || 0, ...L.schedule(cs, true, today(), st.settings.ship) }
@@ -119,14 +125,23 @@ export default function Study() {
       })
       done++
     }
+    setTrail((t) => [...t.slice(-19), { item, fin }])
     setS({ queue: q, total: s.total, done, miss })
   }
 
-  // Browse the queue without answering: nothing is scored, the card just moves to the other end.
-  const browse = (dir: 1 | -1) => {
+  // Skip: nothing is scored, the card just moves to the other end.
+  const skip = () => {
     if (!s || s.queue.length < 2) return
-    const q = dir === 1 ? [...s.queue.slice(1), s.queue[0]] : [s.queue[s.queue.length - 1], ...s.queue.slice(0, -1)]
-    setS({ ...s, queue: q })
+    setS({ ...s, queue: [...s.queue.slice(1), s.queue[0]] })
+  }
+  // Back: reopen the card you just answered (not the one skipped to the end). If it was already cleared, redoing it does not move its schedule again.
+  const back = () => {
+    if (!s || !trail.length) return
+    const last = trail[trail.length - 1]
+    const rest = s.queue.filter((i) => i.id !== last.item.id)
+    setS({ ...s, queue: [{ ...last.item, uid: uid++, redo: last.fin || last.item.redo }, ...rest], done: last.fin ? s.done - 1 : s.done })
+    setTrail(trail.slice(0, -1))
+    setManual(null)
   }
 
   const setLevel = (item: Item, lv: number) => {
@@ -166,8 +181,8 @@ export default function Study() {
           <div className="mb-1 flex justify-between text-xs text-muted-foreground"><span>{s.queue.length} left</span><span>{s.done} of {s.total} cleared</span></div>
           <Progress value={s.total ? (s.done / s.total) * 100 : 0} className="mb-3 h-1.5 [&>div]:bg-gold" />
           <div className="mb-4 flex gap-3">
-            <Button variant="outline" size="sm" className="flex-1" onClick={() => browse(-1)} disabled={s.queue.length < 2}><ChevronLeft />Back</Button>
-            <Button variant="outline" size="sm" className="flex-1" onClick={() => browse(1)} disabled={s.queue.length < 2}>Skip<ChevronRight /></Button>
+            <Button variant="outline" size="sm" className="flex-1" onClick={back} disabled={!trail.length}><ChevronLeft />Back</Button>
+            <Button variant="outline" size="sm" className="flex-1" onClick={skip} disabled={s.queue.length < 2}>Skip<ChevronRight /></Button>
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <Eyebrow>{c.secName}</Eyebrow>
@@ -191,7 +206,7 @@ export default function Study() {
           <Eyebrow>Session complete</Eyebrow>
           <h2 className="slab mt-2 text-2xl font-bold">{s.done} of {s.total} cleared</h2>
           <p className="mt-1 text-muted-foreground">{s.miss} misses. {fresh.length} cards unseen. {due.length} due now.</p>
-          {fresh.length > 0 && <Button className="mt-4 mr-3" onClick={() => start(getStore().intro.n)}>Learn {store.settings.newPerDay} more</Button>}
+          {fresh.length > 0 && <Button className="mt-4 mr-3" onClick={() => start(getStore().intro.n, true)}>Learn {store.settings.newPerDay} more</Button>}
           <Button variant="outline" className="mt-4" onClick={() => start(0)}>Check due cards</Button>
         </Panel>
       ) : null}

@@ -72,3 +72,6 @@ Rollback: `git reset --hard audit-2026-11-09-r1` on main, then push with lease.
 
 ## Round 30 (2026-11-10), tag audit-2026-11-10-r30
 - Reported "still does it" after r29. The deployed bundle matched my build and the nested-accordion layout was correct headless at 390 and 1235 px, so a stale cached copy on the device is the likely cause (Pages caches index.html for 10 minutes, and the service worker held the old shell). Bumped the service worker cache to v6 and added the commit hash under Settings > About ("Build xxxxxxx") so the running version can be read off the phone.
+
+## Round 30 (2026-11-10), pending push
+- Study: Back reopens the card you just answered (Skip no longer feeds Back); a cleared card redone via Back does not re-schedule. Session is now due-today plus pins; new cards only via "Learn N more", or when nothing is due.
