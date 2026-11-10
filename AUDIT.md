@@ -81,3 +81,6 @@ Rollback: `git reset --hard audit-2026-11-09-r1` on main, then push with lease.
 
 ## Round 33 (2026-11-10), tag audit-2026-11-10-r33
 - The slider now sets only how many words are blank (Read it, Some words, Most words, All words, From memory). The old "First letters" level is "All words"; whether each blank shows its first letter is a checkbox in the slider box ("Show the first letter in each blank", on by default, saved in settings.letters). Same box in Ranks Recall, where it also masks the title letters. Verified headless: toggling clears the blank hints and saves.
+
+## Round 34 (2026-11-10), tag audit-2026-11-10-r34
+- Fill-in boxes (Study and Ranks Recall): space, Enter, Down or Right (at end of text) go to the next box; Up or Left (at start) go back; Enter in the last box checks. Helper in src/lib/blanks.ts. Verified headless with key events.

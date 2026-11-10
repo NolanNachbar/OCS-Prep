@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react"
+import { onBlankKey } from "@/lib/blanks"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { Slider } from "@/components/ui/slider"
@@ -197,7 +198,7 @@ function Step({ item, level, letters, card: c, onNext, onEasier, onHarder }: { i
               <input key={i} value={vals[k] || ""} disabled={!!res} autoFocus={k === 0}
                 onChange={(e) => setVals({ ...vals, [k]: e.target.value })}
                 size={Math.min(Math.max(3, L.norm(t.text).length), 14)}
-                autoCapitalize="none" autoComplete="off" autoCorrect="off" spellCheck={false} aria-label={`blank ${k + 1}`}
+                data-blank onKeyDown={(e) => onBlankKey(e, check)} autoCapitalize="none" autoComplete="off" autoCorrect="off" spellCheck={false} aria-label={`blank ${k + 1}`}
                 placeholder={letters ? t.text.replace(/^[^A-Za-z0-9]*/, "").slice(0, 1) : ""}
                 className={`mx-1 min-h-11 rounded-none border-0 border-b-2 bg-secondary px-2 py-1 text-center text-xl text-foreground outline-none placeholder:text-gold placeholder:font-bold focus:bg-muted ${state}`} />
             )
