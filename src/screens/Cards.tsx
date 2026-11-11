@@ -1,3 +1,4 @@
+import { lines } from "@/lib/blanks"
 import { useState } from "react"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Badge } from "@/components/ui/badge"
@@ -40,7 +41,7 @@ export default function Cards({ onTest }: { onTest: () => void }) {
                 {cs.map((c, i) => (
                   <div key={c.id} className="rounded-md border border-border bg-background/50 p-3">
                     <div className="flex items-center justify-between gap-2"><b>{c.prompt}</b>{chip(c)}</div>
-                    <p className="mt-1 text-muted-foreground">{c.answer}</p>
+                    <p className="mt-1 whitespace-pre-line text-muted-foreground">{lines(c.answer)}</p>
                     <Insignia card={c} />
                     {hookFor(c, i) && <p className="mt-2 border-l-2 border-gold pl-2 text-sm">{hookFor(c, i)}</p>}
                     <Button variant={(store.pinned || []).includes(c.id) ? "default" : "outline"} className="mt-2 mr-2" aria-pressed={(store.pinned || []).includes(c.id)}

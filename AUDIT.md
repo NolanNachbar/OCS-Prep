@@ -84,3 +84,6 @@ Rollback: `git reset --hard audit-2026-11-09-r1` on main, then push with lease.
 
 ## Round 34 (2026-11-10), tag audit-2026-11-10-r34
 - Fill-in boxes (Study and Ranks Recall): space, Enter, Down or Right (at end of text) go to the next box; Up or Left (at start) go back; Enter in the last box checks. Helper in src/lib/blanks.ts. Verified headless with key events.
+
+## Round 35 (2026-11-11), tag audit-2026-11-11-r35
+- Rank wording shows one labelled part per line (name, Collar, Shoulder board, Sleeve, or Insignia) everywhere it appears: Ranks rows and Match answer, Recall and Learn, Study, Cards, Listen, and between the fill-in boxes. Display only (lines() and startsLine() in src/lib/blanks.ts); cards.json and the scorer are unchanged. Gate passes; Ensign row checked in the browser.

@@ -1,3 +1,4 @@
+import { lines } from "@/lib/blanks"
 import { useEffect, useRef, useState } from "react"
 import { Pause, Play, SkipForward } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -102,7 +103,7 @@ export default function Listen() {
       <div className="border border-border bg-black/25 p-5 text-center">
         <div className="text-xs font-bold uppercase tracking-[0.18em] text-gold">{playing ? (mode === "quiz" && phase === "gap" ? "Your turn" : mode === "quiz" && phase === "answer" ? "Answer" : "Reading") : "Paused"}</div>
         <div className="slab mt-2 text-3xl font-bold leading-none">{c ? c.prompt : "Pick at least one section"}</div>
-        {c && (mode === "read" || phase === "answer") && playing && <p className="mt-3 text-lg text-muted-foreground">{c.answer}</p>}
+        {c && (mode === "read" || phase === "answer") && playing && <p className="mt-3 whitespace-pre-line text-lg text-muted-foreground">{lines(c.answer)}</p>}
       </div>
       <div className="mt-5 flex gap-3">
         <Button size="lg" className="flex-1" onClick={toggle} disabled={!cards.length}>{playing ? <Pause /> : <Play />} {playing ? "Pause" : "Play"}</Button>

@@ -12,3 +12,7 @@ export function onBlankKey(e: KeyboardEvent<HTMLInputElement>, submit: () => voi
   else if (e.key === "ArrowUp" || (e.key === "ArrowLeft" && atStart)) go(i - 1)
   else if (e.key === "Enter") { e.preventDefault(); if (i < all.length - 1) go(i + 1); else submit() }
 }
+
+// Rank wording shows one labelled part per line (display only; the card text is unchanged).
+export const lines = (t: string) => t.replace(/ (?=(?:Collar|Shoulder board|Sleeve|Insignia):)/g, "\n")
+export const startsLine = (t: string, next?: string) => /^(?:Collar|Sleeve|Insignia):$/.test(t) || (t === "Shoulder" && next === "board:")

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Panel, Eyebrow } from "@/components/shared"
 import { Drawing, Insignia, primary, rankName } from "@/components/Insignia"
 import RankRecall from "@/screens/RankRecall"
+import { lines } from "@/lib/blanks"
 import { useCards } from "@/lib/cards"
 import { useStore } from "@/lib/store"
 import * as L from "@/lib/ocs.js"
@@ -111,7 +112,7 @@ export default function Ranks() {
           <div className="mt-4">
             <p className={quiz.pick === q.c.id ? "text-ok" : "text-destructive"}>{quiz.pick === q.c.id ? "Correct." : "Not that one."}</p>
             <p className="mt-1 font-bold">{q.c.prompt}: {rankName(q.c)}</p>
-            <p className="text-muted-foreground">{q.c.answer}</p>
+            <p className="whitespace-pre-line text-muted-foreground">{lines(q.c.answer)}</p>
             <Insignia card={q.c} />
             <Button className="mt-4" onClick={() => setQuiz({ ...quiz, i: quiz.i + 1, pick: null })} autoFocus>Next</Button>
           </div>
@@ -161,7 +162,7 @@ export default function Ranks() {
                             </AccordionTrigger>
                             <AccordionContent>
                               <Insignia card={c} compact />
-                              <p className="mt-2 text-[0.95rem]">{c.answer}</p>
+                              <p className="mt-2 whitespace-pre-line text-[0.95rem]">{lines(c.answer)}</p>
                             </AccordionContent>
                           </AccordionItem>
                         ))}

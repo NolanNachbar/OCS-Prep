@@ -1,7 +1,7 @@
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { useEffect, useMemo, useRef, useState } from "react"
 import { Volume2 } from "lucide-react"
-import { onBlankKey } from "@/lib/blanks"
+import { lines, onBlankKey, startsLine } from "@/lib/blanks"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
@@ -240,7 +240,7 @@ function Step({ item, level, card: c, hook, onIntro, onHarder, onEasier, onNext 
     return (
       <div>
         {c.lead && <p className="italic text-muted-foreground">{c.lead}</p>}
-        <p className="text-lg leading-relaxed">{c.answer}</p>
+        <p className="whitespace-pre-line text-lg leading-relaxed">{lines(c.answer)}</p>
         <Insignia card={c} />
         {hook && <Hook text={hook} />}
         <p className="mt-4 text-sm text-muted-foreground">Read it, then say it out loud once without looking.</p>
@@ -270,16 +270,17 @@ function Step({ item, level, card: c, hook, onIntro, onHarder, onEasier, onNext 
       {level < 4 ? (
         <p className="text-xl leading-[2.4]">
           {toks.map((t: { text: string; blank: boolean }, i: number) => {
-            if (!t.blank) return <span key={i}>{t.text} </span>
+            const br = i > 0 && startsLine(t.text, toks[i + 1]?.text) && <br />
+            if (!t.blank) return <span key={i}>{br}{t.text} </span>
             const k = bi++
             const state = res ? (L.norm(vals[k] || "") === L.norm(t.text) ? "border-b-ok bg-ok/15" : "border-b-destructive bg-destructive/15") : "border-b-gold"
             return (
-              <input key={i} value={vals[k] || ""} disabled={!!res} autoFocus={k === 0}
+              <span key={i}>{br}<input value={vals[k] || ""} disabled={!!res} autoFocus={k === 0}
                 onChange={(e) => setVals({ ...vals, [k]: e.target.value })}
                 size={Math.min(Math.max(3, L.norm(t.text).length), 14)}
                 data-blank onKeyDown={(e) => onBlankKey(e, check)} autoCapitalize="none" autoComplete="off" autoCorrect="off" spellCheck={false} aria-label={`blank ${k + 1}`}
                 placeholder={level >= 1 && store.settings.letters !== false ? t.text.replace(/^[^A-Za-z0-9]*/, "").slice(0, 1) : ""}
-                className={`mx-1 min-h-11 rounded-none border-0 border-b-2 bg-secondary px-2 py-1 text-center text-xl text-foreground outline-none placeholder:text-gold placeholder:font-bold focus:bg-muted ${state}`} />
+                className={`mx-1 min-h-11 rounded-none border-0 border-b-2 bg-secondary px-2 py-1 text-center text-xl text-foreground outline-none placeholder:text-gold placeholder:font-bold focus:bg-muted ${state}`} /></span>
             )
           })}
         </p>
