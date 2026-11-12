@@ -149,3 +149,6 @@ After a miss in Test, Inspection or Word match there is an "Add to my Study card
 ## Round 54 (2026-11-12): Count as correct at level 4
 - The Count as correct button was hidden on the From memory level (typed or dictated recital), the one place a near-miss or mis-heard word is most likely. It now shows there too (not after Show answer).
 - Gate: PASS.
+
+## r55 (2026-11-12)
+Audit fixes: a clean level-4 pass now clears the weak (misses) count in Study and RankRecall (spread order); reviews are never scheduled past the ship date; Easier level after a miss now counts as a miss (Study and RankRecall) and is hidden when it would drop to Read it; Skip clears the manual slider level; redo flag carried through requeues. Tests added for misses clearing and the ship-date cap.

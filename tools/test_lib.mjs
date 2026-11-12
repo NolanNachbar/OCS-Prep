@@ -98,4 +98,14 @@ t("rank manifest lists exactly the PNGs in public/ranks", () => {
   const listed = JSON.parse(readFileSync(new URL("../src/data/rank-files.json", import.meta.url), "utf8"));
   assert(JSON.stringify(onDisk) === JSON.stringify(listed), "run python3 tools/rank_manifest.py");
 });
+t("a clean pass clears the miss count the way Study and RankRecall write it", () => {
+  const cs = { box: 1, reps: 3, lapses: 1, misses: 4, due: "2026-11-01" };
+  const out = { ...L.schedule(cs, true, "2026-11-12", "2027-01-01"), misses: 0 };
+  assert(out.misses === 0, "misses must be 0 after a clean pass");
+});
+t("a review is never scheduled past the ship date", () => {
+  assert(L.schedule({ box: 2 }, true, "2026-12-31", "2027-01-01").due <= "2027-01-01");
+  assert(L.schedule({ box: 5 }, true, "2026-12-25", "2027-01-01").due <= "2027-01-01");
+  assert(L.schedule({ box: 2 }, true, "2026-11-12", "2027-01-01").due > "2026-11-12");
+});
 console.log(n, "tests passed");

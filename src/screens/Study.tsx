@@ -125,17 +125,17 @@ export default function Study() {
     let fin = false
     if (!ok) {
       miss++
-      requeue(q, { uid: uid++, id: c.id, stage: Math.max(1, level - 1), missed: true }, 3)
+      requeue(q, { uid: uid++, id: c.id, stage: Math.max(1, level - 1), missed: true, redo: item.redo }, 3)
     } else if (level === 0) {
-      requeue(q, { uid: uid++, id: c.id, stage: item.stage, missed: item.missed }, 4) // reading it is not a pass
+      requeue(q, { uid: uid++, id: c.id, stage: item.stage, missed: item.missed, redo: item.redo }, 4) // reading it is not a pass
     } else if (level < 4) {
-      requeue(q, { uid: uid++, id: c.id, stage: Math.min(4, Math.max(item.stage, level) + 1), missed: item.missed }, 4)
+      requeue(q, { uid: uid++, id: c.id, stage: Math.min(4, Math.max(item.stage, level) + 1), missed: item.missed, redo: item.redo }, 4)
     } else {
       fin = true
       if (!item.redo) update((st) => {
         let cs = st.cards[c.id] || { box: 0, reps: 0, lapses: 0, due: today(), misses: 0 }
         if (item.missed && cs.reps > 0) cs = { ...cs, box: 1, lapses: cs.lapses + 1 }
-        st.cards[c.id] = { misses: item.missed ? cs.misses || 0 : 0, ...L.schedule(cs, true, today(), st.settings.ship) } // a clean type-it-cold pass clears the weak count
+        st.cards[c.id] = { ...L.schedule(cs, true, today(), st.settings.ship), misses: item.missed ? cs.misses || 0 : 0 } // a clean type-it-cold pass clears the weak count
         return st
       })
       done++
@@ -148,6 +148,7 @@ export default function Study() {
   const skip = () => {
     if (!s || s.queue.length < 2) return
     setTrail((t) => [...t.slice(-19), { item: s.queue[0], fin: false, skip: true }])
+    setManual(null)
     setS({ ...s, queue: [...s.queue.slice(1), s.queue[0]] })
   }
   // Back: reopen the card you just answered (not the one skipped to the end). If it was already cleared, redoing it does not move its schedule again.
@@ -166,8 +167,8 @@ export default function Study() {
     setManual(null)
   }
 
-  const setLevel = (item: Item, lv: number) => {
-    if (s) { setManual(null); setS({ ...s, queue: [{ ...item, uid: uid++, lvl: lv }, ...s.queue.slice(1)] }) } // the slider's manual level would otherwise win over this one
+  const setLevel = (item: Item, lv: number, miss = false) => {
+    if (s) { setManual(null); setS({ ...s, miss: s.miss + (miss ? 1 : 0), queue: [{ ...item, uid: uid++, lvl: lv, missed: item.missed || miss }, ...s.queue.slice(1)] }) } // the slider's manual level would otherwise win over this one
   }
 
   const introduce = (item: Item) => {
@@ -225,7 +226,7 @@ export default function Study() {
             <label className="mt-3 flex min-h-11 items-center gap-3 text-sm"><input type="checkbox" className="size-5 accent-[#D8B24A]" checked={store.settings.letters !== false} onChange={(e) => update((st) => { st.settings.letters = e.target.checked; return st })} />Show the first letter in each blank</label>
             {manual !== null && <Button variant="ghost" size="sm" className="mt-1 px-0" onClick={() => setManual(null)}>Back to auto</Button>}
           </div>
-          <Step key={item.uid + "-" + level} item={item} level={level} card={c} hook={hookFor(c, secIdx(c))} onIntro={() => introduce(item)} onHarder={() => setLevel(item, rg[rg.indexOf(level) + 1] ?? 4)} onEasier={() => setLevel(item, rg[Math.max(0, rg.indexOf(level) - 1)])} onNext={(ok) => advance(item, ok, level)} />
+          <Step key={item.uid + "-" + level} item={item} level={level} card={c} hook={hookFor(c, secIdx(c))} onIntro={() => introduce(item)} onHarder={() => setLevel(item, rg[rg.indexOf(level) + 1] ?? 4)} onEasier={rg.indexOf(level) > 1 ? () => setLevel(item, rg[rg.indexOf(level) - 1], true) : undefined} onNext={(ok) => advance(item, ok, level)} />
         </Panel>
       ) : s ? (
         <Panel>
@@ -240,7 +241,7 @@ export default function Study() {
   )
 }
 
-function Step({ item, level, card: c, hook, onIntro, onHarder, onEasier, onNext }: { item: Item; level: number; card: Card; hook: string; onIntro: () => void; onHarder: () => void; onEasier: () => void; onNext: (ok: boolean) => void }) {
+function Step({ item, level, card: c, hook, onIntro, onHarder, onEasier, onNext }: { item: Item; level: number; card: Card; hook: string; onIntro: () => void; onHarder: () => void; onEasier?: () => void; onNext: (ok: boolean) => void }) {
   const [hint, setHint] = useState(false)
   const [peek, setPeek] = useState<string | null>(null)
   const store = useStore()
@@ -343,7 +344,7 @@ function Step({ item, level, card: c, hook, onIntro, onHarder, onEasier, onNext 
           <div className="mt-4 flex flex-col gap-6">
             <Button onClick={() => onNext(res.r.ok && !(hint && level === 4) && !tainted)} autoFocus>Next</Button>
             {res.r.ok && level < 4 && <Button variant="outline" onClick={onHarder}>Next level up</Button>}
-            {!res.r.ok && level > 1 && <Button variant="outline" onClick={onEasier}>Easier level</Button>}
+            {!res.r.ok && onEasier && <Button variant="outline" onClick={onEasier}>Easier level</Button>}
             {!res.r.ok && <Button variant="outline" onClick={() => { setTainted(true); setRes(null); setText(""); setVals({}) }}>Try again</Button>}
             {!res.r.ok && !res.peeked && <Button variant="outline" onClick={() => onNext(true)}>Count as correct</Button>}
           </div>

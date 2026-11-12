@@ -92,6 +92,12 @@ export default function RankRecall({ cards, teach, onExit, next }: { cards: Card
   const level = manual ?? item.level
 
   // clean = right with no hint. A miss drops a level, a hinted pass repeats the level, a clean pass climbs; clean at level 4 finishes the step.
+  // Easier after a wrong answer is still a miss: it counts, flags the card, and retries the same step one level down.
+  const easier = () => {
+    update((st) => { if (st.cards[c.id]) st.cards[c.id].misses = (st.cards[c.id].misses || 0) + 1; return st })
+    setManual(null)
+    setS({ ...s, miss: s.miss + 1, missed: s.missed.includes(c.id) ? s.missed : [...s.missed, c.id], queue: [{ ...item, uid: uid++, level: Math.max(1, level - 1) }, ...s.queue.slice(1)] })
+  }
   const advance = (ok: boolean, clean: boolean) => {
     const q = s.queue.slice(1)
     const put = (it: Item, at: number) => q.splice(Math.min(at, q.length), 0, it)
@@ -107,7 +113,7 @@ export default function RankRecall({ cards, teach, onExit, next }: { cards: Card
         update((st) => {
           let cs = st.cards[c.id] || { box: 0, reps: 0, lapses: 0, due: today(), misses: 0 }
           if (missed.includes(c.id) && cs.reps > 0) cs = { ...cs, box: 1, lapses: cs.lapses + 1 }
-          st.cards[c.id] = { misses: missed.includes(c.id) ? cs.misses || 0 : 0, ...L.schedule(cs, true, today(), st.settings.ship) }
+          st.cards[c.id] = { ...L.schedule(cs, true, today(), st.settings.ship), misses: missed.includes(c.id) ? cs.misses || 0 : 0 }
           return st
         })
       }
@@ -132,7 +138,7 @@ export default function RankRecall({ cards, teach, onExit, next }: { cards: Card
             <label className="mt-3 flex min-h-11 items-center gap-3 text-sm"><input type="checkbox" className="size-5 accent-[#D8B24A]" checked={letters} onChange={(e) => update((st) => { st.settings.letters = e.target.checked; return st })} />Show the first letter in each blank</label>
         {manual !== null && <Button variant="ghost" size="sm" className="mt-1 px-0" onClick={() => setManual(null)}>Back to auto</Button>}
       </div>
-      <Step key={`${item.uid}-${level}`} letters={letters} item={item} level={level} card={c} onNext={advance} onEasier={() => setManual(Math.max(0, level - 1))} onHarder={() => setManual(Math.min(4, level + 1))} />
+      <Step key={`${item.uid}-${level}`} letters={letters} item={item} level={level} card={c} onNext={advance} onEasier={easier} onHarder={() => setManual(Math.min(4, level + 1))} />
       <Button variant="ghost" className="mt-2" onClick={onExit}>Exit</Button>
     </Panel>
   )

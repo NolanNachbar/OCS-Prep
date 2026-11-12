@@ -158,12 +158,14 @@
     }
     s.box = Math.min(s.box + 1, STEPS.length - 1);
     let gap = STEPS[s.box];
+    let left = Infinity;
     // Never let the next review slip past a quarter of the time left before shipping.
     if (ship && /^\d{4}-\d{2}-\d{2}$/.test(ship)) {
-      const left = daysBetween(today, ship);
+      left = daysBetween(today, ship);
       gap = Math.min(gap, Math.max(2, Math.floor(left / 4)));
     }
     s.due = addDays(today, Math.max(1, gap));
+    if (left >= 1 && s.due > ship) s.due = ship; // the 2 day floor must not push a review past the ship date
     return s;
   }
 
