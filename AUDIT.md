@@ -93,3 +93,6 @@ Rollback: `git reset --hard audit-2026-11-09-r1` on main, then push with lease.
 
 ## Round 37 (2026-11-11), tag audit-2026-11-11-r37
 - Listen: Loop now defaults off and is labelled "Loop the whole list", so Article 1 x3 then Article 2 x3 plays six times and stops (it used to restart forever because Loop defaulted on). Changing a count pauses playback so a running list never plays stale counts. Speed chips 0.75x to 2x on the Listen tab (saved in settings.rate, same value as Settings, whose Voice speed list now matches). Verified headless with a mocked speech engine: six plays at 1.5x, then Paused.
+
+## Round 38 (2026-11-11), tag audit-2026-11-11-r38
+- Listen: the two players are labelled apart. The yellow button is now "Play my list" (follows card choices, counts and speed); the audio bar is "Whole-section recordings (separate player)" and says it ignores counts and loops forever.

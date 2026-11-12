@@ -149,12 +149,12 @@ export default function Listen() {
         {c && (mode === "read" || phase === "answer") && playing && <p className="mt-3 whitespace-pre-line text-lg text-muted-foreground">{lines(c.answer)}</p>}
       </div>
       <div className="mt-5 flex gap-3">
-        <Button size="lg" className="flex-1" onClick={toggle} disabled={!cards.length}>{playing ? <Pause /> : <Play />} {playing ? "Pause" : "Play"}</Button>
+        <Button size="lg" className="flex-1" onClick={toggle} disabled={!cards.length}>{playing ? <Pause /> : <Play />} {playing ? "Pause" : "Play my list"}</Button>
         <Button size="lg" variant="outline" onClick={() => setIdx((i) => (i + 1) % Math.max(1, cards.length))} aria-label="Next card"><SkipForward /></Button>
       </div>
       <div className="mt-8 border-t border-border pt-5">
-        <div className="text-xs font-bold uppercase tracking-[0.18em] text-gold">Audio files, for the run</div>
-        <p className="mt-2 text-sm text-muted-foreground">Real recordings that keep playing with the screen locked or the phone in your pocket. Pick a section, press play, and it loops. Needs a connection every time you play one.</p>
+        <div className="text-xs font-bold uppercase tracking-[0.18em] text-gold">Whole-section recordings (separate player)</div>
+        <p className="mt-2 text-sm text-muted-foreground">This is not the Play button above. These are recordings of a whole section that keep playing with the screen locked. They ignore the card choices and counts, and they loop forever until you pause. Needs a connection every time you play one.</p>
         <div className="mt-3 flex flex-wrap gap-2">
           {secs.map(([k, name]) => (
             <button key={k} onClick={() => setASec(k)} aria-pressed={aSec === k}
