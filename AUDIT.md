@@ -87,3 +87,6 @@ Rollback: `git reset --hard audit-2026-11-09-r1` on main, then push with lease.
 
 ## Round 35 (2026-11-11), tag audit-2026-11-11-r35
 - Rank wording shows one labelled part per line (name, Collar, Shoulder board, Sleeve, or Insignia) everywhere it appears: Ranks rows and Match answer, Recall and Learn, Study, Cards, Listen, and between the fill-in boxes. Display only (lines() and startsLine() in src/lib/blanks.ts); cards.json and the scorer are unchanged. Gate passes; Ensign row checked in the browser.
+
+## Round 36 (2026-11-11), tag audit-2026-11-11-r36
+- Listen: choose exact cards and how many times each plays back to back (Article 1 x3, then Article 2 x3). Section buttons still select a whole section; per-section lists with - / + counts sit below. One card with Loop on repeats forever (loop now advances a lap counter so a one-card playlist no longer stalls). Display shows "Play n of m". Audio files section unchanged (per section). Gate passes; counts checked headless (6 plays, 8 after +2, 3 after clearing others).

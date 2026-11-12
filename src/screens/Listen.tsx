@@ -17,7 +17,8 @@ export default function Listen() {
   const { order, secIdx } = useCards()
   const secs = [...new Map(order.map((c) => [c.sec, c.secName])).entries()]
   const [mode, setMode] = useState("read")
-  const [picked, setPicked] = useState<string[]>(secs.slice(0, 1).map(([k]) => k))
+  // How many times each card plays in a row (0 = left out). Cards play in book order, each repeated back to back.
+  const [reps, setReps] = useState<Record<string, number>>(() => Object.fromEntries(order.filter((x) => x.sec === secs[0]?.[0]).map((x) => [x.id, 1])))
   const [loop, setLoop] = useState(true)
   const [aSec, setASec] = useState(secs[0]?.[0] ?? "")
   const [aMode, setAMode] = useState("read")
@@ -25,13 +26,15 @@ export default function Listen() {
   const [tips, setTips] = useState(false)
   const [playing, setPlaying] = useState(false)
   const [idx, setIdx] = useState(0)
+  const [lap, setLap] = useState(0)
   const [phase, setPhase] = useState<"prompt" | "gap" | "answer">("prompt")
   const run = useRef(0)
   const lock = useRef<{ release: () => Promise<void> } | null>(null)
 
-  const cards = order.filter((c) => picked.includes(c.sec))
+  const cards = order.flatMap((x) => Array.from({ length: reps[x.id] ?? 0 }, (_, i) => ({ c: x, rep: i + 1, of: reps[x.id] })))
   const gapMs = store.settings.gap * 1000
-  const c = cards[idx % Math.max(1, cards.length)]
+  const cur = cards[idx % Math.max(1, cards.length)]
+  const c = cur?.c
 
   useEffect(() => {
     if (!playing || !c) return
@@ -43,6 +46,7 @@ export default function Listen() {
       if (!live()) return
       if (idx + 1 >= cards.length && !loop) { setPlaying(false); setIdx(0); return }
       setIdx((i) => (i + 1 >= cards.length ? 0 : i + 1))
+      setLap((n) => n + 1)
     }
     let t: ReturnType<typeof setTimeout>
     setPhase("prompt")
@@ -61,7 +65,7 @@ export default function Listen() {
     }
     return () => { run.current++; clearTimeout(t); stopSpeaking() }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [playing, idx, mode, tips, c?.id])
+  }, [playing, idx, lap, mode, tips, c?.id])
 
   const toggle = async () => {
     const next = !playing
@@ -76,7 +80,11 @@ export default function Listen() {
   }
   useEffect(() => { if (!playing && lock.current) { lock.current.release().catch(() => {}); lock.current = null } }, [playing])
   useEffect(() => () => { lock.current?.release().catch(() => {}) }, [])
-  const pick = (k: string) => { setPicked((p) => (p.includes(k) ? p.filter((x) => x !== k) : [...p, k])); setIdx(0) }
+  const setRep = (id: string, n: number) => { setReps((r) => ({ ...r, [id]: Math.max(0, Math.min(9, n)) })); setIdx(0) }
+  const inSec = (k: string) => order.filter((x) => x.sec === k)
+  const allIn = (k: string) => inSec(k).every((x) => (reps[x.id] ?? 0) > 0)
+  // The section button turns the whole section on at once (keeping any count you set) or clears it.
+  const pick = (k: string) => { setReps((r) => ({ ...r, ...Object.fromEntries(inSec(k).map((x) => [x.id, allIn(k) ? 0 : r[x.id] || 1])) })); setIdx(0) }
 
   return (
     <Panel>
@@ -86,14 +94,41 @@ export default function Listen() {
           <TabsTrigger value="quiz" className="h-11 rounded-none font-bold uppercase tracking-wider">Quiz me</TabsTrigger>
         </TabsList>
       </Tabs>
-      <p className="mt-3 text-sm text-muted-foreground">{mode === "read" ? "Reads each card in the sections you pick, prompt then answer." : `Prompt, then ${store.settings.gap} seconds to say it aloud, then the answer.`}</p>
-      <div className="mt-4 mb-2 text-xs font-bold uppercase tracking-[0.18em] text-gold">Sections ({cards.length} cards)</div>
+      <p className="mt-3 text-sm text-muted-foreground">{mode === "read" ? "Reads each card you choose, prompt then answer." : `Prompt, then ${store.settings.gap} seconds to say it aloud, then the answer.`}</p>
+      <div className="mt-4 mb-2 text-xs font-bold uppercase tracking-[0.18em] text-gold">Sections ({cards.length} plays)</div>
       <div className="flex flex-wrap gap-2">
         {secs.map(([k, name]) => (
-          <button key={k} onClick={() => pick(k)} aria-pressed={picked.includes(k)}
-            className={`min-h-11 border px-3 text-xs font-bold uppercase tracking-wider ${picked.includes(k) ? "border-gold bg-gold text-navy-black" : "border-border text-foreground"}`}>{name}</button>
+          <button key={k} onClick={() => pick(k)} aria-pressed={allIn(k)}
+            className={`min-h-11 border px-3 text-xs font-bold uppercase tracking-wider ${allIn(k) ? "border-gold bg-gold text-navy-black" : "border-border text-foreground"}`}>{name}</button>
         ))}
       </div>
+      <div className="mt-4 mb-2 text-xs font-bold uppercase tracking-[0.18em] text-gold">Pick exact cards and how many times each plays</div>
+      <div className="space-y-2">
+        {secs.map(([k, name]) => {
+          const cs = inSec(k)
+          const on = cs.filter((x) => (reps[x.id] ?? 0) > 0).length
+          return (
+            <details key={k} className="border border-border">
+              <summary className="flex min-h-11 cursor-pointer items-center justify-between px-3 text-sm font-bold">
+                <span>{name}</span><span className="text-muted-foreground">{on} of {cs.length} chosen</span>
+              </summary>
+              <div className="border-t border-border">
+                {cs.map((x) => (
+                  <div key={x.id} className="flex items-center justify-between gap-2 px-3 py-1">
+                    <span className={`text-sm ${(reps[x.id] ?? 0) > 0 ? "text-foreground" : "text-muted-foreground"}`}>{x.prompt}</span>
+                    <span className="flex shrink-0 items-center">
+                      <Button size="sm" variant="outline" className="size-11" onClick={() => setRep(x.id, (reps[x.id] ?? 0) - 1)} aria-label={`Fewer plays of ${x.prompt}`}>-</Button>
+                      <span className="w-9 text-center font-bold" aria-label={`${reps[x.id] ?? 0} plays`}>{(reps[x.id] ?? 0) > 0 ? `${reps[x.id]}x` : "off"}</span>
+                      <Button size="sm" variant="outline" className="size-11" onClick={() => setRep(x.id, (reps[x.id] ?? 0) + 1)} aria-label={`More plays of ${x.prompt}`}>+</Button>
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </details>
+          )
+        })}
+      </div>
+      <p className="mt-2 text-sm text-muted-foreground">Each card plays its count back to back, then the next card. Choose one card with Loop on to repeat it forever.</p>
       <div className="my-5 flex items-center gap-3">
         <Switch id="lp" checked={loop} onCheckedChange={setLoop} />
         <Label htmlFor="lp" className="text-base">Loop</Label>
@@ -102,7 +137,8 @@ export default function Listen() {
       </div>
       <div className="border border-border bg-black/25 p-5 text-center">
         <div className="text-xs font-bold uppercase tracking-[0.18em] text-gold">{playing ? (mode === "quiz" && phase === "gap" ? "Your turn" : mode === "quiz" && phase === "answer" ? "Answer" : "Reading") : "Paused"}</div>
-        <div className="slab mt-2 text-3xl font-bold leading-none">{c ? c.prompt : "Pick at least one section"}</div>
+        <div className="slab mt-2 text-3xl font-bold leading-none">{c ? c.prompt : "Pick at least one card"}</div>
+        {cur && cur.of > 1 && <div className="mt-2 text-sm text-muted-foreground">Play {cur.rep} of {cur.of}</div>}
         {c && (mode === "read" || phase === "answer") && playing && <p className="mt-3 whitespace-pre-line text-lg text-muted-foreground">{lines(c.answer)}</p>}
       </div>
       <div className="mt-5 flex gap-3">
