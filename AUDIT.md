@@ -125,8 +125,3 @@ After a miss in Test, Inspection or Word match there is an "Add to my Study card
 - Recall-complete screen after a Learn session now offers "Next group: <name>" (lowest to highest), so finishing a group no longer dumps you back to find the button.
 - Ranks intro text updated to the new order (it still listed the old one).
 - Gate: PASS.
-
-## Round 49 (2026-11-12): rank title blanks
-- Title blanks are now one box per letter with a wide gap between words, so multi-word titles no longer run into one blank.
-- After Check the boxes fill in with the full title (green if right, red if wrong) instead of vanishing, so the solution is always shown.
-- Gate: PASS.

@@ -32,21 +32,14 @@ function gradeName(c: Card, text: string): Score {
   const tries = [bare(c), abbr(c), rankName(c)].filter(Boolean).map((k) => L.score(asCard(k), text) as Score)
   return tries.find((r) => r.ok) ?? tries[0]
 }
-// Title blanks for the slider: half the letters, first letter only, letter count only. One box per letter, a wide gap between words,
-// and once checked the whole title is shown filled in.
-function TitleBlanks({ title, level, letters, reveal, ok }: { title: string; level: number; letters: boolean; reveal: boolean; ok: boolean }) {
-  const shown = (w: string, i: number) => reveal || (letters && (level === 1 ? i < Math.ceil(w.length / 2) : level === 2 && i === 0))
-  return (
-    <div className="mt-3 flex flex-wrap gap-x-6 gap-y-2" aria-label={reveal ? title : "Title blanks"}>
-      {title.split(" ").map((w, wi) => (
-        <span key={wi} className="flex gap-1">
-          {[...w].map((ch, i) => (
-            <span key={i} className={`inline-block h-8 w-6 border-b-2 text-center font-mono text-2xl leading-8 ${reveal ? (ok ? "border-b-ok text-ok" : "border-b-destructive text-foreground") : "border-b-gold text-gold"}`}>{shown(w, i) ? ch : ""}</span>
-          ))}
-        </span>
-      ))}
-    </div>
-  )
+// Title masks for the slider: half the letters, first letter only, letter count only.
+function mask(title: string, level: number, letters: boolean) {
+  return title.split(" ").map((w) => {
+    if (!letters) return "_".repeat(w.length)
+    if (level === 1) return w.slice(0, Math.ceil(w.length / 2)) + "_".repeat(Math.floor(w.length / 2))
+    if (level === 2) return w[0] + "_".repeat(w.length - 1)
+    return "_".repeat(w.length)
+  }).join("  ")
 }
 
 // Teach the group first (nobody can recall what they have never seen), then drill with the slider.
@@ -195,7 +188,7 @@ function Step({ item, level, letters, card: c, onNext, onEasier, onHarder }: { i
   return (
     <div>
       {head}
-      {name && level >= 1 && level <= 3 && <TitleBlanks title={bare(c)} level={level} letters={letters} reveal={!!res} ok={!!res?.r.ok} />}
+      {name && level >= 1 && level <= 3 && !res && <p className="mt-3 font-mono text-2xl tracking-widest text-gold">{mask(bare(c), level, letters)}</p>}
       {!name && level < 4 ? (
         <p className="mt-3 text-xl leading-[2.4]">
           {toks.map((t: { text: string; blank: boolean }, i: number) => {
