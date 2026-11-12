@@ -117,3 +117,6 @@ New: RLP inspection mode (src/screens/Inspection.tsx), reachable from Test and f
 
 ## Round 45 (2026-11-12)
 Weak badge fix. "Weak" meant 3 or more lifetime failed checks (any level, Show answer included) and box under 3, and the count never went down, so a card typed perfectly several times still read weak until it reached box 3 days later. Now a clean pass clears the count: a type-it-cold pass in Study (unless the card was missed this session), a correct whole card in Test or Inspection, and a rank clean pass in Rank recall. Partial-part word matches do not clear it. Cards already marked weak clear on their next clean pass; stored data is not rewritten. Scheduling and boxes unchanged.
+
+## Round 46 (2026-11-12)
+After a miss in Test, Inspection or Word match there is an "Add to my Study cards" button (the same pin the Cards tab uses; Study takes it into the open session at once, and the button then reads "Added to Study"). Inspection setup now has section chips to include or leave out content, count shown. The push-up penalty option was removed at his request. cards.json untouched.

@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea"
 import { Diff, Eyebrow, MicButton, Panel, Verdict } from "@/components/shared"
 import { useCards } from "@/lib/cards"
+import PinButton from "@/components/PinButton"
 import * as L from "@/lib/ocs.js"
 import Inspection from "@/screens/Inspection"
 import { getStore, update, useStore } from "@/lib/store"
@@ -103,7 +104,7 @@ export default function Test() {
       {res ? (
         <>
           <Verdict ok={res.ok} /><Diff r={res} />
-          <div className="mt-4 flex gap-3"><Button onClick={() => next(res.ok)} autoFocus>Next</Button></div>
+          <div className="mt-4 flex flex-wrap gap-3"><Button onClick={() => next(res.ok)} autoFocus>Next</Button>{!res.ok && <PinButton id={c.id} />}</div>
         </>
       ) : (
         <div className="mt-4 flex gap-3"><Button onClick={check}>Check</Button><MicButton onText={setText} /></div>

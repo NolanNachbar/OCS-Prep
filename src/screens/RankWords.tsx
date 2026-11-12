@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Diff, Eyebrow, Panel, Verdict } from "@/components/shared"
 import { lines } from "@/lib/blanks"
+import PinButton from "@/components/PinButton"
 import * as L from "@/lib/ocs.js"
 import { update } from "@/lib/store"
 import type { Card, Score } from "@/lib/types"
@@ -64,7 +65,7 @@ export default function RankWords({ cards, onExit }: { cards: Card[]; onExit: ()
         <>
           <Verdict ok={res.ok} /><Diff r={res} />
           <p className="mt-2 whitespace-pre-line text-muted-foreground">{lines(q.c.answer)}</p>
-          <Button className="mt-4" onClick={next} autoFocus>Next</Button>
+          <div className="mt-4 flex flex-wrap gap-3"><Button onClick={next} autoFocus>Next</Button>{!res.ok && <PinButton id={q.c.id} />}</div>
         </>
       ) : (
         <div className="mt-4 flex gap-3"><Button onClick={check}>Check</Button><Button variant="outline" onClick={onExit}>End</Button></div>

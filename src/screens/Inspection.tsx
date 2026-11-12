@@ -5,6 +5,7 @@ import { Switch } from "@/components/ui/switch"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { Diff, Eyebrow, MicButton, Panel, Verdict } from "@/components/shared"
+import PinButton from "@/components/PinButton"
 import * as L from "@/lib/ocs.js"
 import { speak, stopSpeaking } from "@/lib/speech"
 import { update, useStore } from "@/lib/store"
@@ -37,7 +38,9 @@ export default function Inspection({ pool, title, onExit }: { pool: Card[]; titl
   const [count, setCount] = useState("10")
   const [secs, setSecs] = useState("20")
   const [aloud, setAloud] = useState(true)
-  const [pen, setPen] = useState(false)
+  const [off, setOff] = useState<string[]>([]) // sections left out of this inspection
+  const secs0 = [...new Map(pool.map((x) => [x.sec, x.secName])).entries()]
+  const use = pool.filter((x) => !off.includes(x.sec))
   const [run, setRun] = useState<{ q: Card[]; i: number; right: number; missed: string[] } | null>(null)
   const [text, setText] = useState("")
   const [res, setRes] = useState<Score | null>(null)
@@ -76,6 +79,13 @@ export default function Inspection({ pool, title, onExit }: { pool: Card[]; titl
         <Eyebrow>{title}</Eyebrow>
         <h2 className="slab mt-2 text-2xl font-bold">Inspection: answer on the spot</h2>
         <p className="mt-1 text-muted-foreground">The instructor calls a card, a clock starts, and you get one try, word for word. No hints, no second chance. Cards you miss and the senior ranks come up more often. A miss makes the card due today in Study.</p>
+        <div className="mt-4 mb-2 text-xs font-bold uppercase tracking-[0.18em] text-gold">Include ({use.length} cards)</div>
+        <div className="flex flex-wrap gap-2">
+          {secs0.map(([k, name]) => (
+            <button key={k} aria-pressed={!off.includes(k)} onClick={() => setOff((o) => (o.includes(k) ? o.filter((x) => x !== k) : [...o, k]))}
+              className={`min-h-11 border px-3 text-xs font-bold uppercase tracking-wider ${off.includes(k) ? "border-border text-muted-foreground line-through" : "border-gold bg-gold text-navy-black"}`}>{name}</button>
+          ))}
+        </div>
         <div className="mt-4 grid max-w-xs gap-2"><Label>Questions</Label>
           <Select value={count} onValueChange={setCount}><SelectTrigger className="h-12! w-full"><SelectValue /></SelectTrigger>
             <SelectContent>{["5", "10", "20", "30"].map((n) => <SelectItem key={n} value={n}>{n}</SelectItem>)}</SelectContent></Select></div>
@@ -83,9 +93,8 @@ export default function Inspection({ pool, title, onExit }: { pool: Card[]; titl
           <Select value={secs} onValueChange={setSecs}><SelectTrigger className="h-12! w-full"><SelectValue /></SelectTrigger>
             <SelectContent>{["10", "15", "20", "30", "45", "0"].map((n) => <SelectItem key={n} value={n}>{n === "0" ? "No clock" : `${n} seconds`}</SelectItem>)}</SelectContent></Select></div>
         <div className="mt-4 flex items-center gap-3"><Switch id="ia" checked={aloud} onCheckedChange={setAloud} /><Label htmlFor="ia" className="text-base">Instructor reads the call aloud</Label></div>
-        <div className="mt-3 flex items-center gap-3"><Switch id="ip" checked={pen} onCheckedChange={setPen} /><Label htmlFor="ip" className="text-base">Call a push-up penalty on a miss (you count them)</Label></div>
         <div className="mt-5 flex gap-3">
-          <Button disabled={!pool.length} onClick={() => { setRun({ q: draw(pool, +count, store), i: 0, right: 0, missed: [] }); setText(""); setRes(null) }}>Start inspection</Button>
+          <Button disabled={!use.length} onClick={() => { setRun({ q: draw(use, +count, store), i: 0, right: 0, missed: [] }); setText(""); setRes(null) }}>Start inspection</Button>
           <Button variant="outline" onClick={onExit}>Back</Button>
         </div>
       </Panel>
@@ -98,7 +107,7 @@ export default function Inspection({ pool, title, onExit }: { pool: Card[]; titl
         <h2 className="slab mt-2 text-3xl font-bold">{run.right} of {run.q.length}</h2>
         {run.missed.length > 0 ? <p className="mt-2 text-muted-foreground">Missed: {run.missed.join(", ")}. They are due again today.</p> : <p className="mt-2 text-lg">Clean. Every call answered word for word.</p>}
         <div className="mt-5 flex gap-3">
-          <Button onClick={() => { setRun({ q: draw(pool, +count, store), i: 0, right: 0, missed: [] }); setText(""); setRes(null) }}>Another round</Button>
+          <Button onClick={() => { setRun({ q: draw(use, +count, store), i: 0, right: 0, missed: [] }); setText(""); setRes(null) }}>Another round</Button>
           <Button variant="outline" onClick={onExit}>Done</Button>
         </div>
       </Panel>
@@ -113,8 +122,7 @@ export default function Inspection({ pool, title, onExit }: { pool: Card[]; titl
       {res ? (
         <>
           <Verdict ok={res.ok} note={!res.ok && !text.trim() ? (+secs > 0 && left === 0 ? "Time." : "No answer.") : undefined} /><Diff r={res} />
-          {!res.ok && pen && <p className="mt-3 font-bold text-destructive">Drop and give me five.</p>}
-          <div className="mt-4"><Button onClick={next} autoFocus>Next call</Button></div>
+          <div className="mt-4 flex flex-wrap gap-3"><Button onClick={next} autoFocus>Next call</Button>{!res.ok && <PinButton id={c.id} />}</div>
         </>
       ) : (
         <div className="mt-4 flex gap-3"><Button onClick={() => grade()}>Answer</Button><MicButton onText={setText} /><Button variant="outline" onClick={() => { stopSpeaking(); setRun(null) }}>End</Button></div>
