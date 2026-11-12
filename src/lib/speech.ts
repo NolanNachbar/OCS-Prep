@@ -1,4 +1,5 @@
 const keep: SpeechSynthesisUtterance[] = [] // hold a reference so the browser does not drop onend
+export const SPEEDS = [0.75, 0.85, 1, 1.15, 1.3, 1.5, 1.75, 2]
 export function speak(text: string, rate = 1, done?: () => void) {
   if (!("speechSynthesis" in window)) { done?.(); return }
   const u = new SpeechSynthesisUtterance(text)

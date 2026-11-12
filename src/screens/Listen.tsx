@@ -8,8 +8,8 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Panel } from "@/components/shared"
 import { useCards } from "@/lib/cards"
 import { hookFor } from "@/lib/hooks"
-import { speak, stopSpeaking } from "@/lib/speech"
-import { useStore } from "@/lib/store"
+import { SPEEDS, speak, stopSpeaking } from "@/lib/speech"
+import { update, useStore } from "@/lib/store"
 
 // Quiz: prompt, a gap to say it aloud, then the answer. Read: just reads the chosen sections to you.
 export default function Listen() {
@@ -19,7 +19,7 @@ export default function Listen() {
   const [mode, setMode] = useState("read")
   // How many times each card plays in a row (0 = left out). Cards play in book order, each repeated back to back.
   const [reps, setReps] = useState<Record<string, number>>(() => Object.fromEntries(order.filter((x) => x.sec === secs[0]?.[0]).map((x) => [x.id, 1])))
-  const [loop, setLoop] = useState(true)
+  const [loop, setLoop] = useState(false)
   const [aSec, setASec] = useState(secs[0]?.[0] ?? "")
   const [aMode, setAMode] = useState("read")
   const [aErr, setAErr] = useState(false)
@@ -80,11 +80,11 @@ export default function Listen() {
   }
   useEffect(() => { if (!playing && lock.current) { lock.current.release().catch(() => {}); lock.current = null } }, [playing])
   useEffect(() => () => { lock.current?.release().catch(() => {}) }, [])
-  const setRep = (id: string, n: number) => { setReps((r) => ({ ...r, [id]: Math.max(0, Math.min(9, n)) })); setIdx(0) }
+  const setRep = (id: string, n: number) => { setPlaying(false); setReps((r) => ({ ...r, [id]: Math.max(0, Math.min(9, n)) })); setIdx(0) }
   const inSec = (k: string) => order.filter((x) => x.sec === k)
   const allIn = (k: string) => inSec(k).every((x) => (reps[x.id] ?? 0) > 0)
   // The section button turns the whole section on at once (keeping any count you set) or clears it.
-  const pick = (k: string) => { setReps((r) => ({ ...r, ...Object.fromEntries(inSec(k).map((x) => [x.id, allIn(k) ? 0 : r[x.id] || 1])) })); setIdx(0) }
+  const pick = (k: string) => { setPlaying(false); setReps((r) => ({ ...r, ...Object.fromEntries(inSec(k).map((x) => [x.id, allIn(k) ? 0 : r[x.id] || 1])) })); setIdx(0) }
 
   return (
     <Panel>
@@ -128,10 +128,17 @@ export default function Listen() {
           )
         })}
       </div>
-      <p className="mt-2 text-sm text-muted-foreground">Each card plays its count back to back, then the next card. Choose one card with Loop on to repeat it forever.</p>
+      <p className="mt-2 text-sm text-muted-foreground">Each card plays its count back to back, then the next card. With Loop off it stops after the last play. Turn Loop on to start the list over forever; with one card chosen that repeats just that card. Changing a count pauses playback.</p>
+      <div className="mt-5 mb-2 text-xs font-bold uppercase tracking-[0.18em] text-gold">Speed ({store.settings.rate}x)</div>
+      <div className="flex flex-wrap gap-2">
+        {SPEEDS.map((r) => (
+          <button key={r} aria-pressed={store.settings.rate === r} onClick={() => update((s) => { s.settings.rate = r; return s })}
+            className={`min-h-11 min-w-14 border px-3 text-sm font-bold ${store.settings.rate === r ? "border-gold bg-gold text-navy-black" : "border-border text-foreground"}`}>{r}x</button>
+        ))}
+      </div>
       <div className="my-5 flex items-center gap-3">
         <Switch id="lp" checked={loop} onCheckedChange={setLoop} />
-        <Label htmlFor="lp" className="text-base">Loop</Label>
+        <Label htmlFor="lp" className="text-base">Loop the whole list</Label>
         <Switch id="tp" className="ml-4" checked={tips} onCheckedChange={setTips} />
         <Label htmlFor="tp" className="text-base">Say memory hooks</Label>
       </div>

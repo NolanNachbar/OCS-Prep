@@ -90,3 +90,6 @@ Rollback: `git reset --hard audit-2026-11-09-r1` on main, then push with lease.
 
 ## Round 36 (2026-11-11), tag audit-2026-11-11-r36
 - Listen: choose exact cards and how many times each plays back to back (Article 1 x3, then Article 2 x3). Section buttons still select a whole section; per-section lists with - / + counts sit below. One card with Loop on repeats forever (loop now advances a lap counter so a one-card playlist no longer stalls). Display shows "Play n of m". Audio files section unchanged (per section). Gate passes; counts checked headless (6 plays, 8 after +2, 3 after clearing others).
+
+## Round 37 (2026-11-11), tag audit-2026-11-11-r37
+- Listen: Loop now defaults off and is labelled "Loop the whole list", so Article 1 x3 then Article 2 x3 plays six times and stops (it used to restart forever because Loop defaulted on). Changing a count pauses playback so a running list never plays stale counts. Speed chips 0.75x to 2x on the Listen tab (saved in settings.rate, same value as Settings, whose Voice speed list now matches). Verified headless with a mocked speech engine: six plays at 1.5x, then Paused.
