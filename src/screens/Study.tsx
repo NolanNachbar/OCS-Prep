@@ -194,7 +194,7 @@ export default function Study() {
             <Badge variant="outline" className="rounded-none uppercase tracking-wider">{LEVELS[level]}</Badge>
             {item.missed && <Badge variant="destructive" className="rounded-sm uppercase tracking-wider">Retry</Badge>}
           </div>
-          <h2 className="slab mt-3 mb-4 text-4xl font-bold leading-none">{level >= 1 && level < 4 && numbered(c.prompt) ? (numbered(c.prompt)!.head.replace(/ ?(#|Article)$/, "").replace(/,$/, "") || "Which article?") : c.prompt}</h2>
+          <h2 className="slab mt-3 mb-4 text-4xl font-bold leading-none">{level >= 1 && level < 4 && numbered(c.prompt) ? "Which one?" : c.prompt}</h2>
           <div className="mb-5 border border-border bg-black/25 p-3">
             <div className="mb-2 flex items-center justify-between text-xs font-bold uppercase tracking-[0.12em]">
               <span className="text-muted-foreground">Fill in the blank</span>
@@ -229,6 +229,8 @@ function Step({ item, level, card: c, hook, onIntro, onHarder, onEasier, onNext 
   const [tainted, setTainted] = useState(false) // a failed or peeked attempt can never graduate the card
   const [vals, setVals] = useState<Record<number, string>>({})
   const nb = level >= 1 && level < 4 ? numbered(c.prompt) : null
+  // The name (General Order, Code of Conduct, Chain of Command, Constitution) is sometimes a blank too, at the same odds as a word.
+  const nameBlank = !!nb && nb.name !== "" && [...c.id + item.uid].reduce((h, ch) => Math.imul(h ^ ch.charCodeAt(0), 16777619) >>> 0, 2166136261) / 4294967296 < FRAC[level]
   const okBlank = (t: { text: string; alts?: string[] }, v: string) => (t.alts ? t.alts.includes(L.norm(v)) : L.norm(v) === L.norm(t.text))
   const toks = useMemo(() => (level >= 1 && level <= 3 ? L.cloze(c, FRAC[level], item.uid) : []), [level, c, item.uid])
 
@@ -256,7 +258,7 @@ function Step({ item, level, card: c, hook, onIntro, onHarder, onEasier, onNext 
 
   const check = () => {
     if (level < 4) {
-      const blanks = [...(nb ? [{ text: nb.num, alts: nb.alts }] : []), ...toks.filter((t: { blank: boolean }) => t.blank)]
+      const blanks = [...(nb ? [{ text: nb.num, alts: nb.alts }] : []), ...(nameBlank ? [{ text: nb!.name }] : []), ...toks.filter((t: { blank: boolean }) => t.blank)]
       let good = 0
       blanks.forEach((t: { text: string; alts?: string[] }, i: number) => { if (okBlank(t, vals[i] || "")) good++ })
       const ok = good === blanks.length
@@ -265,7 +267,12 @@ function Step({ item, level, card: c, hook, onIntro, onHarder, onEasier, onNext 
     } else record(L.score(c, text))
   }
 
-  let bi = nb ? 1 : 0
+  const box = (k: number, text: string, alts?: string[]) => (
+    <input value={vals[k] || ""} disabled={!!res} autoFocus={k === 0} onChange={(e) => setVals({ ...vals, [k]: e.target.value })} size={Math.min(Math.max(3, text.length), 14)}
+      data-blank onKeyDown={(e) => onBlankKey(e, check)} autoCapitalize="none" autoComplete="off" autoCorrect="off" spellCheck={false} aria-label={k === 0 ? "number" : "name"}
+      className={`mx-1 min-h-11 rounded-none border-0 border-b-2 bg-secondary px-2 py-1 text-center text-xl text-foreground outline-none focus:bg-muted ${res ? (okBlank({ text, alts }, vals[k] || "") ? "border-b-ok bg-ok/15" : "border-b-destructive bg-destructive/15") : "border-b-gold"}`} />
+  )
+  let bi = nb ? (nameBlank ? 2 : 1) : 0
   return (
     <div>
       {c.lead && <p className="italic text-muted-foreground">{level < 4 ? (nb ? hideOrdinal(c.lead) : c.lead) : "Start with: " + c.lead}</p>}
@@ -273,11 +280,11 @@ function Step({ item, level, card: c, hook, onIntro, onHarder, onEasier, onNext 
         <p className="text-xl leading-[2.4]">
           {nb && (
             <>
-              {nb.head}{" "}
-              <input value={vals[0] || ""} disabled={!!res} autoFocus onChange={(e) => setVals({ ...vals, 0: e.target.value })} size={3}
-                data-blank onKeyDown={(e) => onBlankKey(e, check)} autoCapitalize="none" autoComplete="off" autoCorrect="off" spellCheck={false} aria-label="number"
-                className={`mx-1 min-h-11 rounded-none border-0 border-b-2 bg-secondary px-2 py-1 text-center text-xl text-foreground outline-none focus:bg-muted ${res ? (okBlank({ text: nb.num, alts: nb.alts }, vals[0] || "") ? "border-b-ok bg-ok/15" : "border-b-destructive bg-destructive/15") : "border-b-gold"}`} />
-              {nb.tail}<br />
+              {nb.nameFirst && (nameBlank ? <>{box(1, nb.name)}{nb.sep} </> : <>{nb.name}{nb.sep} </>)}
+              {nb.marker} {box(0, nb.num, nb.alts)}
+              {nb.tailLead && <> {nb.tailLead}</>}
+              {!nb.nameFirst && nb.name && (nameBlank ? <> {box(1, nb.name)}</> : <> {nb.name}</>)}
+              <br />
             </>
           )}
           {toks.map((t: { text: string; blank: boolean }, i: number) => {

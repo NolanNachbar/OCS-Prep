@@ -23,11 +23,17 @@ const WORDS = ["", "one", "two", "three", "four", "five", "six", "seven", "eight
 const ORD = ["", "first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth", "tenth", "eleventh"]
 const ROMAN = ["", "i", "ii", "iii", "iv", "v", "vi", "vii", "viii", "ix", "x", "xi"]
 export function numbered(prompt: string) {
-  const m = /^(.*?(?:#|Article )\s*)(\d+|[IVX]+)\b(.*)$/.exec(prompt)
+  const m = /^(.*?)(,?\s*(?:#|Article)\s*)(\d+|[IVX]+)\b(.*)$/.exec(prompt)
   if (!m) return null
-  const n = /^\d+$/.test(m[2]) ? +m[2] : ROMAN.indexOf(m[2].toLowerCase())
+  const n = /^\d+$/.test(m[3]) ? +m[3] : ROMAN.indexOf(m[3].toLowerCase())
   if (n < 1 || n > 11) return null
-  return { head: m[1].trim(), num: m[2], tail: m[3].trim(), alts: [String(n), ROMAN[n], WORDS[n], ORD[n]] }
+  const tailName = /^(.*\bthe) (.+)$/.exec(m[4].trim()) // "of the Constitution": the name comes after the number
+  const head = m[1].trim()
+  return {
+    num: m[3], alts: [String(n), ROMAN[n], WORDS[n], ORD[n]],
+    marker: m[2].trim().replace(/^,/, "").trim(), // "#" or "Article"
+    name: head || tailName?.[2] || "", nameFirst: !!head, tailLead: head ? m[4].trim() : tailName?.[1] ?? "", sep: head && m[2].trim().startsWith(",") ? "," : "",
+  }
 }
 // The lead says "the second general order"; with the number being asked for, that word is blanked.
 export const hideOrdinal = (lead: string) => lead.replace(new RegExp(`\\b(${ORD.slice(1).join("|")})\\b`, "i"), "___")
