@@ -131,3 +131,7 @@ After a miss in Test, Inspection or Word match there is an "Add to my Study card
 - Study name blank ("Code of Conduct") is now one blank per word instead of one shared box.
 - A wrong blank on the number or name now shows the correct word under it.
 - Gate: PASS.
+
+## Round 51 (2026-11-12): Study Back after an intro card
+- Back was disabled right after reading a new card because the intro step never recorded itself in the trail. It does now.
+- Gate: PASS.

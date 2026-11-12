@@ -164,6 +164,7 @@ export default function Study() {
     })
     const q = s.queue.slice(1)
     requeue(q, { uid: uid++, id: item.id, stage: 1 }, 3)
+    setTrail((t) => [...t.slice(-19), { item, fin: false }])
     setS({ ...s, queue: q })
   }
 
