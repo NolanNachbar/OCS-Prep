@@ -105,3 +105,6 @@ Listen: next clip now starts inside the audio element's ended event instead of a
 
 ## Round 41 (2026-11-12)
 Listen audio: symbols are now spelled out before synthesis in tools/make_clips.py ("General Order #2" reads as "number 2", "Sir/Ma'am" as "Sir or Ma'am", 1/2-inch as "one half inch", (s) as s). Clips rebuilt. Cards and scorer untouched; on-screen text unchanged.
+
+## Round 42 (2026-11-12)
+Study fill-in levels (some words, most words, nearly all): cards titled by a number (General Orders, Code of Conduct articles, Chain of Command, Constitution articles) now ask for the number as the first blank, and the title and the ordinal in the lead ("the second article") are hidden. The number is accepted as a digit, roman numeral or word. The type-it-cold level keeps its label. Scored as one more blank. cards.json and Appendix B text untouched; no hint letter is shown for the number. Checked in the headless browser that the number box renders on Code of Conduct Article 1.
