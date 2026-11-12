@@ -161,3 +161,6 @@ Drawn rating eagle is now a trace of the real Appendix B eagle (perched, head to
 
 ## r56c (2026-11-12)
 Rating eagle switched to the finer-feather trace (full 56-wide, even-odd fill) he picked.
+
+## r56 (2026-11-12)
+Import sanitizes log and runs entries; number blanks cover Chain of Command #12-18; wrong Study cloze blanks show the correct word; 1/2-inch stripe width matched before 2-inch.

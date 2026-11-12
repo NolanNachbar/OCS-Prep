@@ -37,10 +37,13 @@ export function sanitize(raw: unknown): Store {
   const edits: Store["edits"] = {}
   if (isObj(raw.edits)) for (const [id, v] of Object.entries(raw.edits)) if (typeof v === "string") edits[id] = v
   const intro = isObj(raw.intro) && typeof raw.intro.date === "string" && typeof raw.intro.n === "number" ? { date: raw.intro.date, n: raw.intro.n } : d.intro
-  const out: Store = { ...d, settings, cards, edits, intro, log: Array.isArray(raw.log) ? (raw.log as Store["log"]) : [] }
+  const out: Store = { ...d, settings, cards, edits, intro, log: Array.isArray(raw.log) ? raw.log.filter((e): e is Store["log"][number] => isObj(e) && typeof e.d === "string" && typeof e.n === "number" && typeof e.ok === "number") : [] }
   if (Array.isArray(raw.pinned)) out.pinned = raw.pinned.filter((x): x is string => typeof x === "string")
   if (Array.isArray(raw.testIds)) out.testIds = raw.testIds.filter((x): x is string => typeof x === "string")
-  if (isObj(raw.runs)) out.runs = raw.runs as Store["runs"]
+  if (isObj(raw.runs)) {
+    out.runs = {}
+    for (const [id, v] of Object.entries(raw.runs)) if (isObj(v) && typeof v.streak === "number" && typeof v.clean === "number" && typeof v.last === "string") out.runs[id] = { streak: v.streak, clean: v.clean, last: v.last }
+  }
   return out
 }
 

@@ -19,14 +19,14 @@ export const startsLine = (t: string, next?: string) => /^(?:Collar|Sleeve|Insig
 
 // Cards titled by a number (General Order #2, Code of Conduct, Article 2, Article II of the Constitution, Chain of Command #4).
 // In the fill-in levels the number is a blank to fill instead of being handed over in the title and lead.
-const WORDS = ["", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven"]
-const ORD = ["", "first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth", "tenth", "eleventh"]
-const ROMAN = ["", "i", "ii", "iii", "iv", "v", "vi", "vii", "viii", "ix", "x", "xi"]
+const WORDS = ["", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen"]
+const ORD = ["", "first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth", "tenth", "eleventh", "twelfth", "thirteenth", "fourteenth", "fifteenth", "sixteenth", "seventeenth", "eighteenth"]
+const ROMAN = ["", "i", "ii", "iii", "iv", "v", "vi", "vii", "viii", "ix", "x", "xi", "xii", "xiii", "xiv", "xv", "xvi", "xvii", "xviii"]
 export function numbered(prompt: string) {
   const m = /^(.*?)(,?\s*(?:#|Article)\s*)(\d+|[IVX]+)\b(.*)$/.exec(prompt)
   if (!m) return null
   const n = /^\d+$/.test(m[3]) ? +m[3] : ROMAN.indexOf(m[3].toLowerCase())
-  if (n < 1 || n > 11) return null
+  if (n < 1 || n > 18) return null
   const tailName = /^(.*\bthe) (.+)$/.exec(m[4].trim()) // "of the Constitution": the name comes after the number
   const head = m[1].trim()
   return {

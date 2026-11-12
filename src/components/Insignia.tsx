@@ -79,7 +79,7 @@ function stack(layers: Layer[]) {
   )
 }
 
-const WIDTH = (t: string) => (/2-inch/.test(t) ? 14 : /1\/2-inch/.test(t) ? 8 : /1\/4-inch/.test(t) ? 4.5 : 2.6)
+const WIDTH = (t: string) => (/1\/2-inch/.test(t) ? 8 : /2-inch/.test(t) ? 14 : /1\/4-inch/.test(t) ? 4.5 : 2.6)
 
 function sleeveOfficer(text: string) {
   const toks = text.split(/\s+below\s+/).reverse() // the text runs bottom to top
