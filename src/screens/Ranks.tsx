@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button"
 import { Panel, Eyebrow } from "@/components/shared"
 import { Drawing, Insignia, primary, rankName } from "@/components/Insignia"
 import RankRecall from "@/screens/RankRecall"
+import RankWords from "@/screens/RankWords"
+import Inspection from "@/screens/Inspection"
 import { lines } from "@/lib/blanks"
 import { useCards } from "@/lib/cards"
 import { useStore } from "@/lib/store"
@@ -46,6 +48,7 @@ export default function Ranks() {
   const store = useStore()
   const [rec, setRec] = useState<{ cards: Card[]; teach: boolean } | null>(null)
   const [open, setOpen] = useState<string[]>([])
+  const [mode, setMode] = useState<"words" | "insp" | null>(null)
   const day = L.ymd(new Date())
   const learned = (c: Card) => (store.cards[c.id]?.reps ?? 0) > 0
   const [quiz, setQuiz] = useState<{ qs: Q[]; i: number; right: number; pick: string | null } | null>(null)
@@ -59,6 +62,8 @@ export default function Ranks() {
   const start = (cards: Card[]) => setQuiz({ qs: make(cards), i: 0, right: 0, pick: null })
   const every = all.filter((c) => ["nve", "nvo", "mce", "mco"].includes(c.sec))
 
+  if (mode === "words") return <RankWords cards={every} onExit={() => setMode(null)} />
+  if (mode === "insp") return <Inspection pool={every} title="Rank inspection" onExit={() => setMode(null)} />
   if (rec) return <RankRecall cards={rec.cards} teach={rec.teach} onExit={() => setRec(null)} />
 
   const groupCards = (g: (typeof GROUPS)[number]) => g.ids.map((i) => rank.get(i)).filter(Boolean) as Card[]
@@ -135,6 +140,8 @@ export default function Ranks() {
         <p className="mt-3 text-muted-foreground">How it works: Learn walks you through a group (picture, title, exact wording), then asks you to type the title from the picture and the wording from the title. Anything you miss comes back until you get it twice in a row, then it joins your review schedule. Match is only a warm-up. Open a category below and work through its groups top to bottom.</p>
         <div className="mt-3 flex flex-wrap gap-3">
           <Button variant="outline" onClick={() => start(every)}>Match all {every.length}</Button>
+          <Button variant="outline" onClick={() => setMode("words")}>Match by words (no pictures)</Button>
+          <Button variant="outline" onClick={() => setMode("insp")}>Rank inspection (timed)</Button>
           <Button variant="outline" onClick={() => start(["nve-116", "nve-117", "nve-118", "nve-119", "mce-126", "mce-127", "mce-128", "mce-129", "mce-130", "mce-131"].map((i) => rank.get(i)!).filter(Boolean))}>Match E-7 to E-9</Button>
         </div>
       </Panel>

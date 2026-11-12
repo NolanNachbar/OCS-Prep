@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Diff, Eyebrow, MicButton, Panel, Verdict } from "@/components/shared"
 import { useCards } from "@/lib/cards"
 import * as L from "@/lib/ocs.js"
+import Inspection from "@/screens/Inspection"
 import { getStore, update, useStore } from "@/lib/store"
 import type { Card, Score } from "@/lib/types"
 
@@ -20,6 +21,7 @@ export default function Test() {
   const [run, setRun] = useState<{ q: Card[]; i: number; right: number; missed: string[]; targeted?: boolean; section?: string } | null>(null)
   const secs = useMemo(() => { const m = new Map<string, string>(); all.forEach((c) => m.set(c.sec, c.secName)); return [...m] }, [all])
   const [sec, setSec] = useState(secs[0]?.[0] ?? "")
+  const [insp, setInsp] = useState(false)
   const [text, setText] = useState("")
   const [res, setRes] = useState<Score | null>(null)
   useEffect(() => {
@@ -32,6 +34,7 @@ export default function Test() {
   }, [])
   const pool = useMemo(() => all.filter((c) => !learnedOnly || store.cards[c.id]), [all, learnedOnly, store.cards])
 
+  if (insp) return <Inspection pool={all} title="RLP inspection" onExit={() => setInsp(false)} />
   if (!run) {
     return (
       <Panel>
@@ -54,6 +57,10 @@ export default function Test() {
           <Select value={sec} onValueChange={setSec}><SelectTrigger className="h-12! w-full"><SelectValue /></SelectTrigger>
             <SelectContent>{secs.map(([id, name]) => <SelectItem key={id} value={id}>{name}{store.runs?.[id]?.streak ? ` (${store.runs[id].streak} clean in a row)` : ""}</SelectItem>)}</SelectContent></Select></div>
         <Button className="mt-4" onClick={() => { setRun({ q: all.filter((c) => c.sec === sec), i: 0, right: 0, missed: [], targeted: true, section: sec }); setText(""); setRes(null) }}>Start section run</Button>
+        <hr className="my-6 border-border" />
+        <h2 className="slab text-2xl font-bold">RLP inspection</h2>
+        <p className="mt-1 text-muted-foreground">The instructor calls cards at you against a clock, one try each, no hints.</p>
+        <Button className="mt-4" onClick={() => setInsp(true)}>Start an inspection</Button>
       </Panel>
     )
   }
