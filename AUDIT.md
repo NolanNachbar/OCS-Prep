@@ -96,3 +96,6 @@ Rollback: `git reset --hard audit-2026-11-09-r1` on main, then push with lease.
 
 ## Round 38 (2026-11-11), tag audit-2026-11-11-r38
 - Listen: the two players are labelled apart. The yellow button is now "Play my list" (follows card choices, counts and speed); the audio bar is "Whole-section recordings (separate player)" and says it ignores counts and loops forever.
+
+## Round 39 (2026-11-11), tag audit-2026-11-11-r39
+- Listen is one player. 270 per-card recordings (tools/make_clips.py, local Piper, text from cards.json; quiz clips bake in a gap sized to the answer, 4 to 40 s) queue on one audio element in list order with per-card repeat counts, speed via playbackRate, Loop off by default, previous/next buttons, and lock-screen/earbud controls via Media Session. Removed: the browser-voice path, the whole-section audio bar, the memory-hooks toggle, wake lock, and the Listen gap setting from Settings. Quiz mode hides the answer text (no phase info from a clip). Verified headless with a fake Audio: 3 plays of card one then 3 of card two at 1.5x, then paused. Not tested on a real iPhone: locked-screen chaining.

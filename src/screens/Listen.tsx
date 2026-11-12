@@ -1,85 +1,81 @@
 import { lines } from "@/lib/blanks"
 import { useEffect, useRef, useState } from "react"
-import { Pause, Play, SkipForward } from "lucide-react"
+import { Pause, Play, SkipBack, SkipForward } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Panel } from "@/components/shared"
 import { useCards } from "@/lib/cards"
-import { hookFor } from "@/lib/hooks"
-import { SPEEDS, speak, stopSpeaking } from "@/lib/speech"
+import { SPEEDS } from "@/lib/speech"
 import { update, useStore } from "@/lib/store"
 
-// Quiz: prompt, a gap to say it aloud, then the answer. Read: just reads the chosen sections to you.
+// One player for everything. Each card has its own recording (tools/make_clips.py); this queues them in book order,
+// each repeated back to back, on a single audio element so it keeps going with the screen locked.
+// Quiz clips are prompt, a gap sized to the answer, then the answer. Read clips are prompt then answer.
 export default function Listen() {
   const store = useStore()
-  const { order, secIdx } = useCards()
+  const { order } = useCards()
   const secs = [...new Map(order.map((c) => [c.sec, c.secName])).entries()]
   const [mode, setMode] = useState("read")
   // How many times each card plays in a row (0 = left out). Cards play in book order, each repeated back to back.
   const [reps, setReps] = useState<Record<string, number>>(() => Object.fromEntries(order.filter((x) => x.sec === secs[0]?.[0]).map((x) => [x.id, 1])))
   const [loop, setLoop] = useState(false)
-  const [aSec, setASec] = useState(secs[0]?.[0] ?? "")
-  const [aMode, setAMode] = useState("read")
-  const [aErr, setAErr] = useState(false)
-  const [tips, setTips] = useState(false)
+  const [err, setErr] = useState(false)
   const [playing, setPlaying] = useState(false)
   const [idx, setIdx] = useState(0)
   const [lap, setLap] = useState(0)
-  const [phase, setPhase] = useState<"prompt" | "gap" | "answer">("prompt")
-  const run = useRef(0)
-  const lock = useRef<{ release: () => Promise<void> } | null>(null)
+  const au = useRef<HTMLAudioElement | null>(null)
+  if (!au.current && typeof Audio !== "undefined") au.current = new Audio()
+  const live = useRef({ n: 0, loop })
 
   const cards = order.flatMap((x) => Array.from({ length: reps[x.id] ?? 0 }, (_, i) => ({ c: x, rep: i + 1, of: reps[x.id] })))
-  const gapMs = store.settings.gap * 1000
+  const rate = store.settings.rate
   const cur = cards[idx % Math.max(1, cards.length)]
   const c = cur?.c
+  live.current = { n: cards.length, loop }
 
   useEffect(() => {
-    if (!playing || !c) return
-    const id = ++run.current
-    const live = () => run.current === id
-    const full = (c.lead ? c.lead + " " : "") + c.answer
-    const hook = tips ? hookFor(c, secIdx(c)) : ""
-    const after = () => {
-      if (!live()) return
-      if (idx + 1 >= cards.length && !loop) { setPlaying(false); setIdx(0); return }
-      setIdx((i) => (i + 1 >= cards.length ? 0 : i + 1))
+    const a = au.current
+    if (!a) return
+    if (!playing || !c) { a.pause(); return }
+    setErr(false)
+    a.src = `${import.meta.env.BASE_URL}audio/cards/${c.id}-${mode}.mp3`
+    a.defaultPlaybackRate = rate // loading a new src resets playbackRate to this
+    a.playbackRate = rate
+    a.onended = () => {
+      if (idx + 1 >= live.current.n && !live.current.loop) { setPlaying(false); setIdx(0); return }
+      setIdx((i) => (i + 1 >= live.current.n ? 0 : i + 1))
       setLap((n) => n + 1)
     }
-    let t: ReturnType<typeof setTimeout>
-    setPhase("prompt")
-    if (mode === "read") {
-      speak(c.prompt + ". " + full + (hook ? ". Memory hook. " + hook : ""), store.settings.rate, () => { if (live()) t = setTimeout(after, 900) })
-    } else {
-      speak(c.prompt, store.settings.rate, () => {
-        if (!live()) return
-        setPhase("gap")
-        t = setTimeout(() => {
-          if (!live()) return
-          setPhase("answer")
-          speak(full + (hook ? ". Memory hook. " + hook : ""), store.settings.rate, () => { if (live()) t = setTimeout(after, 1200) })
-        }, gapMs)
-      })
-    }
-    return () => { run.current++; clearTimeout(t); stopSpeaking() }
+    a.onerror = () => { setErr(true); setPlaying(false) }
+    a.play().catch(() => { setErr(true); setPlaying(false) })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [playing, idx, lap, mode, tips, c?.id])
+  }, [playing, idx, lap, mode, c?.id])
 
-  const toggle = async () => {
-    const next = !playing
-    if (next && !cards.length) return
-    setPlaying(next)
-    try {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const wl = (navigator as any).wakeLock
-      if (next && wl) lock.current = await wl.request("screen")
-      else if (lock.current) { await lock.current.release(); lock.current = null }
-    } catch { /* wake lock is best effort */ }
+  useEffect(() => { if (au.current) { au.current.defaultPlaybackRate = rate; au.current.playbackRate = rate } }, [rate])
+
+  // Lock-screen and earbud controls.
+  useEffect(() => {
+    const ms = typeof navigator !== "undefined" ? navigator.mediaSession : undefined
+    if (!ms) return
+    const hop = (d: number) => { setIdx((i) => (i + d + Math.max(1, live.current.n)) % Math.max(1, live.current.n)); setLap((n) => n + 1) }
+    const set = (k: MediaSessionAction, f: MediaSessionActionHandler | null) => { try { ms.setActionHandler(k, f) } catch { /* not supported */ } }
+    set("play", () => setPlaying(true)); set("pause", () => setPlaying(false))
+    set("nexttrack", () => hop(1)); set("previoustrack", () => hop(-1))
+    return () => { ["play", "pause", "nexttrack", "previoustrack"].forEach((k) => set(k as MediaSessionAction, null)) }
+  }, [])
+  useEffect(() => {
+    if (playing && c && typeof MediaMetadata !== "undefined") navigator.mediaSession.metadata = new MediaMetadata({ title: c.prompt, artist: "Navy OCS Prep", album: c.secName })
+  }, [playing, c?.id]) // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => () => { au.current?.pause() }, [])
+
+  const toggle = () => {
+    if (!playing && !cards.length) return
+    if (!playing) setLap((n) => n + 1) // starting again always restarts the clip, even on the same card
+    setPlaying(!playing)
   }
-  useEffect(() => { if (!playing && lock.current) { lock.current.release().catch(() => {}); lock.current = null } }, [playing])
-  useEffect(() => () => { lock.current?.release().catch(() => {}) }, [])
+  const step = (d: number) => { setIdx((i) => (i + d + Math.max(1, cards.length)) % Math.max(1, cards.length)); setLap((n) => n + 1) }
   const setRep = (id: string, n: number) => { setPlaying(false); setReps((r) => ({ ...r, [id]: Math.max(0, Math.min(9, n)) })); setIdx(0) }
   const inSec = (k: string) => order.filter((x) => x.sec === k)
   const allIn = (k: string) => inSec(k).every((x) => (reps[x.id] ?? 0) > 0)
@@ -94,7 +90,7 @@ export default function Listen() {
           <TabsTrigger value="quiz" className="h-11 rounded-none font-bold uppercase tracking-wider">Quiz me</TabsTrigger>
         </TabsList>
       </Tabs>
-      <p className="mt-3 text-sm text-muted-foreground">{mode === "read" ? "Reads each card you choose, prompt then answer." : `Prompt, then ${store.settings.gap} seconds to say it aloud, then the answer.`}</p>
+      <p className="mt-3 text-sm text-muted-foreground">{mode === "read" ? "Reads each card you choose, prompt then answer." : "Prompt, then a pause to say it aloud (longer for longer answers), then the answer."} Plays from recordings, so it keeps going with the screen locked and needs a connection.</p>
       <div className="mt-4 mb-2 text-xs font-bold uppercase tracking-[0.18em] text-gold">Sections ({cards.length} plays)</div>
       <div className="flex flex-wrap gap-2">
         {secs.map(([k, name]) => (
@@ -129,46 +125,28 @@ export default function Listen() {
         })}
       </div>
       <p className="mt-2 text-sm text-muted-foreground">Each card plays its count back to back, then the next card. With Loop off it stops after the last play. Turn Loop on to start the list over forever; with one card chosen that repeats just that card. Changing a count pauses playback.</p>
-      <div className="mt-5 mb-2 text-xs font-bold uppercase tracking-[0.18em] text-gold">Speed ({store.settings.rate}x)</div>
+      <div className="mt-5 mb-2 text-xs font-bold uppercase tracking-[0.18em] text-gold">Speed ({rate}x)</div>
       <div className="flex flex-wrap gap-2">
         {SPEEDS.map((r) => (
-          <button key={r} aria-pressed={store.settings.rate === r} onClick={() => update((s) => { s.settings.rate = r; return s })}
-            className={`min-h-11 min-w-14 border px-3 text-sm font-bold ${store.settings.rate === r ? "border-gold bg-gold text-navy-black" : "border-border text-foreground"}`}>{r}x</button>
+          <button key={r} aria-pressed={rate === r} onClick={() => update((s) => { s.settings.rate = r; return s })}
+            className={`min-h-11 min-w-14 border px-3 text-sm font-bold ${rate === r ? "border-gold bg-gold text-navy-black" : "border-border text-foreground"}`}>{r}x</button>
         ))}
       </div>
       <div className="my-5 flex items-center gap-3">
         <Switch id="lp" checked={loop} onCheckedChange={setLoop} />
         <Label htmlFor="lp" className="text-base">Loop the whole list</Label>
-        <Switch id="tp" className="ml-4" checked={tips} onCheckedChange={setTips} />
-        <Label htmlFor="tp" className="text-base">Say memory hooks</Label>
       </div>
       <div className="border border-border bg-black/25 p-5 text-center">
-        <div className="text-xs font-bold uppercase tracking-[0.18em] text-gold">{playing ? (mode === "quiz" && phase === "gap" ? "Your turn" : mode === "quiz" && phase === "answer" ? "Answer" : "Reading") : "Paused"}</div>
+        <div className="text-xs font-bold uppercase tracking-[0.18em] text-gold">{playing ? "Playing" : "Paused"}</div>
         <div className="slab mt-2 text-3xl font-bold leading-none">{c ? c.prompt : "Pick at least one card"}</div>
         {cur && cur.of > 1 && <div className="mt-2 text-sm text-muted-foreground">Play {cur.rep} of {cur.of}</div>}
-        {c && (mode === "read" || phase === "answer") && playing && <p className="mt-3 whitespace-pre-line text-lg text-muted-foreground">{lines(c.answer)}</p>}
+        {c && mode === "read" && playing && <p className="mt-3 whitespace-pre-line text-lg text-muted-foreground">{lines(c.answer)}</p>}
       </div>
+      {err && <p className="mt-3 text-destructive" role="alert">Audio unavailable right now. Check your connection and press play again.</p>}
       <div className="mt-5 flex gap-3">
-        <Button size="lg" className="flex-1" onClick={toggle} disabled={!cards.length}>{playing ? <Pause /> : <Play />} {playing ? "Pause" : "Play my list"}</Button>
-        <Button size="lg" variant="outline" onClick={() => setIdx((i) => (i + 1) % Math.max(1, cards.length))} aria-label="Next card"><SkipForward /></Button>
-      </div>
-      <div className="mt-8 border-t border-border pt-5">
-        <div className="text-xs font-bold uppercase tracking-[0.18em] text-gold">Whole-section recordings (separate player)</div>
-        <p className="mt-2 text-sm text-muted-foreground">This is not the Play button above. These are recordings of a whole section that keep playing with the screen locked. They ignore the card choices and counts, and they loop forever until you pause. Needs a connection every time you play one.</p>
-        <div className="mt-3 flex flex-wrap gap-2">
-          {secs.map(([k, name]) => (
-            <button key={k} onClick={() => setASec(k)} aria-pressed={aSec === k}
-              className={`min-h-11 border px-3 text-xs font-bold uppercase tracking-wider ${aSec === k ? "border-gold bg-gold text-navy-black" : "border-border text-foreground"}`}>{name}</button>
-          ))}
-        </div>
-        <Tabs value={aMode} onValueChange={setAMode} className="mt-3">
-          <TabsList className="grid h-auto! w-full grid-cols-2 rounded-none bg-black/30">
-            <TabsTrigger value="read" className="h-11 rounded-none font-bold uppercase tracking-wider">Read</TabsTrigger>
-            <TabsTrigger value="quiz" className="h-11 rounded-none font-bold uppercase tracking-wider">Quiz (6 s gap)</TabsTrigger>
-          </TabsList>
-        </Tabs>
-        <audio key={aSec + aMode} className="mt-3 w-full" controls loop preload="none" onError={() => setAErr(true)} onPlay={() => setAErr(false)} src={`${import.meta.env.BASE_URL}audio/${aSec}-${aMode}.mp3`} />
-        {aErr && <p className="mt-2 text-destructive" role="alert">Audio unavailable right now. Check your connection, or use Read to me above.</p>}
+        <Button size="lg" variant="outline" onClick={() => step(-1)} disabled={!cards.length} aria-label="Previous card"><SkipBack /></Button>
+        <Button size="lg" className="flex-1" onClick={toggle} disabled={!cards.length}>{playing ? <Pause /> : <Play />} {playing ? "Pause" : "Play"}</Button>
+        <Button size="lg" variant="outline" onClick={() => step(1)} disabled={!cards.length} aria-label="Next card"><SkipForward /></Button>
       </div>
     </Panel>
   )
