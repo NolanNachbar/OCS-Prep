@@ -145,3 +145,7 @@ After a miss in Test, Inspection or Word match there is an "Add to my Study card
 - Next level up did nothing once the slider had been touched: the slider's manual level overrode the card's new level. setLevel now clears it.
 - Short cards blanked the same words at several rungs, so the slider showed levels that were identical. The slider and the up/down buttons now only offer rungs that differ for that card (26 of 135 cards have 3 rungs, 3 have 4, the rest 5).
 - Gate: PASS.
+
+## Round 54 (2026-11-12): Count as correct at level 4
+- The Count as correct button was hidden on the From memory level (typed or dictated recital), the one place a near-miss or mis-heard word is most likely. It now shows there too (not after Show answer).
+- Gate: PASS.

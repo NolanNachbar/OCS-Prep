@@ -345,7 +345,7 @@ function Step({ item, level, card: c, hook, onIntro, onHarder, onEasier, onNext 
             {res.r.ok && level < 4 && <Button variant="outline" onClick={onHarder}>Next level up</Button>}
             {!res.r.ok && level > 1 && <Button variant="outline" onClick={onEasier}>Easier level</Button>}
             {!res.r.ok && <Button variant="outline" onClick={() => { setTainted(true); setRes(null); setText(""); setVals({}) }}>Try again</Button>}
-            {!res.r.ok && !res.peeked && level < 4 && <Button variant="outline" onClick={() => onNext(true)}>Count as correct</Button>}
+            {!res.r.ok && !res.peeked && <Button variant="outline" onClick={() => onNext(true)}>Count as correct</Button>}
           </div>
         </div>
       ) : (
