@@ -155,3 +155,6 @@ Audit fixes: a clean level-4 pass now clears the weak (misses) count in Study an
 
 ## r56a (2026-11-12)
 Redrew the drawn rating eagle (CPO, SCPO, MCPO sleeves and officer sleeve eagle): separate feathers, head, neck and tail instead of one blob.
+
+## r56b (2026-11-12)
+Drawn rating eagle is now a trace of the real Appendix B eagle (perched, head to its left, swept feathered wings) instead of a hand-drawn one.
