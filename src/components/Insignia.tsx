@@ -28,8 +28,9 @@ function Star({ x, y, r, fill }: { x: number; y: number; r: number; fill: string
 
 const Eagle = ({ y, fill }: { y: number; fill: string }) => (
   <g transform={`translate(0,${y})`} fill={fill}>
-    <path d="M0 -10 L-5 -5 L-28 -12 L-18 0 L-26 8 L-6 4 L0 16 L6 4 L26 8 L18 0 L28 -12 L5 -5 Z" />
-    <circle cx="0" cy="-13" r="4" />
+    <path d="M2.5 -5.0 L28 -17 L24.4 -12.5 L2.5 -1.6 Z"/><path d="M2.5 -2.4 L29 -10 L25.4 -5.5 L2.5 1.0 Z"/><path d="M2.5 0.2 L27 -3 L23.4 1.5 L2.5 3.6 Z"/><path d="M2.5 2.8 L23 4 L19.4 8.5 L2.5 6.2 Z"/><path d="M2.5 5.4 L17 10 L13 14.5 L2.5 8.8 Z"/><path d="M-2.5 -5.0 L-28 -17 L-24.4 -12.5 L-2.5 -1.6 Z"/><path d="M-2.5 -2.4 L-29 -10 L-25.4 -5.5 L-2.5 1.0 Z"/><path d="M-2.5 0.2 L-27 -3 L-23.4 1.5 L-2.5 3.6 Z"/><path d="M-2.5 2.8 L-23 4 L-19.4 8.5 L-2.5 6.2 Z"/><path d="M-2.5 5.4 L-17 10 L-13 14.5 L-2.5 8.8 Z"/><path d="M-3 -7 C-4.5 0 -3.5 8 0 14 C3.5 8 4.5 0 3 -7 Z"/>
+    <path d="M-4 11 L-6.5 17 L-2.2 15.2 L0 18 L2.2 15.2 L6.5 17 L4 11 Z"/>
+    <path d="M-3.2 -6 L-2 -10.5 L2 -10.5 L3.2 -6 Z"/><circle cx="-1" cy="-11" r="3.3"/><path d="M-3.8 -12.2 L-9 -9.6 C-7 -9.6 -6 -9 -5.4 -7.6 L-3.4 -8.6 Z"/>
   </g>
 )
 const Anchor = ({ y }: { y: number }) => (
@@ -59,7 +60,7 @@ function rating(text: string): Layer[] {
     if (/anchor/i.test(t)) out.push({ h: 40, node: (y) => <Anchor y={y + 20} /> })
     else if (/emblem/i.test(t)) out.push({ h: 28, node: (y) => <g key={y}><circle cx="0" cy={y + 14} r="11" fill="none" stroke={GOLD} strokeWidth="3" /><path d={`M0 ${y + 7} V${y + 21} M-5 ${y + 11} H5`} stroke={GOLD} strokeWidth="2.5" /><Star x={-24} y={y + 14} r={8} fill={GOLD} /><Star x={24} y={y + 14} r={8} fill={GOLD} /></g> })
     else if (/star/i.test(t)) out.push({ h: 20, node: (y) => <g key={y}>{Array.from({ length: n }, (_, i) => <Star key={i} x={(i - (n - 1) / 2) * 20} y={y + 10} r={9} fill={col} />)}</g> })
-    else if (/eagle/i.test(t)) out.push({ h: 32, node: (y) => <Eagle y={y + 16} fill={col} /> })
+    else if (/eagle/i.test(t)) out.push({ h: 36, node: (y) => <Eagle y={y + 18} fill={col} /> })
     else if (/rocker/i.test(t)) out.push({ h: (n - 1) * 9 + 12, node: (y) => <g key={y} stroke={col} strokeWidth="4.5" fill="none" strokeLinecap="round">{Array.from({ length: n }, (_, i) => <path key={i} d={`M-26 ${y + 2 + i * 9} Q0 ${y + 12 + i * 9} 26 ${y + 2 + i * 9}`} />)}</g> })
     else if (/chevron|stripe/i.test(t)) out.push({ h: (n - 1) * 9 + 14, node: (y) => <g key={y} stroke={col} strokeWidth="5" fill="none" strokeLinejoin="round">{Array.from({ length: n }, (_, i) => <polyline key={i} points={`-26,${y + 12 + i * 9} 0,${y + 2 + i * 9} 26,${y + 12 + i * 9}`} />)}</g> })
     else if (/rifles/i.test(t)) out.push({ h: 30, node: (y) => <g key={y} stroke={GOLD} strokeWidth="4" strokeLinecap="round"><line x1="-18" y1={y + 3} x2="18" y2={y + 27} /><line x1="18" y1={y + 3} x2="-18" y2={y + 27} /></g> })

@@ -152,3 +152,6 @@ After a miss in Test, Inspection or Word match there is an "Add to my Study card
 
 ## r55 (2026-11-12)
 Audit fixes: a clean level-4 pass now clears the weak (misses) count in Study and RankRecall (spread order); reviews are never scheduled past the ship date; Easier level after a miss now counts as a miss (Study and RankRecall) and is hidden when it would drop to Read it; Skip clears the manual slider level; redo flag carried through requeues. Tests added for misses clearing and the ship-date cap.
+
+## r56a (2026-11-12)
+Redrew the drawn rating eagle (CPO, SCPO, MCPO sleeves and officer sleeve eagle): separate feathers, head, neck and tail instead of one blob.
