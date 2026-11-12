@@ -12,7 +12,15 @@ out = "public/audio/cards"; os.makedirs(out, exist_ok=True)
 tmp = tempfile.mkdtemp()
 rate = voice.config.sample_rate
 
+def spoken(t):  # symbols the voice would read literally ("hash 2", "slash"), spelled the way you'd say them
+    t = re.sub(r"#\s*(\d+)", r"number \1", t)
+    t = t.replace("Sir/Ma'am", "Sir or Ma'am").replace("(s)", "s")
+    t = re.sub(r"\b1/2[- ]inch", "one half inch", t); t = re.sub(r"\b1/4[- ]inch", "one quarter inch", t)
+    t = re.sub(r"\b1/8(?:th)?[- ]inch", "one eighth inch", t)
+    return t.replace("/", " or ")
+
 def say(text, path):
+    text = spoken(text)
     with wave.open(path, "wb") as w:
         voice.synthesize_wav(text, w)
 

@@ -102,3 +102,6 @@ Rollback: `git reset --hard audit-2026-11-09-r1` on main, then push with lease.
 
 ## Round 40 (2026-11-12)
 Listen: next clip now starts inside the audio element's ended event instead of a React effect, because a locked iPhone suspends rendering and playback stopped after the first clip. tools/make_clips.py now reads each sentence and each labelled part (Collar, Shoulder board, Sleeve, Insignia) as its own piece with a 0.55 s pause between, so answers no longer run together. All 270 clips rebuilt. cards.json and scorer untouched. Not verified on a real locked iPhone.
+
+## Round 41 (2026-11-12)
+Listen audio: symbols are now spelled out before synthesis in tools/make_clips.py ("General Order #2" reads as "number 2", "Sir/Ma'am" as "Sir or Ma'am", 1/2-inch as "one half inch", (s) as s). Clips rebuilt. Cards and scorer untouched; on-screen text unchanged.
