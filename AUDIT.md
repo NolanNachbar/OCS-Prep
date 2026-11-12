@@ -135,3 +135,8 @@ After a miss in Test, Inspection or Word match there is an "Add to my Study card
 ## Round 51 (2026-11-12): Study Back after an intro card
 - Back was disabled right after reading a new card because the intro step never recorded itself in the trail. It does now.
 - Gate: PASS.
+
+## Round 52 (2026-11-12): Study Back after Skip
+- Back was greyed out after a Skip (only answers were recorded). Skip now records itself and Back undoes it.
+- Back is still empty on the first card of a session or after a page reload (the trail lives in memory only).
+- Gate: PASS.

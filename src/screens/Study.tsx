@@ -22,7 +22,7 @@ const LEVELS = ["Read it", "Some words", "Most words", "All words", "From memory
 const FRAC = [0, 0.35, 0.7, 1, 1]
 // stage is the level a card is due to be tried at next; lvl overrides it for one card (Next level up / Easier)
 type Item = { uid: number; id: string; stage: number; missed?: boolean; lvl?: number; redo?: boolean }
-type Trail = { item: Item; fin: boolean } // a card you just answered, and whether that answer cleared it
+type Trail = { item: Item; fin: boolean; skip?: boolean } // a card you just answered, and whether that answer cleared it
 type Session = { queue: Item[]; total: number; done: number; miss: number }
 let uid = 1
 const today = () => L.ymd(new Date())
@@ -137,12 +137,19 @@ export default function Study() {
   // Skip: nothing is scored, the card just moves to the other end.
   const skip = () => {
     if (!s || s.queue.length < 2) return
+    setTrail((t) => [...t.slice(-19), { item: s.queue[0], fin: false, skip: true }])
     setS({ ...s, queue: [...s.queue.slice(1), s.queue[0]] })
   }
   // Back: reopen the card you just answered (not the one skipped to the end). If it was already cleared, redoing it does not move its schedule again.
   const back = () => {
     if (!s || !trail.length) return
     const last = trail[trail.length - 1]
+    if (last.skip) { // undo a skip: the card went to the end of the queue, bring it back to the front
+      const end = s.queue[s.queue.length - 1]
+      if (end && end.id === last.item.id) setS({ ...s, queue: [end, ...s.queue.slice(0, -1)] })
+      setTrail(trail.slice(0, -1)); setManual(null)
+      return
+    }
     const rest = s.queue.filter((i) => i.id !== last.item.id)
     setS({ ...s, queue: [{ ...last.item, uid: uid++, redo: last.fin || last.item.redo }, ...rest], done: last.fin ? s.done - 1 : s.done })
     setTrail(trail.slice(0, -1))
