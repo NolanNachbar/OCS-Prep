@@ -20,6 +20,16 @@ import type { Card, Score } from "@/lib/types"
 const RANK_SECS = ["nve", "nvo", "mce", "mco"]
 const LEVELS = ["Read it", "Some words", "Most words", "All words", "From memory"]
 const FRAC = [0, 0.35, 0.7, 1, 1]
+// A short card blanks the same words at several rungs, so offer only the rungs that really differ.
+const rungs = (c: Card): number[] => {
+  const out = [0]
+  let prev = 0
+  for (const l of [1, 2, 3]) {
+    const n = L.cloze(c, FRAC[l], 0).filter((t: { blank: boolean }) => t.blank).length
+    if (n > prev) { out.push(l); prev = n }
+  }
+  return [...out, 4]
+}
 // stage is the level a card is due to be tried at next; lvl overrides it for one card (Next level up / Easier)
 type Item = { uid: number; id: string; stage: number; missed?: boolean; lvl?: number; redo?: boolean }
 type Trail = { item: Item; fin: boolean; skip?: boolean } // a card you just answered, and whether that answer cleared it
@@ -157,7 +167,7 @@ export default function Study() {
   }
 
   const setLevel = (item: Item, lv: number) => {
-    if (s) setS({ ...s, queue: [{ ...item, uid: uid++, lvl: lv }, ...s.queue.slice(1)] })
+    if (s) { setManual(null); setS({ ...s, queue: [{ ...item, uid: uid++, lvl: lv }, ...s.queue.slice(1)] }) } // the slider's manual level would otherwise win over this one
   }
 
   const introduce = (item: Item) => {
@@ -179,7 +189,9 @@ export default function Study() {
   const startedN = order.length - fresh.length
   const item = s?.queue[0]
   const c = item ? byId.get(item.id) : undefined
-  const level = item ? (manual ?? item.lvl ?? item.stage) : 0
+  const rg = c ? rungs(c) : [0, 1, 2, 3, 4]
+  const want = item ? (manual ?? item.lvl ?? item.stage) : 0
+  const level = rg.find((l) => l >= want) ?? 4 // a rung this card doesn't have rounds up to the next real one
 
   return (
     <div className="space-y-4">
@@ -208,12 +220,12 @@ export default function Study() {
               <span className="text-muted-foreground">Fill in the blank</span>
               <span className="text-gold">{LEVELS[level]}{manual === null ? " (auto)" : ""}</span>
             </div>
-            <Slider min={0} max={4} step={1} value={[level]} onValueChange={(v) => setManual(v[0])} aria-label="How much to fill in" aria-valuetext={LEVELS[level]} />
+            <Slider min={0} max={rg.length - 1} step={1} value={[rg.indexOf(level)]} onValueChange={(v) => setManual(rg[v[0]])} aria-label="How much to fill in" aria-valuetext={LEVELS[level]} />
             <div className="mt-2 flex justify-between text-xs uppercase tracking-wider text-muted-foreground"><span>Nothing blank</span><span>Everything blank</span></div>
             <label className="mt-3 flex min-h-11 items-center gap-3 text-sm"><input type="checkbox" className="size-5 accent-[#D8B24A]" checked={store.settings.letters !== false} onChange={(e) => update((st) => { st.settings.letters = e.target.checked; return st })} />Show the first letter in each blank</label>
             {manual !== null && <Button variant="ghost" size="sm" className="mt-1 px-0" onClick={() => setManual(null)}>Back to auto</Button>}
           </div>
-          <Step key={item.uid + "-" + level} item={item} level={level} card={c} hook={hookFor(c, secIdx(c))} onIntro={() => introduce(item)} onHarder={() => setLevel(item, level + 1)} onEasier={() => setLevel(item, level - 1)} onNext={(ok) => advance(item, ok, level)} />
+          <Step key={item.uid + "-" + level} item={item} level={level} card={c} hook={hookFor(c, secIdx(c))} onIntro={() => introduce(item)} onHarder={() => setLevel(item, rg[rg.indexOf(level) + 1] ?? 4)} onEasier={() => setLevel(item, rg[Math.max(0, rg.indexOf(level) - 1)])} onNext={(ok) => advance(item, ok, level)} />
         </Panel>
       ) : s ? (
         <Panel>

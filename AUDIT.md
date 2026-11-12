@@ -140,3 +140,8 @@ After a miss in Test, Inspection or Word match there is an "Add to my Study card
 - Back was greyed out after a Skip (only answers were recorded). Skip now records itself and Back undoes it.
 - Back is still empty on the first card of a session or after a page reload (the trail lives in memory only).
 - Gate: PASS.
+
+## Round 53 (2026-11-12): Study level slider and Next level up
+- Next level up did nothing once the slider had been touched: the slider's manual level overrode the card's new level. setLevel now clears it.
+- Short cards blanked the same words at several rungs, so the slider showed levels that were identical. The slider and the up/down buttons now only offer rungs that differ for that card (26 of 135 cards have 3 rungs, 3 have 4, the rest 5).
+- Gate: PASS.
