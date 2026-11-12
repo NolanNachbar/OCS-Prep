@@ -84,6 +84,7 @@ export default function Test() {
     const r = L.score(c, text) as Score
     setRes(r)
     if (r.ok && r.ratio >= 1 && r.extra.length === 0 && run?.targeted) update((s) => { if (!s.cards[c.id]) s.cards[c.id] = { box: 2, reps: 1, lapses: 0, misses: 0, due: L.addDays(L.ymd(new Date()), L.STEPS[2]) }; return s })
+    if (r.ok) update((s) => { const e = s.cards[c.id]; if (e && e.misses) s.cards[c.id] = { ...e, misses: 0 }; return s })
     if (!r.ok) update((s) => { const e = s.cards[c.id]; if (e) s.cards[c.id] = { ...e, box: 0, due: L.ymd(new Date()), lapses: e.lapses + 1, misses: (e.misses || 0) + 1 }; return s }) // never create a record for an unseen card
   }
   const next = (ok: boolean) => {

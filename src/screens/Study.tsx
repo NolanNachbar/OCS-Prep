@@ -125,7 +125,7 @@ export default function Study() {
       if (!item.redo) update((st) => {
         let cs = st.cards[c.id] || { box: 0, reps: 0, lapses: 0, due: today(), misses: 0 }
         if (item.missed && cs.reps > 0) cs = { ...cs, box: 1, lapses: cs.lapses + 1 }
-        st.cards[c.id] = { misses: cs.misses || 0, ...L.schedule(cs, true, today(), st.settings.ship) }
+        st.cards[c.id] = { misses: item.missed ? cs.misses || 0 : 0, ...L.schedule(cs, true, today(), st.settings.ship) } // a clean type-it-cold pass clears the weak count
         return st
       })
       done++

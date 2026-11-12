@@ -50,6 +50,7 @@ export default function Inspection({ pool, title, onExit }: { pool: Card[]; titl
     stopSpeaking()
     const r = L.score(c, late && !textRef.current.trim() ? "" : textRef.current) as Score
     setRes(r)
+    if (r.ok) update((s) => { const e = s.cards[c.id]; if (e && e.misses) s.cards[c.id] = { ...e, misses: 0 }; return s })
     if (!r.ok) update((s) => { const e = s.cards[c.id]; if (e) s.cards[c.id] = { ...e, box: 0, due: L.ymd(new Date()), lapses: e.lapses + 1, misses: (e.misses || 0) + 1 }; return s }) // never create a record for an unseen card
   }
   const gradeRef = useRef(grade); gradeRef.current = grade
