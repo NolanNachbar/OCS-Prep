@@ -32,12 +32,12 @@ const GROUPS: { name: string; note: string; ids: string[] }[] = [
   { name: "Marine enlisted: E-8 and E-9", note: "The confusable ones. First Sergeant has a diamond, Master Gunnery Sergeant a bursting bomb, Sergeant Major a star.", ids: ids("mce", 128, 131) },
 ]
 
-// The four big categories; each holds the pattern groups above (indexes into GROUPS), in learning order.
+// The four big categories; each holds the pattern groups above (indexes into GROUPS), lowest rank to highest. Learn next follows this order.
 const SECTIONS = [
-  { name: "Navy officers", groups: [0, 1, 2, 3] },
   { name: "Navy enlisted", groups: [7, 8, 9] },
-  { name: "Marine officers", groups: [4, 5, 6] },
+  { name: "Navy officers", groups: [3, 0, 1, 2] },
   { name: "Marine enlisted", groups: [10, 11, 12] },
+  { name: "Marine officers", groups: [6, 4, 5] },
 ]
 
 type Q = { c: Card; mode: "pic" | "name"; opts: Card[] }
@@ -67,7 +67,7 @@ export default function Ranks() {
   if (rec) return <RankRecall cards={rec.cards} teach={rec.teach} onExit={() => setRec(null)} />
 
   const groupCards = (g: (typeof GROUPS)[number]) => g.ids.map((i) => rank.get(i)).filter(Boolean) as Card[]
-  const next = GROUPS.find((g) => groupCards(g).some((c) => !learned(c)))
+  const next = SECTIONS.flatMap((x) => x.groups).map((gi) => GROUPS[gi]).find((g) => groupCards(g).some((c) => !learned(c)))
   const due = every.filter((c) => learned(c) && store.cards[c.id].due <= day)
   const nLearned = every.filter(learned).length
 
@@ -134,7 +134,7 @@ export default function Ranks() {
         <p className="mt-1 text-muted-foreground">Each rank shows its Appendix B wording exactly, with the collar and sleeve side by side. Pictures come from Wikimedia Commons (credits under Settings); a rank without one shows a drawing from the wording. Rank by rank: Navy officers, Marine officers, Navy enlisted, Marine enlisted. E-7 to E-9 in both services get asked the most.</p>
         <p className="mt-3 font-bold">{nLearned} of {every.length} ranks learned</p>
         <div className="mt-3 flex flex-wrap gap-3">
-          {next && <Button onClick={() => { setOpen([]); setRec({ cards: groupCards(next), teach: true }) }}>Learn next: {next.name}</Button>}
+          {next && <Button className="h-auto min-h-9 max-w-full whitespace-normal py-2 text-left" onClick={() => { setOpen([]); setRec({ cards: groupCards(next), teach: true }) }}>Learn next: {next.name}</Button>}
           {due.length > 0 && <Button variant="outline" onClick={() => setRec({ cards: due, teach: false })}>Review {due.length} due</Button>}
         </div>
         <p className="mt-3 text-muted-foreground">How it works: Learn walks you through a group (picture, title, exact wording), then asks you to type the title from the picture and the wording from the title. Anything you miss comes back until you get it twice in a row, then it joins your review schedule. Match is only a warm-up. Open a category below and work through its groups top to bottom.</p>

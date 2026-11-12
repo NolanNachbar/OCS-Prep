@@ -68,9 +68,11 @@ t("study order starts with Code of Conduct then General Orders", () => {
   assert.strictEqual(o[o.length - 1].sec, "phon");
   assert.strictEqual(o.length, 135);
 });
-t("senior enlisted ranks come before junior", () => {
+t("ranks go lowest to highest within each service", () => {
   const o = L.studyOrder(cards).map((c) => c.prompt);
-  assert(o.indexOf("Navy E-9") < o.indexOf("Navy E-2"));
+  assert(o.indexOf("Navy E-1") < o.indexOf("Navy E-2") && o.indexOf("Navy E-2") < o.indexOf("Navy E-9"));
+  assert(o.indexOf("Navy W-1") < o.indexOf("Navy O-1") && o.indexOf("Navy O-1") < o.indexOf("Navy O-10"));
+  assert(o.indexOf("Navy E-9") < o.indexOf("USMC E-1: Private"));
 });
 t("scheduler: miss resets, hit climbs, deadline caps the gap", () => {
   let s = L.schedule(undefined, true, "2026-11-10", null);

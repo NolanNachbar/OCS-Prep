@@ -99,18 +99,19 @@
 
   // ---- study order -----------------------------------------------------------------------
   // Appendix B priority from the PRD: Code of Conduct, General Orders, Chain of Command,
-  // Constitution and basics, senior ranks, the rest of the ranks, devices, watchstanding, alphabet.
+  // Constitution and basics, ranks lowest to highest, devices, watchstanding, alphabet.
   function priority(card) {
-    const grade = /E-(\d+)/.exec(card.prompt);
-    const senior = grade && +grade[1] >= 7;
     switch (card.sec) {
       case "coc": return 10;
       case "go": return 20;
       case "chain": return 30;
       case "const": return 40;
       case "basics": return 45;
-      case "nve": case "mce": return senior ? 50 : 70;
-      case "nvo": case "mco": return 60;
+      // ranks go lowest to highest within each service, enlisted then warrant and officers (cards are already in that order)
+      case "nve": return 50;
+      case "nvo": return 52;
+      case "mce": return 54;
+      case "mco": return 56;
       case "dev": return 80;
       case "watch": return 90;
       case "phon": return 100;
