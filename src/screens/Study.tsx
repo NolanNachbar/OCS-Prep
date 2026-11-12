@@ -229,6 +229,7 @@ function Step({ item, level, card: c, hook, onIntro, onHarder, onEasier, onNext 
   const [tainted, setTainted] = useState(false) // a failed or peeked attempt can never graduate the card
   const [vals, setVals] = useState<Record<number, string>>({})
   const nb = level >= 1 && level < 4 ? numbered(c.prompt) : null
+  const words = nb ? nb.name.split(/\s+/).filter(Boolean) : [] // each word of the name is its own blank
   // The name (General Order, Code of Conduct, Chain of Command, Constitution) is sometimes a blank too, at the same odds as a word.
   const nameBlank = !!nb && nb.name !== "" && [...c.id + item.uid].reduce((h, ch) => Math.imul(h ^ ch.charCodeAt(0), 16777619) >>> 0, 2166136261) / 4294967296 < FRAC[level]
   const okBlank = (t: { text: string; alts?: string[] }, v: string) => (t.alts ? t.alts.includes(L.norm(v)) : L.norm(v) === L.norm(t.text))
@@ -258,7 +259,7 @@ function Step({ item, level, card: c, hook, onIntro, onHarder, onEasier, onNext 
 
   const check = () => {
     if (level < 4) {
-      const blanks = [...(nb ? [{ text: nb.num, alts: nb.alts }] : []), ...(nameBlank ? [{ text: nb!.name }] : []), ...toks.filter((t: { blank: boolean }) => t.blank)]
+      const blanks = [...(nb ? [{ text: nb.num, alts: nb.alts }] : []), ...(nameBlank ? words.map((w) => ({ text: w })) : []), ...toks.filter((t: { blank: boolean }) => t.blank)]
       let good = 0
       blanks.forEach((t: { text: string; alts?: string[] }, i: number) => { if (okBlank(t, vals[i] || "")) good++ })
       const ok = good === blanks.length
@@ -267,12 +268,19 @@ function Step({ item, level, card: c, hook, onIntro, onHarder, onEasier, onNext 
     } else record(L.score(c, text))
   }
 
-  const box = (k: number, text: string, alts?: string[]) => (
-    <input value={vals[k] || ""} disabled={!!res} autoFocus={k === 0} onChange={(e) => setVals({ ...vals, [k]: e.target.value })} size={Math.min(Math.max(3, text.length), 14)}
-      data-blank onKeyDown={(e) => onBlankKey(e, check)} autoCapitalize="none" autoComplete="off" autoCorrect="off" spellCheck={false} aria-label={k === 0 ? "number" : "name"}
-      className={`mx-1 min-h-11 rounded-none border-0 border-b-2 bg-secondary px-2 py-1 text-center text-xl text-foreground outline-none focus:bg-muted ${res ? (okBlank({ text, alts }, vals[k] || "") ? "border-b-ok bg-ok/15" : "border-b-destructive bg-destructive/15") : "border-b-gold"}`} />
-  )
-  let bi = nb ? (nameBlank ? 2 : 1) : 0
+  const box = (k: number, text: string, alts?: string[]) => {
+    const good = okBlank({ text, alts }, vals[k] || "")
+    return (
+      <span className="inline-flex flex-col items-center align-top">
+        <input value={vals[k] || ""} disabled={!!res} autoFocus={k === 0} onChange={(e) => setVals({ ...vals, [k]: e.target.value })} size={Math.min(Math.max(3, text.length), 14)}
+          data-blank onKeyDown={(e) => onBlankKey(e, check)} autoCapitalize="none" autoComplete="off" autoCorrect="off" spellCheck={false} aria-label={k === 0 ? "number" : "name"}
+          className={`mx-1 min-h-11 rounded-none border-0 border-b-2 bg-secondary px-2 py-1 text-center text-xl text-foreground outline-none focus:bg-muted ${res ? (good ? "border-b-ok bg-ok/15" : "border-b-destructive bg-destructive/15") : "border-b-gold"}`} />
+        {res && !good && <span className="-mt-3 text-sm font-bold leading-none text-ok">{text}</span>}
+      </span>
+    )
+  }
+  const nameBoxes = () => words.map((w, i) => <span key={i}>{i > 0 && " "}{box(1 + i, w)}</span>)
+  let bi = nb ? (nameBlank ? 1 + words.length : 1) : 0
   return (
     <div>
       {c.lead && <p className="italic text-muted-foreground">{level < 4 ? (nb ? hideOrdinal(c.lead) : c.lead) : "Start with: " + c.lead}</p>}
@@ -280,10 +288,10 @@ function Step({ item, level, card: c, hook, onIntro, onHarder, onEasier, onNext 
         <p className="text-xl leading-[2.4]">
           {nb && (
             <>
-              {nb.nameFirst && (nameBlank ? <>{box(1, nb.name)}{nb.sep} </> : <>{nb.name}{nb.sep} </>)}
+              {nb.nameFirst && (nameBlank ? <>{nameBoxes()}{nb.sep} </> : <>{nb.name}{nb.sep} </>)}
               {nb.marker} {box(0, nb.num, nb.alts)}
               {nb.tailLead && <> {nb.tailLead}</>}
-              {!nb.nameFirst && nb.name && (nameBlank ? <> {box(1, nb.name)}</> : <> {nb.name}</>)}
+              {!nb.nameFirst && nb.name && (nameBlank ? <> {nameBoxes()}</> : <> {nb.name}</>)}
               <br />
             </>
           )}

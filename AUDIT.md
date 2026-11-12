@@ -125,3 +125,9 @@ After a miss in Test, Inspection or Word match there is an "Add to my Study card
 - Recall-complete screen after a Learn session now offers "Next group: <name>" (lowest to highest), so finishing a group no longer dumps you back to find the button.
 - Ranks intro text updated to the new order (it still listed the old one).
 - Gate: PASS.
+
+## Round 50 (2026-11-12): Study name blank split per word; r49 reverted
+- r49 (per-letter rank title boxes) was the wrong screen and the wrong granularity; reverted.
+- Study name blank ("Code of Conduct") is now one blank per word instead of one shared box.
+- A wrong blank on the number or name now shows the correct word under it.
+- Gate: PASS.
