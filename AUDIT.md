@@ -158,3 +158,6 @@ Redrew the drawn rating eagle (CPO, SCPO, MCPO sleeves and officer sleeve eagle)
 
 ## r56b (2026-11-12)
 Drawn rating eagle is now a trace of the real Appendix B eagle (perched, head to its left, swept feathered wings) instead of a hand-drawn one.
+
+## r56c (2026-11-12)
+Rating eagle switched to the finer-feather trace (full 56-wide, even-odd fill) he picked.
