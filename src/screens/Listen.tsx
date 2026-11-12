@@ -27,29 +27,40 @@ export default function Listen() {
   const [lap, setLap] = useState(0)
   const au = useRef<HTMLAudioElement | null>(null)
   if (!au.current && typeof Audio !== "undefined") au.current = new Audio()
-  const live = useRef({ n: 0, loop })
+  const live = useRef({ n: 0, loop, ids: [] as string[], mode, rate: 1 })
+  const handled = useRef(-1) // index the ended handler already started, so the effect doesn't reload it
 
   const cards = order.flatMap((x) => Array.from({ length: reps[x.id] ?? 0 }, (_, i) => ({ c: x, rep: i + 1, of: reps[x.id] })))
   const rate = store.settings.rate
   const cur = cards[idx % Math.max(1, cards.length)]
   const c = cur?.c
-  live.current = { n: cards.length, loop }
+  live.current = { n: cards.length, loop, ids: cards.map((x) => x.c.id), mode, rate }
 
   useEffect(() => {
     const a = au.current
     if (!a) return
     if (!playing || !c) { a.pause(); return }
     setErr(false)
-    a.src = `${import.meta.env.BASE_URL}audio/cards/${c.id}-${mode}.mp3`
-    a.defaultPlaybackRate = rate // loading a new src resets playbackRate to this
-    a.playbackRate = rate
+    const load = (id: string) => {
+      a.src = `${import.meta.env.BASE_URL}audio/cards/${id}-${live.current.mode}.mp3`
+      a.defaultPlaybackRate = live.current.rate // loading a new src resets playbackRate to this
+      a.playbackRate = live.current.rate
+      return a.play()
+    }
+    // Chain the next clip right inside the ended event, not through a React render: a locked iPhone suspends page
+    // rendering, so waiting on state to start the next clip is what made playback stop after the first one.
     a.onended = () => {
-      if (idx + 1 >= live.current.n && !live.current.loop) { setPlaying(false); setIdx(0); return }
-      setIdx((i) => (i + 1 >= live.current.n ? 0 : i + 1))
-      setLap((n) => n + 1)
+      const { n, loop: lp, ids } = live.current
+      if (idx + 1 >= n && !lp) { setPlaying(false); setIdx(0); return }
+      const next = idx + 1 >= n ? 0 : idx + 1
+      handled.current = next
+      load(ids[next]).catch(() => { setErr(true); setPlaying(false) })
+      setIdx(next)
+      setLap((k) => k + 1)
     }
     a.onerror = () => { setErr(true); setPlaying(false) }
-    a.play().catch(() => { setErr(true); setPlaying(false) })
+    if (handled.current === idx) { handled.current = -1; return }
+    load(c.id).catch(() => { setErr(true); setPlaying(false) })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [playing, idx, lap, mode, c?.id])
 
