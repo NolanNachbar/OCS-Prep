@@ -43,7 +43,7 @@ function mask(title: string, level: number, letters: boolean) {
 }
 
 // Teach the group first (nobody can recall what they have never seen), then drill with the slider.
-export default function RankRecall({ cards, teach, onExit }: { cards: Card[]; teach: boolean; onExit: () => void }) {
+export default function RankRecall({ cards, teach, onExit, next }: { cards: Card[]; teach: boolean; onExit: () => void; next?: { label: string; go: () => void } }) {
   const base = teach ? 1 : 3
   const [s, setS] = useState<Sess>(() => ({
     phase: teach ? "teach" : "recall", t: 0,
@@ -81,7 +81,8 @@ export default function RankRecall({ cards, teach, onExit }: { cards: Card[]; te
         <Eyebrow>Recall complete</Eyebrow>
         <h2 className="slab mt-2 text-3xl font-bold">{cards.length} ranks learned</h2>
         <p className="mt-2 text-muted-foreground">{s.miss ? `${s.miss} misses along the way. Each one dropped a level and came back.` : "No misses."} These ranks are now on your review schedule and will show up as due in the Ranks tab.</p>
-        <Button className="mt-5" onClick={onExit}>Done</Button>
+        {next && <Button className="mt-5 h-auto min-h-9 w-full whitespace-normal py-2" onClick={next.go}>Next group: {next.label}</Button>}
+        <Button className="mt-3" variant={next ? "outline" : "default"} onClick={onExit}>Done</Button>
       </Panel>
     )
   }

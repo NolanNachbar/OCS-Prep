@@ -120,3 +120,8 @@ Weak badge fix. "Weak" meant 3 or more lifetime failed checks (any level, Show a
 
 ## Round 46 (2026-11-12)
 After a miss in Test, Inspection or Word match there is an "Add to my Study cards" button (the same pin the Cards tab uses; Study takes it into the open session at once, and the button then reads "Added to Study"). Inspection setup now has section chips to include or leave out content, count shown. The push-up penalty option was removed at his request. cards.json untouched.
+
+## Round 48 (2026-11-12): rank learning moves on to the next group
+- Recall-complete screen after a Learn session now offers "Next group: <name>" (lowest to highest), so finishing a group no longer dumps you back to find the button.
+- Ranks intro text updated to the new order (it still listed the old one).
+- Gate: PASS.

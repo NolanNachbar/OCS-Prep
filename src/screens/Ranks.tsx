@@ -64,10 +64,10 @@ export default function Ranks() {
 
   if (mode === "words") return <RankWords cards={every} onExit={() => setMode(null)} />
   if (mode === "insp") return <Inspection pool={every} title="Rank inspection" onExit={() => setMode(null)} />
-  if (rec) return <RankRecall cards={rec.cards} teach={rec.teach} onExit={() => setRec(null)} />
-
   const groupCards = (g: (typeof GROUPS)[number]) => g.ids.map((i) => rank.get(i)).filter(Boolean) as Card[]
   const next = SECTIONS.flatMap((x) => x.groups).map((gi) => GROUPS[gi]).find((g) => groupCards(g).some((c) => !learned(c)))
+  if (rec) return <RankRecall key={rec.cards.map((c) => c.id).join()} cards={rec.cards} teach={rec.teach} onExit={() => setRec(null)}
+    next={rec.teach && next ? { label: next.name, go: () => setRec({ cards: groupCards(next), teach: true }) } : undefined} />
   const due = every.filter((c) => learned(c) && store.cards[c.id].due <= day)
   const nLearned = every.filter(learned).length
 
@@ -131,7 +131,7 @@ export default function Ranks() {
       <Panel>
         <Eyebrow>Ranks</Eyebrow>
         <h2 className="slab mt-2 text-2xl font-bold">Learn them in groups, then match them</h2>
-        <p className="mt-1 text-muted-foreground">Each rank shows its Appendix B wording exactly, with the collar and sleeve side by side. Pictures come from Wikimedia Commons (credits under Settings); a rank without one shows a drawing from the wording. Rank by rank: Navy officers, Marine officers, Navy enlisted, Marine enlisted. E-7 to E-9 in both services get asked the most.</p>
+        <p className="mt-1 text-muted-foreground">Each rank shows its Appendix B wording exactly, with the collar and sleeve side by side. Pictures come from Wikimedia Commons (credits under Settings); a rank without one shows a drawing from the wording. Learn them lowest to highest: Navy enlisted, Navy officers, Marine enlisted, Marine officers. E-7 to E-9 in both services get asked the most.</p>
         <p className="mt-3 font-bold">{nLearned} of {every.length} ranks learned</p>
         <div className="mt-3 flex flex-wrap gap-3">
           {next && <Button className="h-auto min-h-9 max-w-full whitespace-normal py-2 text-left" onClick={() => { setOpen([]); setRec({ cards: groupCards(next), teach: true }) }}>Learn next: {next.name}</Button>}
