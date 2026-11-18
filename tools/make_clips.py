@@ -15,7 +15,23 @@ out = os.environ.get("OUT_DIR", "public/audio/cards"); os.makedirs(out, exist_ok
 tmp = tempfile.mkdtemp()
 rate = voice.config.sample_rate
 
+# Abbreviations the voice reads as words ("OCS" as "ox", "ADM" as "adum"), spelled out the way you'd say them.
+# A spaced letter A is squashed to "uh" (dotted letters come out garbled), so the voice is given "eigh" for the letter A.
+SAY = {"OOD": "O O D", "OCS": "O C S", "USN": "U S N", "ENS": "E N S", "MCPON": "M C P O N", "MCPO": "M C P O",
+       "SA": "S eigh", "ADM": "eigh D M", "FADM": "F eigh D M", "RADM": "R eigh D M", "VADM": "V eigh D M",
+       "CAPT": "C eigh P T", "Capt": "Captain", "Maj": "Major", "MajGen": "Major Gen", "SgtMaj": "S G T Major",
+       "PO1": "P O one", "PO2": "P O two", "PO3": "P O three", "WO1": "W O one"}
+ABBR = re.compile(r"\b(" + "|".join(sorted(SAY, key=len, reverse=True)) + r")\b")
+# Phonetic alphabet words the voice gets wrong; the rest are read as the word alone (the card's guide in parentheses is dropped).
+PHON_SAY = {"phon-053": "al fah", "phon-054": "brah-voh", "phon-064": "lee mah", "phon-067": "oss cah", "phon-068": "pah pah",
+            "phon-069": "kay beck", "phon-071": "see air rah", "phon-078": "zoo loo"}
+
+def talk(c):  # what the voice says for a card's answer
+    if c["sec"] == "phon": return PHON_SAY.get(c["id"]) or re.sub(r"\s*\(.*?\)", "", c["full"])
+    return c["full"]
+
 def spoken(t):  # symbols the voice would read literally ("hash 2", "slash"), spelled the way you'd say them
+    t = ABBR.sub(lambda m: SAY[m.group(1)], t)
     t = re.sub(r"#\s*(\d+)", r"number \1", t)
     t = t.replace("Sir/Ma'am", "Sir or Ma'am").replace("(s)", "s")
     t = re.sub(r"\b1/2[- ]inch", "one half inch", t); t = re.sub(r"\b1/4[- ]inch", "one quarter inch", t)
@@ -48,7 +64,7 @@ def gap(text):  # seconds to say it aloud: about 2.2 words a second plus a breat
 silence(0.55, f"{tmp}/s_beat.wav"); silence(0.9, f"{tmp}/s_short.wav"); silence(1.2, f"{tmp}/s_long.wav")
 for c in cards:
     p, a = f"{tmp}/p.wav", f"{tmp}/a.wav"
-    say(c["prompt"] + ".", p); say_parts(c["full"], a, "x")
+    say(c["prompt"] + ".", p); say_parts(talk(c), a, "x")
     silence(gap(c["full"]), f"{tmp}/s_gap.wav")
     for mode, mid in (("read", "s_short"), ("quiz", "s_gap")):
         lst = f"{tmp}/{mode}.txt"
