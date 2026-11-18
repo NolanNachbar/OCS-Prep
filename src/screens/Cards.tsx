@@ -7,6 +7,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Textarea } from "@/components/ui/textarea"
 import * as L from "@/lib/ocs.js"
 import { Insignia } from "@/components/Insignia"
+import PlayButton from "@/components/PlayButton"
 import { useCards } from "@/lib/cards"
 import { hookFor } from "@/lib/hooks"
 import { showIntro, update, useStore } from "@/lib/store"
@@ -45,7 +46,7 @@ export default function Cards({ onTest }: { onTest: () => void }) {
                 </div>
                 {cs.map((c, i) => (
                   <div key={c.id} className="rounded-md border border-border bg-background/50 p-3">
-                    <div className="flex items-center justify-between gap-2"><b>{c.prompt}</b>{chip(c)}</div>
+                    <div className="flex items-center justify-between gap-2"><b>{c.prompt}</b><span className="flex shrink-0 items-center gap-2">{chip(c)}<PlayButton id={c.id} label={c.prompt} /></span></div>
                     <p className="mt-1 whitespace-pre-line text-muted-foreground">{lines(c.answer)}</p>
                     <Insignia card={c} />
                     {hookFor(c, i) && <p className="mt-2 border-l-2 border-gold pl-2 text-sm">{hookFor(c, i)}</p>}

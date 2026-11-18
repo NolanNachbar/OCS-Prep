@@ -13,7 +13,7 @@ import { useCards } from "@/lib/cards"
 import { hookFor } from "@/lib/hooks"
 import * as L from "@/lib/ocs.js"
 import { isDue, sessionQueue, suggestion, topicStats } from "@/lib/queue.js"
-import { speak } from "@/lib/speech"
+import { playClip } from "@/lib/clip"
 import { getStore, update, useStore } from "@/lib/store"
 import type { Card, Score } from "@/lib/types"
 
@@ -336,7 +336,7 @@ function Step({ item, level, card: c, hook, onIntro, onHarder, onEasier, onNext 
         <p className="mt-4 text-sm text-muted-foreground">Read it, then say it out loud once without looking.</p>
         <div className="mt-2 flex flex-wrap gap-3">
           {item.stage === 0 ? <><Button onClick={onIntro}>I said it aloud</Button><Button variant="outline" onClick={onHarder}>Make it harder</Button></> : <Button onClick={() => onNext(true)}>Next card</Button>}
-          <Button variant="outline" onClick={() => speak((c.lead ? c.lead + " " : "") + c.answer, store.settings.rate)}><Volume2 /> Hear it</Button>
+          <Button variant="outline" onClick={() => playClip(c.id, store.settings.rate)}><Volume2 /> Hear it</Button>
         </div>
       </div>
     )
