@@ -12,10 +12,9 @@ import { Diff, Eyebrow, MicButton, Panel, StatTile, Verdict } from "@/components
 import { useCards } from "@/lib/cards"
 import { hookFor } from "@/lib/hooks"
 import * as L from "@/lib/ocs.js"
-import { buildQueue, currentTopic, isDue, newLeft } from "@/lib/queue.js"
+import { isDue, sessionQueue, suggestion, topicStats } from "@/lib/queue.js"
 import { speak } from "@/lib/speech"
-import FirstRun from "@/screens/FirstRun"
-import { getStore, showIntro, update, useStore } from "@/lib/store"
+import { getStore, update, useStore } from "@/lib/store"
 import type { Card, Score } from "@/lib/types"
 
 // Each rung is strictly harder: more words blanked, then the letter cues go, then typing it cold.
@@ -74,7 +73,7 @@ export default function Study() {
   const { order: every, secIdx } = useCards()
   // Ranks are learned in the Ranks tab (pictures, groups, recall), so Study leaves them out.
   const order = useMemo(() => every.filter((c) => !RANK_SECS.includes(c.sec)), [every])
-  const byId = useMemo(() => new Map(order.map((c) => [c.id, c])), [order])
+  const byId = useMemo(() => new Map(every.map((c) => [c.id, c])), [every]) // "Learn this" may ask for a rank card too
   const [s, setS] = useState<Session | null>(null)
   const [manual, setManual] = useState<number | null>(null)
   const [trail, setTrail] = useState<Trail[]>([])
@@ -88,37 +87,25 @@ export default function Study() {
   const due = useMemo(() => order.filter((c) => isDue(store.cards[c.id], day)), [order, store.cards, day])
   const fresh = useMemo(() => order.filter((c) => !store.cards[c.id]), [order, store.cards])
 
-  // The session is pinned cards, then what is due today, then new cards up to the day's allowance (extra = "Learn N more").
-  // now: "Learn it now" (the next topic today). extra: "Learn N more" in set-number mode.
-  const start = (extra: number, now = false) => {
+  // A session is what the learner picked: a topic, the due reviews, or exactly the cards asked for from Cards / after a miss.
+  const begin = (opt: { ids?: string[]; sec?: string; take?: number }) => {
     const t = today()
     const st = getStore()
-    const intro = st.intro.date === t ? st.intro : { date: t, n: 0 }
-    if (intro !== st.intro) update((x) => { x.intro = intro; return x })
-    const pins = st.pinned || []
-    if (pins.length) update((x) => { x.pinned = []; return x })
-    const top = currentTopic({ order, cards: st.cards })
-    const take = top && st.take && st.take.date === t && st.take.sec === top.sec ? st.take.n : undefined
-    const q = buildQueue({ order, cards: st.cards, pins, today: t, settings: st.settings, intro, extra, now, take })
-    const queue: Item[] = [...q.pinned, ...q.reviews, ...q.news].map((i: { id: string; stage: number }) => ({ uid: uid++, ...i }))
-    setTrail([])
+    const q = sessionQueue({ order: opt.ids ? every : order, cards: st.cards, today: t, settings: st.settings, ...opt })
+    const queue: Item[] = q.map((i: { id: string; stage: number }) => ({ uid: uid++, ...i }))
+    setTrail([]); setManual(null); setOpen(null)
     setS({ queue, total: queue.length, done: 0, miss: 0, day: t })
+    window.scrollTo(0, 0)
   }
-  const started = useRef(false)
-  // "Learn this next" pins added while a session is open go to the front of the queue.
+  const [open, setOpen] = useState<string | null>(null)
+  const [takes, setTakes] = useState<Record<string, number>>({})
+  // "Learn this" (Cards, or after a miss): App has switched here; start on exactly those cards and clear the request.
   useEffect(() => {
-    const pins = (store.pinned || []).filter((id) => byId.has(id))
-    if (!started.current || !s || !pins.length) return
-    const add: Item[] = pins.map((id) => ({ uid: uid++, id, stage: store.cards[id] ? (store.cards[id].box >= 2 ? 4 : 2) : 0 }))
-    setS({ ...s, queue: [...add, ...s.queue.filter((i) => !pins.includes(i.id))], total: s.total + add.length })
-    update((x) => { x.pinned = []; return x })
-  }, [store.pinned]) // eslint-disable-line react-hooks/exhaustive-deps
-  useEffect(() => { if (!started.current) { started.current = true; start(0) } })
-  // Past midnight with the app open: refill only when the session is finished, or untouched since it was built on an earlier day.
-  useEffect(() => {
-    if (!started.current || !s || s.day === day) return
-    if (!s.queue.length || (s.day < day && !trail.length && s.done === 0)) start(0)
-  }, [day]) // eslint-disable-line react-hooks/exhaustive-deps
+    const req = store.studyReq
+    if (!req) return
+    update((x) => { delete x.studyReq; return x })
+    if (req.ids.length) begin({ ids: req.ids })
+  }, [store.studyReq]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const requeue = (q: Item[], item: Item, gap: number) => { const at = Math.min(q.length, gap); q.splice(at, 0, item) }
 
@@ -193,19 +180,13 @@ export default function Study() {
     setS({ ...s, queue: q })
   }
 
-  const topicMode = store.settings.learn !== "count"
-  const top = topicMode ? currentTopic({ order, cards: store.cards }) : null
-  const takeN = top ? (store.take && store.take.date === day && store.take.sec === top.sec ? Math.min(store.take.n, top.take) : top.take) : 0
-  const setTake = (n: number) => { if (top) update((x) => { x.take = { date: today(), sec: top.sec, n }; return x }) }
-  // Learn fewer before the session's first new card: changing the count rebuilds the untouched session.
-  const fresher = !!s && s.done === 0 && !trail.length && s.queue.some((i) => i.stage === 0)
-  // A session built after today's topic was already introduced came from "Learn it now", so rebuild it the same way.
-  const pickAtStart = (n: number) => { setTake(n); start(0, (getStore().intro.date === today() ? getStore().intro.n : 0) > 0) }
-  const introN = store.intro.date === day ? store.intro.n : 0
-  const left = newLeft({ order, cards: store.cards, today: day, settings: store.settings, intro: store.intro })
-  const capped = introN >= store.settings.newPerDay * 3 // "Learn N more" stops at newPerDay*2 extra cards a day
+  const stats = useMemo(() => topicStats({ order, cards: store.cards, today: day }), [order, store.cards, day])
+  const sug = useMemo(() => suggestion({ order, cards: store.cards, today: day }) as Sug, [order, store.cards, day])
+  const takeOf = (sec: string, max: number) => Math.min(max, takes[sec] ?? max)
+  const setTake = (sec: string, n: number) => setTakes((t) => ({ ...t, [sec]: n }))
   const solid = order.filter((c) => (store.cards[c.id]?.box || 0) >= 4).length
   const startedN = order.length - fresh.length
+  const nextDue = sug.kind === "done" && sug.next ? sug.next : null
   const item = s?.queue[0]
   const c = item ? byId.get(item.id) : undefined
   const rg = c ? rungs(c) : [0, 1, 2, 3, 4]
@@ -214,16 +195,15 @@ export default function Study() {
 
   return (
     <div className="space-y-4">
-      {showIntro(store) && <FirstRun />}
       <div className="flex gap-3 pb-1">
         <StatTile value={due.length} label="Due today" tone="text-gold" />
         <StatTile value={startedN} label={`of ${order.length} started`} />
         <StatTile value={solid} label="Solid" tone="text-ok" />
       </div>
 
-      {topicMode && top && fresher && s && item && item.stage === 0 && <TopicPick label={top.label} max={top.take} n={takeN} onPick={pickAtStart} />}
       {s && item && c ? (
         <Panel>
+          <Button variant="ghost" size="sm" className="mb-2 min-h-11 px-0" data-testid="stop" onClick={() => { setS(null); setManual(null) }}><ChevronLeft />Stop, back to topics</Button>
           <div className="mb-1 flex justify-between text-xs text-muted-foreground"><span>{s.queue.length} left</span><span>{s.done} of {s.total} cleared</span></div>
           <Progress value={s.total ? (s.done / s.total) * 100 : 0} className="mb-3 h-1.5 [&>div]:bg-gold" />
           <div className="mb-4 flex gap-3">
@@ -249,38 +229,80 @@ export default function Study() {
           <Step key={item.uid + "-" + level} item={item} level={level} card={c} hook={hookFor(c, secIdx(c))} onIntro={() => introduce(item)} onHarder={() => setLevel(item, rg[rg.indexOf(level) + 1] ?? 4)} onEasier={rg.indexOf(level) > 1 ? () => setLevel(item, rg[rg.indexOf(level) - 1], true) : undefined} onNext={(ok) => advance(item, ok, level)} />
         </Panel>
       ) : s ? (
-        <Panel>
-          <Eyebrow>Session complete</Eyebrow>
-          <h2 className="slab mt-2 text-2xl font-bold">{s.done} of {s.total} cleared</h2>
-          <p className="mt-1 text-muted-foreground">{s.miss} misses. {fresh.length} cards unseen. {due.length} due now.</p>
-          {topicMode ? (top && <>
-            <p className="mt-1 text-muted-foreground" data-testid="next-topic">{startedN === 0 ? "Start with" : "Next"}: {top.label} ({takeN} of {top.take} {top.take === 1 ? "card" : "cards"}).{startedN === 0 && top.sec === "phon" ? " 26 short cards, one word each." : ""}</p>
-            <TopicPick label={top.label} max={top.take} n={takeN} onPick={setTake} bare />
-            <Button className="mt-4 mr-3 min-h-11" onClick={() => start(0, true)}>Learn it now</Button>
-          </>) : <>
-            <p className="mt-1 text-muted-foreground">{left} new {left === 1 ? "card" : "cards"} left today.</p>
-            {fresh.length > 0 && <Button className="mt-4 mr-3 min-h-11" disabled={capped} onClick={() => start(introN)}>Learn {store.settings.newPerDay} more</Button>}
-          </>}
-          <Button variant="outline" className="mt-4 min-h-11" onClick={() => start(0)}>Check due cards</Button>
-          {!topicMode && fresh.length > 0 && capped && <p className="mt-2 text-sm text-muted-foreground">That is {store.settings.newPerDay * 2} extra today. More new cards tomorrow, so the reviews stay manageable.</p>}
-        </Panel>
-      ) : null}
+        <>
+          <Panel>
+            <Eyebrow>Session complete</Eyebrow>
+            <h2 className="slab mt-2 text-2xl font-bold">{s.done} of {s.total} cleared</h2>
+            <p className="mt-1 text-muted-foreground">{s.miss} misses. {fresh.length} cards unseen. {due.length} due now.</p>
+            <Button className="mt-4 min-h-11" data-testid="back-topics" onClick={() => setS(null)}>Back to topics</Button>
+          </Panel>
+          {sug.kind !== "done" && <SuggestCard sug={sug} n={sug.kind === "topic" ? takeOf(sug.sec, sug.max) : 0} onPick={(n) => sug.kind === "topic" && setTake(sug.sec, n)}
+            onStart={() => sug.kind === "topic" ? begin({ sec: sug.sec, take: takeOf(sug.sec, sug.max) }) : begin({})} nextDue={nextDue} />}
+        </>
+      ) : (
+        <>
+          <SuggestCard sug={sug} n={sug.kind === "topic" ? takeOf(sug.sec, sug.max) : 0} onPick={(n) => sug.kind === "topic" && setTake(sug.sec, n)}
+            onStart={() => sug.kind === "topic" ? begin({ sec: sug.sec, take: takeOf(sug.sec, sug.max) }) : begin({})} nextDue={nextDue} />
+          <Button variant="outline" className="min-h-11 w-full" data-testid="review-due" disabled={!due.length} onClick={() => begin({})}>Review due ({due.length})</Button>
+          <Panel>
+            <Eyebrow>Topics</Eyebrow>
+            <ul className="mt-2 divide-y divide-border" data-testid="topics">
+              {stats.map((t: { sec: string; name: string; total: number; started: number; unseen: number; due: number; max: number }) => (
+                <li key={t.sec} data-topic={t.sec}>
+                  <button type="button" className="flex min-h-11 w-full flex-col py-3 text-left" aria-expanded={open === t.sec} onClick={() => setOpen(open === t.sec ? null : t.sec)}>
+                    <span className="flex w-full items-baseline justify-between gap-2"><span className="font-bold">{t.name}</span><span className={`text-sm ${t.due ? "text-gold" : "text-muted-foreground"}`}>{t.due} due</span></span>
+                    <span className="text-sm text-muted-foreground">{t.started} of {t.total} started</span>
+                    <Progress value={(t.started / t.total) * 100} className="mt-1 h-1 [&>div]:bg-gold" />
+                  </button>
+                  {open === t.sec && (
+                    <div className="pb-3">
+                      {t.unseen > 0 && <TopicPick label={t.name} max={t.max} n={takeOf(t.sec, t.max)} onPick={(n) => setTake(t.sec, n)} bare showLabel />}
+                      <Button className="mt-3 min-h-11" disabled={!t.due && !t.unseen} onClick={() => begin({ sec: t.sec, take: takeOf(t.sec, t.max) })}>Study {t.name}</Button>
+                      {!t.due && !t.unseen && <p className="mt-2 text-sm text-muted-foreground">Nothing due here. Test it, or use Learn this on the Cards tab.</p>}
+                    </div>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </Panel>
+        </>
+      )}
     </div>
   )
 }
 
-// Learn fewer: pick 1 up to every card of the topic, saved for today only.
-function TopicPick({ label, max, n, onPick, bare }: { label: string; max: number; n: number; onPick: (n: number) => void; bare?: boolean }) {
-  const body = (
+// Learn fewer: pick 1 up to every card the topic offers for this session.
+function TopicPick({ label, max, n, onPick, showLabel }: { label: string; max: number; n: number; onPick: (n: number) => void; bare?: boolean; showLabel?: boolean }) {
+  return (
     <div className="mt-2 flex flex-wrap items-center gap-2" data-testid="topic-pick">
-      {!bare && <span className="mr-1 w-full text-sm">Learn {label}: {n === max ? `all ${max}` : `${n} of ${max}`} {max === 1 ? "card" : "cards"}</span>}
+      {showLabel && <span className="mr-1 w-full text-sm">New {label} cards: {n === max ? `all ${max}` : `${n} of ${max}`}</span>}
       <Button variant="outline" size="sm" className="min-h-11 min-w-11" aria-label="Fewer cards" disabled={n <= 1} onClick={() => onPick(n - 1)}>-</Button>
       <span className="min-w-8 text-center font-semibold" data-testid="take-n">{n}</span>
       <Button variant="outline" size="sm" className="min-h-11 min-w-11" aria-label="More cards" disabled={n >= max} onClick={() => onPick(n + 1)}>+</Button>
       <Button variant="ghost" size="sm" className="min-h-11" disabled={n >= max} onClick={() => onPick(max)}>All</Button>
     </div>
   )
-  return bare ? body : <Panel>{body}</Panel>
+}
+
+type Sug = { kind: "topic"; sec: string; name: string; n: number; max: number } | { kind: "review"; n: number } | { kind: "done"; next: string | null }
+function SuggestCard({ sug, n, onPick, onStart, nextDue }: { sug: Sug; n: number; onPick: (n: number) => void; onStart: () => void; nextDue: string | null }) {
+  return (
+    <Panel>
+      <div data-testid="suggestion">
+        <Eyebrow>Suggested</Eyebrow>
+        {sug.kind === "topic" && <>
+          <h2 className="slab mt-2 text-2xl font-bold">Suggested: {sug.name}, {n} new {n === 1 ? "card" : "cards"}</h2>
+          <TopicPick label={sug.name} max={sug.max} n={n} onPick={onPick} />
+        </>}
+        {sug.kind === "review" && <h2 className="slab mt-2 text-2xl font-bold">Suggested: review {sug.n} due {sug.n === 1 ? "card" : "cards"}</h2>}
+        {sug.kind === "done" && <>
+          <h2 className="slab mt-2 text-2xl font-bold">You are all caught up</h2>
+          {nextDue && <p className="mt-1 text-muted-foreground">Next card due {nextDue}.</p>}
+        </>}
+        {sug.kind !== "done" && <Button className="mt-4 min-h-11 w-full" data-testid="start-suggested" onClick={onStart}>Start</Button>}
+      </div>
+    </Panel>
+  )
 }
 
 function Step({ item, level, card: c, hook, onIntro, onHarder, onEasier, onNext }: { item: Item; level: number; card: Card; hook: string; onIntro: () => void; onHarder: () => void; onEasier?: () => void; onNext: (ok: boolean) => void }) {

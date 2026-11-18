@@ -40,7 +40,8 @@ export function sanitize(raw: unknown): Store {
   if (isObj(raw.edits)) for (const [id, v] of Object.entries(raw.edits)) if (typeof v === "string") edits[id] = v
   const intro = isObj(raw.intro) && typeof raw.intro.date === "string" && typeof raw.intro.n === "number" ? { date: raw.intro.date, n: raw.intro.n } : d.intro
   const out: Store = { ...d, settings, cards, edits, intro, log: Array.isArray(raw.log) ? raw.log.filter((e): e is Store["log"][number] => isObj(e) && typeof e.d === "string" && typeof e.n === "number" && typeof e.ok === "number") : [] }
-  if (Array.isArray(raw.pinned)) out.pinned = raw.pinned.filter((x): x is string => typeof x === "string")
+  // raw.pinned (the old "Learn this next" queue) is dropped: Study is chosen now.
+  if (isObj(raw.studyReq) && Array.isArray(raw.studyReq.ids)) out.studyReq = { ids: raw.studyReq.ids.filter((x): x is string => typeof x === "string") }
   if (isObj(raw.take) && typeof raw.take.date === "string" && typeof raw.take.sec === "string" && typeof raw.take.n === "number" && raw.take.n >= 1) out.take = { date: raw.take.date, sec: raw.take.sec, n: Math.floor(raw.take.n) }
   if (Array.isArray(raw.testIds)) out.testIds = raw.testIds.filter((x): x is string => typeof x === "string")
   if (isObj(raw.runs)) {

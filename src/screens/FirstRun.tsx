@@ -3,10 +3,10 @@ import { Button } from "@/components/ui/button"
 import { Panel, Eyebrow } from "@/components/shared"
 import { getStore, update } from "@/lib/store"
 
-const STEPS = [
-  "Learn the card. Read it through until it sounds familiar.",
-  "Fill the blanks. Use the slider to raise the difficulty as you get it right.",
-  "Recall it from memory. Type the whole thing with nothing on screen.",
+const LINES = [
+  "Every Appendix B card, by section. Pick something to study, or tap Learn this on any card.",
+  "The blanks fade as you learn: read it, fill in more and more words, then say it from memory.",
+  "Test yourself any time with Test, or listen hands-free with Listen.",
 ]
 
 export default function FirstRun() {
@@ -15,11 +15,11 @@ export default function FirstRun() {
   const done = () => update((st) => { st.settings.seenIntro = true; return st })
   return (
     <Panel>
-      <Eyebrow>How studying works</Eyebrow>
-      <p className="mt-2 text-base font-semibold text-gold" data-testid="first-topic">Start with the Phonetic Alphabet: 26 short cards, one word each.</p>
-      <ol className="mt-2 space-y-2 text-base">
-        {STEPS.map((t, i) => <li key={i} className="flex gap-3"><span className="font-semibold text-gold">{i + 1}</span><span>{t}</span></li>)}
-      </ol>
+      <Eyebrow>Start here</Eyebrow>
+      <ul className="mt-2 space-y-2 text-base">
+        {LINES.map((t, i) => <li key={i}>{t}</li>)}
+      </ul>
+      <p className="mt-2 text-base font-semibold text-gold" data-testid="first-topic">Not sure where to begin? The Study tab suggests the Phonetic Alphabet first: 26 short cards, one word each.</p>
       <label className="mt-4 block min-w-0 text-sm text-muted-foreground">
         Ship date
         <input

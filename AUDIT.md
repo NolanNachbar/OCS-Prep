@@ -167,3 +167,6 @@ Import sanitizes log and runs entries; number blanks cover Chain of Command #12-
 
 ## Quiz me removed (2026-11-17)
 Listen is read-to-me only. The Quiz me tab, its per-card quiz clips and the old unused whole-section quiz clips are gone (about 24 MB less to deploy). tools/make_clips.py now builds only the prompt-then-answer clip. Also fixed how the voice says abbreviations (OCS, OOD, USN, ADM and similar) and the phonetic alphabet words.
+
+## Cards first, Study is a chooser (2026-11-18)
+App opens on Cards (tab order Cards, Study, Test, Listen, Ranks, Settings); the first-run panel is now a "Start here" banner on Cards. Study opens on a chooser: a suggestion (first TOPICS topic with unseen cards, else review due, else caught up), Review due (N), and one row per topic with started/due counts, a learn-fewer stepper and Study <topic>. The hidden pin queue and daily new-card allowance are gone; "Learn this" / "Learn this section" on Cards and "Learn this card" after a miss set a one-shot studyReq that App turns into a jump to Study. Learn new cards setting removed (old saves still load; legacy pinned is dropped). cards.json untouched. Gate: PASS.

@@ -213,4 +213,50 @@ t("reviews come before the topic's new cards", () => {
   assert.strictEqual(q.reviews.length, 26);
   assert.deepStrictEqual(q.news.map((i) => secOf(i.id)), ["basics", "basics", "basics"]);
 });
+const D = "2026-11-02";
+const rev = (due, box = 1) => ({ box, reps: 1, lapses: 0, due, misses: 0 });
+t("topic stats: started, total and due per topic in TOPICS order", () => {
+  const phon = studyOrder.filter((c) => c.sec === "phon");
+  const cs = { [phon[0].id]: rev(D), [phon[1].id]: rev("2026-11-09"), [phon[2].id]: { ...rev(D), last: D } };
+  const st = Q.topicStats({ order: studyOrder, cards: cs, today: D });
+  assert.deepStrictEqual(st.map((x) => x.sec), Q.TOPICS);
+  assert.strictEqual(st[0].total, 26); assert.strictEqual(st[0].started, 3); assert.strictEqual(st[0].due, 1, "reviewed today is not due");
+  assert.strictEqual(st[0].unseen, 23); assert.strictEqual(st[1].started, 0); assert.strictEqual(st[1].due, 0);
+});
+t("suggestion: first topic with unseen cards, else review due, else caught up", () => {
+  assert.strictEqual(Q.suggestion({ order: studyOrder, cards: {}, today: D }).sec, "phon");
+  const cs = {}; for (const c of studyOrder.filter((c) => c.sec === "phon")) cs[c.id] = rev("2026-11-05");
+  const s1 = Q.suggestion({ order: studyOrder, cards: cs, today: D });
+  assert.strictEqual(s1.kind, "topic"); assert.strictEqual(s1.sec, "basics");
+  const all = {}; for (const c of studyOrder) all[c.id] = rev("2026-11-05");
+  all[studyOrder[3].id] = rev(D); all[studyOrder[7].id] = rev("2026-11-01");
+  assert.deepStrictEqual(Q.suggestion({ order: studyOrder, cards: all, today: D }), { kind: "review", n: 2 });
+  for (const c of studyOrder) all[c.id] = rev("2026-11-05"); all[studyOrder[0].id] = rev("2026-11-04");
+  assert.deepStrictEqual(Q.suggestion({ order: studyOrder, cards: all, today: D }), { kind: "done", next: "2026-11-04" });
+});
+t("topic session: that topic's due reviews first, then the chosen number of its unseen, nothing else", () => {
+  const goes = studyOrder.filter((c) => c.sec === "go");
+  const cs = { [goes[0].id]: rev(D), [goes[1].id]: rev("2026-11-09"), [studyOrder[0].id]: rev(D) };
+  const q = Q.sessionQueue({ order: studyOrder, cards: cs, today: D, settings: {}, sec: "go", take: 3 });
+  assert.strictEqual(q.length, 4);
+  assert.deepStrictEqual(q[0], { id: goes[0].id, stage: 2 });
+  assert(q.slice(1).every((i) => i.stage === 0 && !cs[i.id]));
+  assert(q.every((i) => secOf(i.id) === "go"));
+  assert.strictEqual(Q.sessionQueue({ order: studyOrder, cards: cs, today: D, sec: "go" }).length, 1 + goes.length - 2, "default all unseen");
+  const due = Q.sessionQueue({ order: studyOrder, cards: cs, today: D });
+  assert.deepStrictEqual(due.map((i) => i.id).sort(), [goes[0].id, studyOrder[0].id].sort(), "review-only session");
+});
+t("explicit ids session: exactly those cards, due or not, at their stage", () => {
+  const a = studyOrder[0].id, b = studyOrder[40].id, c = studyOrder[41].id;
+  const q = Q.sessionQueue({ order: studyOrder, cards: { [b]: rev("2026-12-01", 3), [c]: rev("2026-12-01", 1) }, today: D, ids: [a, b, c, a, "nope"] });
+  assert.deepStrictEqual(q, [{ id: a, stage: 0 }, { id: b, stage: 4 }, { id: c, stage: 2 }]);
+});
+const S = await import("../src/lib/store.ts");
+t("sanitize drops a legacy pinned array, keeps learn and seenIntro, and accepts a studyReq", () => {
+  const old = S.sanitize({ settings: { learn: "count", seenIntro: true, newPerDay: 5 }, cards: { x: rev(D) }, pinned: ["a", "b"], intro: { date: D, n: 2 } });
+  assert.strictEqual(old.pinned, undefined); assert.strictEqual(old.settings.learn, "count"); assert.strictEqual(old.settings.seenIntro, true);
+  assert.strictEqual(old.cards.x.due, D);
+  assert.deepStrictEqual(S.sanitize({ cards: {}, studyReq: { ids: ["a", 3, "b"] } }).studyReq, { ids: ["a", "b"] });
+  assert.strictEqual(S.sanitize({ cards: {}, studyReq: "x" }).studyReq, undefined);
+});
 console.log(n, "tests passed");

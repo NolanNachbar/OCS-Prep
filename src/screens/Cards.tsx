@@ -9,7 +9,8 @@ import * as L from "@/lib/ocs.js"
 import { Insignia } from "@/components/Insignia"
 import { useCards } from "@/lib/cards"
 import { hookFor } from "@/lib/hooks"
-import { update, useStore } from "@/lib/store"
+import { showIntro, update, useStore } from "@/lib/store"
+import FirstRun from "@/screens/FirstRun"
 import type { Card } from "@/lib/types"
 
 export default function Cards({ onTest }: { onTest: () => void }) {
@@ -19,6 +20,7 @@ export default function Cards({ onTest }: { onTest: () => void }) {
   const [val, setVal] = useState("")
   const secs = [...new Set(all.map((c) => c.sec))]
   const runTest = (ids: string[]) => { update((s) => { s.testIds = ids; return s }); onTest() }
+  const learn = (ids: string[]) => update((s) => { s.studyReq = { ids }; return s }) // App switches to Study
   const chip = (c: Card) => {
     const s = store.cards[c.id]
     if (!s) return <Badge variant="outline">new</Badge>
@@ -29,6 +31,7 @@ export default function Cards({ onTest }: { onTest: () => void }) {
   }
   return (
     <>
+      {showIntro(store) && <div className="mb-4"><FirstRun /></div>}
       <Accordion type="multiple" className="rounded-md border border-border bg-card/70 px-4">
         {secs.map((sec) => {
           const cs = all.filter((c) => c.sec === sec)
@@ -36,18 +39,18 @@ export default function Cards({ onTest }: { onTest: () => void }) {
             <AccordionItem key={sec} value={sec}>
               <AccordionTrigger className="text-base font-bold uppercase tracking-wider">{cs[0].secName} ({cs.length})</AccordionTrigger>
               <AccordionContent className="space-y-3">
-                <Button size="sm" variant="outline" onClick={() => update((s) => { s.pinned = [...new Set([...(s.pinned || []), ...cs.map((c) => c.id)])]; return s })}>Learn this whole section next</Button>
-                <Button size="sm" variant="outline" className="ml-2" onClick={() => runTest(cs.map((c) => c.id))}>Test this section</Button>
+                <div className="flex flex-wrap gap-2">
+                  <Button variant="outline" className="min-h-11" onClick={() => learn(cs.map((c) => c.id))}>Learn this section</Button>
+                  <Button variant="outline" className="min-h-11" onClick={() => runTest(cs.map((c) => c.id))}>Test this section</Button>
+                </div>
                 {cs.map((c, i) => (
                   <div key={c.id} className="rounded-md border border-border bg-background/50 p-3">
                     <div className="flex items-center justify-between gap-2"><b>{c.prompt}</b>{chip(c)}</div>
                     <p className="mt-1 whitespace-pre-line text-muted-foreground">{lines(c.answer)}</p>
                     <Insignia card={c} />
                     {hookFor(c, i) && <p className="mt-2 border-l-2 border-gold pl-2 text-sm">{hookFor(c, i)}</p>}
-                    <Button variant={(store.pinned || []).includes(c.id) ? "default" : "outline"} className="mt-2 mr-2" aria-pressed={(store.pinned || []).includes(c.id)}
-                      onClick={() => update((s) => { const p = s.pinned || []; s.pinned = p.includes(c.id) ? p.filter((x) => x !== c.id) : [...p, c.id]; return s })}>
-                      {(store.pinned || []).includes(c.id) ? "Queued for Study" : "Learn this next"}</Button>
-                    <Button variant="outline" className="mt-2 mr-2" onClick={() => runTest([c.id])}>Test this card</Button>
+                    <Button variant="outline" className="mt-2 mr-2 min-h-11" onClick={() => learn([c.id])}>Learn this</Button>
+                    <Button variant="outline" className="mt-2 mr-2 min-h-11" onClick={() => runTest([c.id])}>Test this card</Button>
                     {c.sec === "chain" && <Button size="sm" variant="outline" className="mt-2" onClick={() => { setEdit(c); setVal(store.edits[c.id] || c.answer) }}>Edit</Button>}
                   </div>
                 ))}

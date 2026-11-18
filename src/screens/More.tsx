@@ -32,12 +32,6 @@ export default function More() {
         <Eyebrow>Settings</Eyebrow>
         <div className="mt-4 grid gap-4">
           <div className="grid gap-2"><Label htmlFor="ship">Ship date</Label><Input id="ship" type="date" value={st.ship} onChange={(e) => { if (e.target.value) set("ship", e.target.value) }} className="h-12 max-w-full appearance-none py-0 leading-[46px]" /></div>
-          <div className="grid gap-2"><Label>Learn new cards</Label>
-            <Select value={st.learn === "count" ? "count" : "topic"} onValueChange={(v) => update((s) => { if (v === "count") s.settings.learn = "count"; else delete s.settings.learn; return s })}>
-              <SelectTrigger className="h-12! w-full" aria-label="Learn new cards"><SelectValue /></SelectTrigger>
-              <SelectContent><SelectItem value="topic">One topic at a time (default)</SelectItem><SelectItem value="count">A set number each day</SelectItem></SelectContent>
-            </Select></div>
-          {st.learn === "count" && <div className="grid gap-2"><Label htmlFor="npd">New cards per day</Label><Input id="npd" type="number" min={1} max={30} value={st.newPerDay} onChange={(e) => set("newPerDay", Math.max(1, +e.target.value || 1))} className="h-12" /></div>}
           <div className="grid gap-2"><Label htmlFor="mr">Max reviews per session</Label><Input id="mr" type="number" min={10} max={200} value={st.maxReviews ?? 60} onChange={(e) => set("maxReviews", Math.max(10, +e.target.value || 60))} className="h-12" /></div>
           <div className="grid gap-2"><Label>Voice and Listen speed</Label>
             <Select value={String(st.rate)} onValueChange={(v) => set("rate", +v)}>

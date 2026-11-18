@@ -62,3 +62,57 @@ export function newLeft({ order, cards, today, settings, intro }) {
   const unseen = order.filter((c) => !cards[c.id]).length;
   return Math.min(unseen, Math.max(0, settings.newPerDay - n));
 }
+
+// Learn-fewer ceiling for a topic's next session: all of its unseen cards when the topic is small, else PART.
+function maxTake(all, unseenN) {
+  const whole = all.length <= PART || all.reduce((n, c) => n + wc(c), 0) <= 100;
+  return whole ? unseenN : Math.min(unseenN, PART);
+}
+
+// Per-topic stats for the Study chooser, in TOPICS order (topics with no cards in order are left out).
+/** @param {{ order: any[], cards: Record<string, any>, today: string }} a */
+export function topicStats({ order, cards, today }) {
+  const out = [];
+  for (const sec of TOPICS) {
+    const all = order.filter((c) => c.sec === sec);
+    if (!all.length) continue;
+    const unseen = all.filter((c) => !cards[c.id]).length;
+    const due = all.filter((c) => isDue(cards[c.id], today)).length;
+    out.push({ sec, name: all[0].secName, total: all.length, started: all.length - unseen, unseen, due, max: maxTake(all, unseen) });
+  }
+  return out;
+}
+
+// What the chooser suggests: the first topic with unseen cards; else review what is due; else caught up (with the next due date).
+/** @param {{ order: any[], cards: Record<string, any>, today: string }} a */
+export function suggestion({ order, cards, today }) {
+  const st = topicStats({ order, cards, today });
+  const t = st.find((x) => x.unseen > 0);
+  if (t) return { kind: "topic", sec: t.sec, name: t.name, n: t.max, max: t.max };
+  const due = order.filter((c) => isDue(cards[c.id], today)).length;
+  if (due) return { kind: "review", n: due };
+  const next = order.map((c) => cards[c.id] && cards[c.id].due).filter((d) => d && d > today).sort()[0];
+  return { kind: "done", next: next || null };
+}
+
+// A chosen session, as a list of { id, stage }.
+// ids: exactly those cards (due or not). sec: that topic's due reviews first, then `take` of its unseen cards.
+// Neither: due reviews only (oldest first, capped at maxReviews).
+/** @param {{ order: any[], cards: Record<string, any>, today: string, settings?: { maxReviews?: number }, ids?: string[], sec?: string, take?: number }} a */
+export function sessionQueue({ order, cards, today, settings = {}, ids, sec, take }) {
+  const stage = (id) => (cards[id] ? (cards[id].box >= 2 ? 4 : 2) : 0);
+  if (ids) {
+    const known = new Set(order.map((c) => c.id));
+    return [...new Set(ids)].filter((id) => known.has(id)).map((id) => ({ id, stage: stage(id) }));
+  }
+  const pool = sec ? order.filter((c) => c.sec === sec) : order;
+  const reviews = pool
+    .filter((c) => isDue(cards[c.id], today))
+    .sort((a, b) => cards[a.id].due.localeCompare(cards[b.id].due) || cards[a.id].box - cards[b.id].box)
+    .slice(0, settings.maxReviews ?? 60)
+    .map((c) => ({ id: c.id, stage: stage(c.id) }));
+  if (!sec) return reviews;
+  const unseen = pool.filter((c) => !cards[c.id]);
+  const n = Math.max(0, Math.min(maxTake(pool, unseen.length), take ?? unseen.length));
+  return [...reviews, ...unseen.slice(0, n).map((c) => ({ id: c.id, stage: 0 }))];
+}

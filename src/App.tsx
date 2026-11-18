@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Menu, X } from "lucide-react"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import Study from "@/screens/Study"
@@ -11,19 +11,21 @@ import { saveFailed, useStore } from "@/lib/store"
 import * as L from "@/lib/ocs.js"
 
 const TABS = [
-  { v: "study", label: "Study", sub: "Learn and review Appendix B" },
+  { v: "cards", label: "Cards", sub: "Browse every card, or study one" },
+  { v: "study", label: "Study", sub: "Pick what to study" },
   { v: "test", label: "Test", sub: "Ten cards, no hints" },
   { v: "listen", label: "Listen", sub: "Hands-free, for the run" },
   { v: "ranks", label: "Ranks", sub: "Rank pictures, groups and matching" },
-  { v: "cards", label: "Cards", sub: "All 135 cards by section" },
   { v: "more", label: "Settings", sub: "Ship date, limits, your data" },
 ]
 
 export default function App() {
-  const [tab, setTab] = useState("study")
+  const [tab, setTab] = useState("cards")
   const [menu, setMenu] = useState(false)
   const go = (v: string) => { setTab(v); setMenu(false); window.scrollTo(0, 0) }
-  const { settings } = useStore()
+  const { settings, studyReq } = useStore()
+  // "Learn this" anywhere sets studyReq: jump to Study, which consumes and clears it.
+  useEffect(() => { if (studyReq) go("study") }, [studyReq])
   const days = Math.max(0, L.daysBetween(L.ymd(new Date()), settings.ship))
   const cur = TABS.find((t) => t.v === tab)!
   return (

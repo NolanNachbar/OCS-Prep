@@ -1,15 +1,7 @@
-import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { update, useStore } from "@/lib/store"
+import { update } from "@/lib/store"
 
-// After a miss: put the card at the front of Study (the same pin the Cards tab uses). Study picks it up even if a session is open.
+// After a miss: start a Study session on this card (App switches to Study when studyReq is set). No hooks, so nothing can be skipped.
 export default function PinButton({ id }: { id: string }) {
-  const [done, setDone] = useState(false) // Study takes the pin straight away, so the stored list is empty again by the next render
-  const pinned = useStore().pinned || [] // always call the hook: `done || useStore()` skipped it and crashed (React #300)
-  const added = done || pinned.includes(id)
-  return (
-    <Button variant="outline" disabled={added} onClick={() => { setDone(true); update((s) => { s.pinned = [...new Set([...(s.pinned || []), id])]; return s }) }}>
-      {added ? "Added to Study" : "Add to my Study cards"}
-    </Button>
-  )
+  return <Button variant="outline" className="min-h-11" onClick={() => update((s) => { s.studyReq = { ids: [id] }; return s })}>Learn this card</Button>
 }
