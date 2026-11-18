@@ -113,7 +113,7 @@ export default function RankRecall({ cards, teach, onExit, next }: { cards: Card
         update((st) => {
           let cs = st.cards[c.id] || { box: 0, reps: 0, lapses: 0, due: today(), misses: 0 }
           if (missed.includes(c.id) && cs.reps > 0) cs = { ...cs, box: 1, lapses: cs.lapses + 1 }
-          st.cards[c.id] = { ...L.schedule(cs, true, today(), st.settings.ship), misses: missed.includes(c.id) ? cs.misses || 0 : 0 }
+          st.cards[c.id] = { ...L.schedule(cs, true, today(), st.settings.ship, c.id), misses: missed.includes(c.id) ? cs.misses || 0 : 0 }
           return st
         })
       }

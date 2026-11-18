@@ -25,26 +25,38 @@ export function sanitize(raw: unknown): Store {
     newPerDay: num(st.newPerDay, d.settings.newPerDay, 1, 30),
     rate: num(st.rate, d.settings.rate, 0.5, 2),
     gap: num(st.gap, d.settings.gap, 2, 30),
+    ...(typeof st.seenIntro === "boolean" ? { seenIntro: st.seenIntro } : {}),
     ...(typeof st.letters === "boolean" ? { letters: st.letters } : {}),
+    ...(st.learn === "count" ? { learn: "count" as const } : {}), // anything else (old saves included) is topic mode
     ...(st.maxReviews === undefined ? {} : { maxReviews: num(st.maxReviews, 60, 10, 200) }),
   }
   const cards: Store["cards"] = {}
   if (isObj(raw.cards)) for (const [id, v] of Object.entries(raw.cards)) {
     if (!isObj(v) || typeof v.due !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(v.due)) continue
     const n = (x: unknown) => (typeof x === "number" && isFinite(x) && x >= 0 ? x : 0)
-    cards[id] = { box: n(v.box), reps: n(v.reps), lapses: n(v.lapses), misses: n(v.misses), due: v.due }
+    cards[id] = { box: n(v.box), reps: n(v.reps), lapses: n(v.lapses), misses: n(v.misses), due: v.due, ...(typeof v.last === "string" && /^\d{4}-\d{2}-\d{2}$/.test(v.last) ? { last: v.last } : {}) }
   }
   const edits: Store["edits"] = {}
   if (isObj(raw.edits)) for (const [id, v] of Object.entries(raw.edits)) if (typeof v === "string") edits[id] = v
   const intro = isObj(raw.intro) && typeof raw.intro.date === "string" && typeof raw.intro.n === "number" ? { date: raw.intro.date, n: raw.intro.n } : d.intro
   const out: Store = { ...d, settings, cards, edits, intro, log: Array.isArray(raw.log) ? raw.log.filter((e): e is Store["log"][number] => isObj(e) && typeof e.d === "string" && typeof e.n === "number" && typeof e.ok === "number") : [] }
   if (Array.isArray(raw.pinned)) out.pinned = raw.pinned.filter((x): x is string => typeof x === "string")
+  if (isObj(raw.take) && typeof raw.take.date === "string" && typeof raw.take.sec === "string" && typeof raw.take.n === "number" && raw.take.n >= 1) out.take = { date: raw.take.date, sec: raw.take.sec, n: Math.floor(raw.take.n) }
   if (Array.isArray(raw.testIds)) out.testIds = raw.testIds.filter((x): x is string => typeof x === "string")
   if (isObj(raw.runs)) {
     out.runs = {}
     for (const [id, v] of Object.entries(raw.runs)) if (isObj(v) && typeof v.streak === "number" && typeof v.clean === "number" && typeof v.last === "string") out.runs[id] = { streak: v.streak, clean: v.clean, last: v.last }
   }
   return out
+}
+
+// First-run panel: only for a store with no progress and no settings changed from the defaults (ship is exempt: the panel itself edits it).
+export function showIntro(s: Store): boolean {
+  if (s.settings.seenIntro) return false
+  const d = defaults()
+  const same = (["newPerDay", "rate", "gap"] as const).every((k) => s.settings[k] === d.settings[k])
+  return same && s.settings.letters === undefined && s.settings.maxReviews === undefined && s.settings.learn === undefined
+    && !Object.keys(s.cards).length && !s.log.length && !s.intro.n
 }
 
 function read(): Store {

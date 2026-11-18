@@ -107,7 +107,7 @@ export default function Test() {
           <div className="mt-4 flex flex-wrap gap-3"><Button onClick={() => next(res.ok)} autoFocus>Next</Button>{!res.ok && <PinButton id={c.id} />}</div>
         </>
       ) : (
-        <div className="mt-4 flex gap-3"><Button onClick={check}>Check</Button><MicButton onText={setText} /></div>
+        <div className="mt-4 flex gap-3"><Button onClick={check}>Check</Button><MicButton onText={setText} /><Button variant="outline" onClick={() => setRun(null)}>End</Button></div>
       )}
     </Panel>
   )

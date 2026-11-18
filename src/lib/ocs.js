@@ -99,9 +99,13 @@
   }
 
   // ---- study order -----------------------------------------------------------------------
-  // Appendix B priority from the PRD: Code of Conduct, General Orders, Chain of Command,
-  // Constitution and basics, ranks lowest to highest, devices, watchstanding, alphabet.
+  // Study priority: Navy Basics first (short, owner-approved), then the PRD's Appendix B priority:
+  // Code of Conduct, General Orders, Chain of Command, Constitution, ranks lowest to highest, devices, watchstanding, alphabet.
   function priority(card) {
+    return card.sec === "basics" ? 5 : bookPriority(card);
+  }
+  // Book order (Listen and anything that recites a section in Appendix B order) keeps basics after the Constitution.
+  function bookPriority(card) {
     switch (card.sec) {
       case "coc": return 10;
       case "go": return 20;
@@ -119,16 +123,18 @@
       default: return 110;
     }
   }
-  function studyOrder(cards) {
+  function sortBy(cards, p) {
     return cards
       .map((c, i) => ({ c, i }))
-      .sort((a, b) => priority(a.c) - priority(b.c) || a.i - b.i)
+      .sort((a, b) => p(a.c) - p(b.c) || a.i - b.i)
       .map((x) => x.c);
   }
+  function studyOrder(cards) { return sortBy(cards, priority); }
+  function bookOrder(cards) { return sortBy(cards, bookPriority); }
 
   // ---- scheduler -------------------------------------------------------------------------
   // Leitner-style boxes with a deadline cap. Not FSRS: simple, predictable, easy to reason about.
-  const STEPS = [0, 1, 2, 4, 7, 12, 20, 35];
+  const STEPS = [0, 1, 2, 4, 7, 10, 14, 14]; // no gap longer than two weeks; 8 entries so saved box numbers stay valid
 
   function ymd(d) {
     const p = (n) => String(n).padStart(2, "0");
@@ -148,7 +154,14 @@
   }
 
   // After a clean recall, move up a box. (Study.tsx sets a lapsed card to box 1 first, so a miss never keeps a long gap.)
-  function schedule(state, ok, today, ship) {
+  // Small deterministic per-card number, used to spread the final-window reviews over alternate days.
+  function idHash(id) {
+    let h = 0;
+    for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) | 0;
+    return Math.abs(h);
+  }
+  // id (optional) spreads cards whose gap hit the 2 day floor near the ship date onto 2 or 3 day cycles.
+  function schedule(state, ok, today, ship, id) {
     const s = Object.assign({ box: 0, reps: 0, lapses: 0 }, state);
     s.reps += 1;
     if (!ok) {
@@ -159,15 +172,19 @@
     }
     s.box = Math.min(s.box + 1, STEPS.length - 1);
     let gap = STEPS[s.box];
+    // A topic's cards are learned together: split their first review over 2 days so they don't stay due on the same days.
+    if (s.reps === 1 && id) gap += idHash(id) % 2;
     let left = Infinity;
     // Never let the next review slip past a quarter of the time left before shipping.
     if (ship && /^\d{4}-\d{2}-\d{2}$/.test(ship)) {
       left = daysBetween(today, ship);
-      gap = Math.min(gap, Math.max(2, Math.floor(left / 4)));
+      const cap = Math.max(2, Math.floor(left / 4));
+      if (gap > cap) gap = cap + (id ? idHash(id + today) % 2 : 0);
     }
+    s.last = today;
     s.due = addDays(today, Math.max(1, gap));
     if (Number.isFinite(left) && s.due > ship) s.due = ship > today ? ship : today; // the 2 day floor must not push a review past the ship date
     return s;
   }
 
-export { norm, words, stripLead, diff, score, cloze, priority, studyOrder, schedule, STEPS, ymd, addDays, daysBetween, parseYmd };
+export { norm, words, stripLead, diff, score, cloze, priority, bookPriority, studyOrder, bookOrder, schedule, STEPS, ymd, addDays, daysBetween, parseYmd };

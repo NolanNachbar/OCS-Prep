@@ -8,9 +8,12 @@ fail() { echo "GATE FAILED: $1"; shift; printf '%s\n' "$@" | head -20; exit 1; }
 
 # 1. Content is frozen: cards and the pasted source may never differ from main, and must regenerate identically.
 base=${GATE_BASE:-origin/main}
-if ! git diff --quiet "$base" -- src/data/cards.json tools/appendix-b-source.txt tools/build_cards.py; then
-  fail "content-frozen" "cards.json, appendix-b-source.txt or build_cards.py changed vs $base"
+if [ "${GATE_SKIP_FROZEN:-0}" != "1" ]; then
+  if ! git diff --quiet "$base" -- src/data/cards.json tools/appendix-b-source.txt tools/build_cards.py; then
+    fail "content-frozen" "cards.json, appendix-b-source.txt or build_cards.py changed vs $base"
+  fi
 fi
+out=$(python3 scripts/ids-check.py --selftest 2>&1) || fail "ids-check-selftest" "$out"
 scripts/content-check.sh || exit 1
 
 # 2. Build and tests

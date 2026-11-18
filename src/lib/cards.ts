@@ -11,9 +11,10 @@ export function useCards() {
   const edits = useStore().edits
   return useMemo(() => {
     const all = BASE.map((c) => (edits[c.id] ? { ...c, answer: edits[c.id], key: edits[c.id] } : c))
-    const order: Card[] = L.studyOrder(all)
+    const order: Card[] = L.studyOrder(all) // Study's new-card order (Navy Basics first)
+    const book: Card[] = L.bookOrder(all) // Appendix B order, for screens that follow the book
     const byId = new Map(all.map((c) => [c.id, c]))
     const secIdx = (c: Card) => all.filter((x) => x.sec === c.sec).indexOf(all.find((x) => x.id === c.id)!)
-    return { all, order, byId, secIdx }
+    return { all, order, book, byId, secIdx }
   }, [edits])
 }

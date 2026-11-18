@@ -15,52 +15,81 @@ import { update, useStore } from "@/lib/store"
 // Quiz clips are prompt, a gap sized to the answer, then the answer. Read clips are prompt then answer.
 export default function Listen() {
   const store = useStore()
-  const { order } = useCards()
+  const { book: order } = useCards()
   const secs = [...new Map(order.map((c) => [c.sec, c.secName])).entries()]
   const [mode, setMode] = useState("read")
   // How many times each card plays in a row (0 = left out). Cards play in book order, each repeated back to back.
   const [reps, setReps] = useState<Record<string, number>>(() => Object.fromEntries(order.filter((x) => x.sec === secs[0]?.[0]).map((x) => [x.id, 1])))
   const [loop, setLoop] = useState(false)
   const [err, setErr] = useState(false)
+  const [note, setNote] = useState("") // "Skipped <card>" or the all-clips-failed message
+  const pos = useRef(0) // index of the clip actually loaded, kept current by the audio handlers
+  const fails = useRef(0) // consecutive clips that failed without ever playing
   const [playing, setPlaying] = useState(false)
   const [idx, setIdx] = useState(0)
   const [lap, setLap] = useState(0)
   const au = useRef<HTMLAudioElement | null>(null)
   if (!au.current && typeof Audio !== "undefined") au.current = new Audio()
-  const live = useRef({ n: 0, loop, ids: [] as string[], mode, rate: 1 })
+  const live = useRef({ n: 0, loop, ids: [] as string[], prompts: [] as string[], mode, rate: 1 })
+  const timer = useRef<ReturnType<typeof setTimeout>>(undefined) // shared so a stale effect closure can't leak one
+  const seq = useRef(0) // bumps on every load; a failure only counts once, and only for the clip still loaded
   const handled = useRef(-1) // index the ended handler already started, so the effect doesn't reload it
 
   const cards = order.flatMap((x) => Array.from({ length: reps[x.id] ?? 0 }, (_, i) => ({ c: x, rep: i + 1, of: reps[x.id] })))
   const rate = store.settings.rate
   const cur = cards[idx % Math.max(1, cards.length)]
   const c = cur?.c
-  live.current = { n: cards.length, loop, ids: cards.map((x) => x.c.id), mode, rate }
+  live.current = { n: cards.length, loop, ids: cards.map((x) => x.c.id), prompts: cards.map((x) => x.c.prompt), mode, rate }
 
   useEffect(() => {
     const a = au.current
     if (!a) return
-    if (!playing || !c) { a.pause(); return }
+    const disarm = () => { if (timer.current) clearTimeout(timer.current); timer.current = undefined }
+    if (!playing || !c) { a.pause(); return disarm }
     setErr(false)
-    const load = (id: string) => {
-      a.src = `${import.meta.env.BASE_URL}audio/cards/${id}-${live.current.mode}.mp3`
+    pos.current = idx
+    const load = (i: number) => {
+      pos.current = i
+      a.src = `${import.meta.env.BASE_URL}audio/cards/${live.current.ids[i]}-${live.current.mode}.mp3`
       a.defaultPlaybackRate = live.current.rate // loading a new src resets playbackRate to this
       a.playbackRate = live.current.rate
-      return a.play()
+      const my = ++seq.current
+      arm()
+      // AbortError = a newer load replaced this one (skip/step). A broken file rejects here AND fires the error
+      // event, so only the error event (or the watchdog) skips it. NotAllowedError (no gesture) gets no error event.
+      a.play()?.catch((e) => { if (e?.name === "NotAllowedError") fail(my) })
     }
-    // Chain the next clip right inside the ended event, not through a React render: a locked iPhone suspends page
-    // rendering, so waiting on state to start the next clip is what made playback stop after the first one.
-    a.onended = () => {
-      const { n, loop: lp, ids } = live.current
-      if (idx + 1 >= n && !lp) { setPlaying(false); setIdx(0); return }
-      const next = idx + 1 >= n ? 0 : idx + 1
+    // play() rejecting and the error event both report the same broken clip; skip it only once.
+    const fail = (my: number) => { if (my !== seq.current) return; seq.current++; disarm(); advance(true) }
+    // Move to the next clip from inside an audio event (never through a React render: a locked iPhone suspends
+    // rendering). failed = the current clip is being skipped; if every clip in a row fails, stop with a message.
+    const advance = (failed: boolean) => {
+      const { n, loop: lp, ids, prompts } = live.current
+      const i = pos.current
+      if (failed) {
+        setNote(`Skipped ${prompts[i]}`)
+        fails.current += 1
+        if (fails.current >= n) { disarm(); a.pause(); setNote(`Could not play any of the ${n} chosen clips. Check your connection and press play again.`); setPlaying(false); return }
+      }
+      if (i + 1 >= n && !lp) { disarm(); setPlaying(false); setIdx(0); return }
+      const next = i + 1 >= n ? 0 : i + 1
       handled.current = next
-      load(ids[next]).catch(() => { setErr(true); setPlaying(false) })
+      load(next)
       setIdx(next)
       setLap((k) => k + 1)
     }
-    a.onerror = () => { setErr(true); setPlaying(false) }
-    if (handled.current === idx) { handled.current = -1; return }
-    load(c.id).catch(() => { setErr(true); setPlaying(false) })
+    // Stall watchdog: no progress for 8s counts as a failed clip. Cleared on pause, ended, track change, unmount.
+    function arm() { disarm(); const my = seq.current; timer.current = setTimeout(() => fail(my), 8000) }
+    a.onended = () => { disarm(); fails.current = 0; advance(false) }
+    a.onerror = () => fail(seq.current)
+    a.onplay = arm
+    a.onwaiting = arm
+    a.onplaying = () => { fails.current = 0; arm() }
+    a.ontimeupdate = arm
+    a.onpause = disarm
+    if (handled.current === idx) { handled.current = -1; return disarm }
+    load(idx)
+    return disarm
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [playing, idx, lap, mode, c?.id])
 
@@ -83,7 +112,7 @@ export default function Listen() {
 
   const toggle = () => {
     if (!playing && !cards.length) return
-    if (!playing) setLap((n) => n + 1) // starting again always restarts the clip, even on the same card
+    if (!playing) { setNote(""); fails.current = 0; setLap((n) => n + 1) } // starting again always restarts the clip, even on the same card
     setPlaying(!playing)
   }
   const step = (d: number) => { setIdx((i) => (i + d + Math.max(1, cards.length)) % Math.max(1, cards.length)); setLap((n) => n + 1) }
@@ -153,6 +182,7 @@ export default function Listen() {
         {cur && cur.of > 1 && <div className="mt-2 text-sm text-muted-foreground">Play {cur.rep} of {cur.of}</div>}
         {c && mode === "read" && playing && <p className="mt-3 whitespace-pre-line text-lg text-muted-foreground">{lines(c.answer)}</p>}
       </div>
+      {note && <p className="mt-3 text-destructive" role="alert">{note}</p>}
       {err && <p className="mt-3 text-destructive" role="alert">Audio unavailable right now. Check your connection and press play again.</p>}
       <div className="mt-5 flex gap-3">
         <Button size="lg" variant="outline" onClick={() => step(-1)} disabled={!cards.length} aria-label="Previous card"><SkipBack /></Button>

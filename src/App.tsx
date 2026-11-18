@@ -29,16 +29,16 @@ export default function App() {
   return (
     <Tabs value={tab} onValueChange={setTab} className="min-h-dvh gap-0">
       <header className="sticky top-0 z-20 bg-black text-white">
-        <div className="mx-auto flex max-w-3xl items-center justify-between px-4 pt-[max(0.75rem,env(safe-area-inset-top))] pb-3">
+        <div className="mx-auto flex max-w-3xl items-center justify-between pt-[max(0.75rem,env(safe-area-inset-top))] pb-3 pl-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))]">
           <button type="button" className="mr-3 -ml-2 flex size-11 shrink-0 items-center justify-center sm:hidden" aria-label="Menu" aria-expanded={menu} onClick={() => setMenu((m) => !m)}>{menu ? <X /> : <Menu />}</button>
-          <div className="block-mark mr-auto text-3xl uppercase leading-none">Navy OCS Prep<span className="block font-sans text-xs font-bold tracking-[0.3em] text-[#C6CCD0]">APPENDIX B TRAINER</span></div>
-          <div className="text-right text-xs font-bold uppercase tracking-[0.16em] text-[#C6CCD0]"><span className="slab block text-2xl leading-none text-gold">{Number.isFinite(days) ? days : "--"}</span>days to ship</div>
+          <div className="block-mark mr-auto min-w-0 text-3xl uppercase leading-none">Navy OCS Prep<span className="block font-sans text-[0.65rem] font-bold tracking-[0.18em] min-[400px]:text-xs min-[400px]:tracking-[0.3em] text-[#C6CCD0]">APPENDIX B TRAINER</span></div>
+          <div className="shrink-0 whitespace-nowrap pl-2 text-right text-xs font-bold uppercase tracking-[0.1em] text-[#C6CCD0]"><span className="slab block text-2xl leading-none text-gold">{Number.isFinite(days) ? days : "--"}</span>days to ship</div>
         </div>
         {saveFailed && <div role="alert" className="bg-[#b3202a] px-4 py-2 text-center text-sm font-bold text-white">Progress could not be saved on this device. Export it from Settings now.</div>}
         {menu && (
-          <nav className="border-t border-white/15 sm:hidden">
+          <nav className="absolute inset-x-0 top-full max-h-[70dvh] overflow-y-auto border-t border-white/15 bg-black pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)] shadow-[0_12px_24px_rgba(0,0,0,0.5)] sm:hidden">
             {TABS.map(({ v, label }) => (
-              <button key={v} type="button" data-nav={v} onClick={() => go(v)} className={`flex h-12 w-full items-center border-l-4 px-4 text-sm font-bold uppercase tracking-[0.14em] ${tab === v ? "border-gold text-white" : "border-transparent text-[#C6CCD0]"}`}>{label}</button>
+              <button key={v} type="button" data-nav={v} onClick={() => go(v)} className={`flex h-11 w-full items-center border-l-4 px-4 text-sm font-bold uppercase tracking-[0.14em] ${tab === v ? "border-gold text-white" : "border-transparent text-[#C6CCD0]"}`}>{label}</button>
             ))}
           </nav>
         )}
@@ -54,7 +54,7 @@ export default function App() {
         <h1 className="slab text-3xl font-bold uppercase leading-none tracking-[0.12em]">{cur.label}</h1>
         <p className="mt-1 text-xs text-[#C6CCD0]">{cur.sub}</p>
       </section>
-      <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-4">
+      <main className="mx-auto w-full max-w-3xl flex-1 pl-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))] py-4">
         <div hidden={tab !== "study"}><Study /></div>
         {tab === "test" && <Test />}
         {tab === "listen" && <Listen />}

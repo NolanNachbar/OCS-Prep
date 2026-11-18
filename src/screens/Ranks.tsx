@@ -122,6 +122,7 @@ export default function Ranks() {
             <Button className="mt-4" onClick={() => setQuiz({ ...quiz, i: quiz.i + 1, pick: null })} autoFocus>Next</Button>
           </div>
         )}
+        <Button variant="outline" className="mt-4" onClick={() => setQuiz(null)}>End match</Button>
       </Panel>
     )
   }

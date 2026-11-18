@@ -2,13 +2,16 @@
 Needs: pip install piper-tts, ffmpeg, and a voice model:
   PIPER_VOICE=/path/en_US-ryan-medium.onnx python3 tools/make_clips.py
 Quiz clips bake the gap in (a page timer is unreliable with the screen locked), sized to the answer's length.
+Optional: --only id1,id2 (or positional ids) rebuilds just those cards; OUT_DIR overrides the output folder.
 Text comes from src/data/cards.json, so the audio always matches the cards."""
-import json, os, re, subprocess, wave, tempfile
+import json, os, re, subprocess, sys, wave, tempfile
 from piper import PiperVoice
 
 voice = PiperVoice.load(os.environ["PIPER_VOICE"])
 cards = json.load(open("src/data/cards.json"))
-out = "public/audio/cards"; os.makedirs(out, exist_ok=True)
+ids = {i for a in sys.argv[1:] if a != "--only" for i in a.split(",") if i}
+if ids: cards = [c for c in cards if c["id"] in ids]
+out = os.environ.get("OUT_DIR", "public/audio/cards"); os.makedirs(out, exist_ok=True)
 tmp = tempfile.mkdtemp()
 rate = voice.config.sample_rate
 

@@ -13,11 +13,11 @@
   "sec": "basics",
   "secName": "Navy Basics",
   "prompt": "Navy Core Values",
-  "full": "Honor, Courage, Commitment",
+  "full": "Honor, Courage, and Commitment",
   "id": "basics-001",
   "lead": "",
-  "answer": "Honor, Courage, Commitment",
-  "key": "Honor, Courage, Commitment"
+  "answer": "Honor, Courage, and Commitment",
+  "key": "Honor, Courage, and Commitment"
  },
  {
   "sec": "basics",
@@ -173,11 +173,11 @@
   "sec": "go",
   "secName": "General Orders",
   "prompt": "General Order #2",
-  "full": "Sir/Ma'am, the second general order of a sentry is to: Walk my post in a military manner, keeping always on the alert, and observing everything that takes place within sight or hearing.",
+  "full": "Sir/Ma'am, the second general order of a sentry is to: Walk my post in a military manner, keeping always on the alert and observing everything that takes place within sight or hearing.",
   "id": "go-017",
   "lead": "Sir/Ma'am, the second general order of a sentry is to:",
-  "answer": "Walk my post in a military manner, keeping always on the alert, and observing everything that takes place within sight or hearing.",
-  "key": "Walk my post in a military manner, keeping always on the alert, and observing everything that takes place within sight or hearing."
+  "answer": "Walk my post in a military manner, keeping always on the alert and observing everything that takes place within sight or hearing.",
+  "key": "Walk my post in a military manner, keeping always on the alert and observing everything that takes place within sight or hearing."
  },
  {
   "sec": "go",
@@ -243,11 +243,11 @@
   "sec": "go",
   "secName": "General Orders",
   "prompt": "General Order #9",
-  "full": "Sir/Ma'am, the ninth general order of a sentry is to: Call the Officer of the Deck in any case not covered by instructions.",
+  "full": "Sir/Ma'am, the ninth general order of a sentry is to: Call the OOD in any case not covered by instructions.",
   "id": "go-024",
   "lead": "Sir/Ma'am, the ninth general order of a sentry is to:",
-  "answer": "Call the Officer of the Deck in any case not covered by instructions.",
-  "key": "Call the Officer of the Deck in any case not covered by instructions."
+  "answer": "Call the OOD in any case not covered by instructions.",
+  "key": "Call the OOD in any case not covered by instructions."
  },
  {
   "sec": "go",
@@ -263,11 +263,11 @@
   "sec": "go",
   "secName": "General Orders",
   "prompt": "General Order #11",
-  "full": "Sir/Ma'am, the eleventh general order of a sentry is to: Be especially watchful at night, and during the time for challenging, challenge all persons on or near my post, and to allow no one to pass without proper authority.",
+  "full": "Sir/Ma'am, the eleventh general order of a sentry is to: Be especially watchful at night, and during the time for challenging, challenge all persons on or near my post, and allow no one to pass without proper authority.",
   "id": "go-026",
   "lead": "Sir/Ma'am, the eleventh general order of a sentry is to:",
-  "answer": "Be especially watchful at night, and during the time for challenging, challenge all persons on or near my post, and to allow no one to pass without proper authority.",
-  "key": "Be especially watchful at night, and during the time for challenging, challenge all persons on or near my post, and to allow no one to pass without proper authority."
+  "answer": "Be especially watchful at night, and during the time for challenging, challenge all persons on or near my post, and allow no one to pass without proper authority.",
+  "key": "Be especially watchful at night, and during the time for challenging, challenge all persons on or near my post, and allow no one to pass without proper authority."
  },
  {
   "sec": "chain",
@@ -623,10 +623,10 @@
   "sec": "phon",
   "secName": "Phonetic Alphabet",
   "prompt": "Letter J",
-  "full": "Juliet (JUU lee et)",
+  "full": "Juliet (JEW lee et)",
   "id": "phon-062",
   "lead": "",
-  "answer": "Juliet (JUU lee et)",
+  "answer": "Juliet (JEW lee et)",
   "key": "Juliet"
  },
  {

@@ -12,8 +12,10 @@ import { Diff, Eyebrow, MicButton, Panel, StatTile, Verdict } from "@/components
 import { useCards } from "@/lib/cards"
 import { hookFor } from "@/lib/hooks"
 import * as L from "@/lib/ocs.js"
+import { buildQueue, currentTopic, isDue, newLeft } from "@/lib/queue.js"
 import { speak } from "@/lib/speech"
-import { getStore, update, useStore } from "@/lib/store"
+import FirstRun from "@/screens/FirstRun"
+import { getStore, showIntro, update, useStore } from "@/lib/store"
 import type { Card, Score } from "@/lib/types"
 
 // Each rung is strictly harder: more words blanked, then the letter cues go, then typing it cold.
@@ -33,7 +35,7 @@ const rungs = (c: Card): number[] => {
 // stage is the level a card is due to be tried at next; lvl overrides it for one card (Next level up / Easier)
 type Item = { uid: number; id: string; stage: number; missed?: boolean; lvl?: number; redo?: boolean }
 type Trail = { item: Item; fin: boolean; skip?: boolean } // a card you just answered, and whether that answer cleared it
-type Session = { queue: Item[]; total: number; done: number; miss: number }
+type Session = { queue: Item[]; total: number; done: number; miss: number; day: string }
 let uid = 1
 const today = () => L.ymd(new Date())
 // Next-letter hint for the typed answer: what comes next, without showing more than one letter.
@@ -83,24 +85,24 @@ export default function Study() {
     document.addEventListener("visibilitychange", f); window.addEventListener("focus", f)
     return () => { document.removeEventListener("visibilitychange", f); window.removeEventListener("focus", f) }
   }, [])
-  const due = useMemo(() => order.filter((c) => store.cards[c.id]?.due && store.cards[c.id].due <= day), [order, store.cards, day])
+  const due = useMemo(() => order.filter((c) => isDue(store.cards[c.id], day)), [order, store.cards, day])
   const fresh = useMemo(() => order.filter((c) => !store.cards[c.id]), [order, store.cards])
 
-  // The session is what is due today (plus any cards you pinned). New cards come in only when you ask, or when nothing is due so the screen is never empty.
-  const start = (extra: number, withNew = false) => {
+  // The session is pinned cards, then what is due today, then new cards up to the day's allowance (extra = "Learn N more").
+  // now: "Learn it now" (the next topic today). extra: "Learn N more" in set-number mode.
+  const start = (extra: number, now = false) => {
     const t = today()
-    const intro = getStore().intro.date === t ? getStore().intro : { date: t, n: 0 }
-    if (intro !== getStore().intro) update((x) => { x.intro = intro; return x })
-    const pins = getStore().pinned || []
-    const pinned: Item[] = pins.filter((id) => byId.has(id)).map((id) => ({ uid: uid++, id, stage: store.cards[id] ? (store.cards[id].box >= 2 ? 4 : 2) : 0 }))
+    const st = getStore()
+    const intro = st.intro.date === t ? st.intro : { date: t, n: 0 }
+    if (intro !== st.intro) update((x) => { x.intro = intro; return x })
+    const pins = st.pinned || []
     if (pins.length) update((x) => { x.pinned = []; return x })
-    const reviews: Item[] = due.filter((c) => !pins.includes(c.id))
-      .sort((a, b) => store.cards[a.id].due.localeCompare(store.cards[b.id].due) || store.cards[a.id].box - store.cards[b.id].box)
-      .slice(0, store.settings.maxReviews ?? 60).map((c) => ({ uid: uid++, id: c.id, stage: store.cards[c.id].box >= 2 ? 4 : 2 }))
-    const room = Math.max(0, store.settings.newPerDay + extra - intro.n)
-    const news: Item[] = !withNew && pinned.length + reviews.length > 0 ? [] : fresh.filter((c) => !pins.includes(c.id)).slice(0, room).map((c) => ({ uid: uid++, id: c.id, stage: 0 }))
+    const top = currentTopic({ order, cards: st.cards })
+    const take = top && st.take && st.take.date === t && st.take.sec === top.sec ? st.take.n : undefined
+    const q = buildQueue({ order, cards: st.cards, pins, today: t, settings: st.settings, intro, extra, now, take })
+    const queue: Item[] = [...q.pinned, ...q.reviews, ...q.news].map((i: { id: string; stage: number }) => ({ uid: uid++, ...i }))
     setTrail([])
-    setS({ queue: [...pinned, ...reviews, ...news], total: pinned.length + reviews.length + news.length, done: 0, miss: 0 })
+    setS({ queue, total: queue.length, done: 0, miss: 0, day: t })
   }
   const started = useRef(false)
   // "Learn this next" pins added while a session is open go to the front of the queue.
@@ -112,6 +114,11 @@ export default function Study() {
     update((x) => { x.pinned = []; return x })
   }, [store.pinned]) // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => { if (!started.current) { started.current = true; start(0) } })
+  // Past midnight with the app open: refill only when the session is finished, or untouched since it was built on an earlier day.
+  useEffect(() => {
+    if (!started.current || !s || s.day === day) return
+    if (!s.queue.length || (s.day < day && !trail.length && s.done === 0)) start(0)
+  }, [day]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const requeue = (q: Item[], item: Item, gap: number) => { const at = Math.min(q.length, gap); q.splice(at, 0, item) }
 
@@ -135,13 +142,13 @@ export default function Study() {
       if (!item.redo) update((st) => {
         let cs = st.cards[c.id] || { box: 0, reps: 0, lapses: 0, due: today(), misses: 0 }
         if (item.missed && cs.reps > 0) cs = { ...cs, box: 1, lapses: cs.lapses + 1 }
-        st.cards[c.id] = { ...L.schedule(cs, true, today(), st.settings.ship), misses: item.missed ? cs.misses || 0 : 0 } // a clean type-it-cold pass clears the weak count
+        st.cards[c.id] = { ...L.schedule(cs, true, today(), st.settings.ship, c.id), misses: item.missed ? cs.misses || 0 : 0 } // a clean type-it-cold pass clears the weak count
         return st
       })
       done++
     }
     setTrail((t) => [...t.slice(-19), { item, fin }])
-    setS({ queue: q, total: s.total, done, miss })
+    setS({ ...s, queue: q, done, miss })
   }
 
   // Skip: nothing is scored, the card just moves to the other end.
@@ -186,6 +193,17 @@ export default function Study() {
     setS({ ...s, queue: q })
   }
 
+  const topicMode = store.settings.learn !== "count"
+  const top = topicMode ? currentTopic({ order, cards: store.cards }) : null
+  const takeN = top ? (store.take && store.take.date === day && store.take.sec === top.sec ? Math.min(store.take.n, top.take) : top.take) : 0
+  const setTake = (n: number) => { if (top) update((x) => { x.take = { date: today(), sec: top.sec, n }; return x }) }
+  // Learn fewer before the session's first new card: changing the count rebuilds the untouched session.
+  const fresher = !!s && s.done === 0 && !trail.length && s.queue.some((i) => i.stage === 0)
+  // A session built after today's topic was already introduced came from "Learn it now", so rebuild it the same way.
+  const pickAtStart = (n: number) => { setTake(n); start(0, (getStore().intro.date === today() ? getStore().intro.n : 0) > 0) }
+  const introN = store.intro.date === day ? store.intro.n : 0
+  const left = newLeft({ order, cards: store.cards, today: day, settings: store.settings, intro: store.intro })
+  const capped = introN >= store.settings.newPerDay * 3 // "Learn N more" stops at newPerDay*2 extra cards a day
   const solid = order.filter((c) => (store.cards[c.id]?.box || 0) >= 4).length
   const startedN = order.length - fresh.length
   const item = s?.queue[0]
@@ -196,12 +214,14 @@ export default function Study() {
 
   return (
     <div className="space-y-4">
+      {showIntro(store) && <FirstRun />}
       <div className="flex gap-3 pb-1">
         <StatTile value={due.length} label="Due today" tone="text-gold" />
         <StatTile value={startedN} label={`of ${order.length} started`} />
         <StatTile value={solid} label="Solid" tone="text-ok" />
       </div>
 
+      {topicMode && top && fresher && s && item && item.stage === 0 && <TopicPick label={top.label} max={top.take} n={takeN} onPick={pickAtStart} />}
       {s && item && c ? (
         <Panel>
           <div className="mb-1 flex justify-between text-xs text-muted-foreground"><span>{s.queue.length} left</span><span>{s.done} of {s.total} cleared</span></div>
@@ -233,12 +253,34 @@ export default function Study() {
           <Eyebrow>Session complete</Eyebrow>
           <h2 className="slab mt-2 text-2xl font-bold">{s.done} of {s.total} cleared</h2>
           <p className="mt-1 text-muted-foreground">{s.miss} misses. {fresh.length} cards unseen. {due.length} due now.</p>
-          {fresh.length > 0 && <Button className="mt-4 mr-3" onClick={() => start(getStore().intro.n, true)}>Learn {store.settings.newPerDay} more</Button>}
-          <Button variant="outline" className="mt-4" onClick={() => start(0)}>Check due cards</Button>
+          {topicMode ? (top && <>
+            <p className="mt-1 text-muted-foreground" data-testid="next-topic">{startedN === 0 ? "Start with" : "Next"}: {top.label} ({takeN} of {top.take} {top.take === 1 ? "card" : "cards"}).{startedN === 0 && top.sec === "phon" ? " 26 short cards, one word each." : ""}</p>
+            <TopicPick label={top.label} max={top.take} n={takeN} onPick={setTake} bare />
+            <Button className="mt-4 mr-3 min-h-11" onClick={() => start(0, true)}>Learn it now</Button>
+          </>) : <>
+            <p className="mt-1 text-muted-foreground">{left} new {left === 1 ? "card" : "cards"} left today.</p>
+            {fresh.length > 0 && <Button className="mt-4 mr-3 min-h-11" disabled={capped} onClick={() => start(introN)}>Learn {store.settings.newPerDay} more</Button>}
+          </>}
+          <Button variant="outline" className="mt-4 min-h-11" onClick={() => start(0)}>Check due cards</Button>
+          {!topicMode && fresh.length > 0 && capped && <p className="mt-2 text-sm text-muted-foreground">That is {store.settings.newPerDay * 2} extra today. More new cards tomorrow, so the reviews stay manageable.</p>}
         </Panel>
       ) : null}
     </div>
   )
+}
+
+// Learn fewer: pick 1 up to every card of the topic, saved for today only.
+function TopicPick({ label, max, n, onPick, bare }: { label: string; max: number; n: number; onPick: (n: number) => void; bare?: boolean }) {
+  const body = (
+    <div className="mt-2 flex flex-wrap items-center gap-2" data-testid="topic-pick">
+      {!bare && <span className="mr-1 text-sm">Learn {label}: {n === max ? `all ${max}` : `${n} of ${max}`} {max === 1 ? "card" : "cards"}</span>}
+      <Button variant="outline" size="sm" className="min-h-11 min-w-11" aria-label="Fewer cards" disabled={n <= 1} onClick={() => onPick(n - 1)}>-</Button>
+      <span className="min-w-8 text-center font-semibold" data-testid="take-n">{n}</span>
+      <Button variant="outline" size="sm" className="min-h-11 min-w-11" aria-label="More cards" disabled={n >= max} onClick={() => onPick(n + 1)}>+</Button>
+      <Button variant="ghost" size="sm" className="min-h-11" disabled={n >= max} onClick={() => onPick(max)}>All</Button>
+    </div>
+  )
+  return bare ? body : <Panel>{body}</Panel>
 }
 
 function Step({ item, level, card: c, hook, onIntro, onHarder, onEasier, onNext }: { item: Item; level: number; card: Card; hook: string; onIntro: () => void; onHarder: () => void; onEasier?: () => void; onNext: (ok: boolean) => void }) {

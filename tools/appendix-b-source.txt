@@ -16,7 +16,7 @@ NAVY BASICS
 Mission of the Navy
 Mission of the Navy, to recruit, train, equip, and organize to deliver combat ready Naval forces to win conflicts and wars while maintaining security and deterrence through sustained forward presence.
 Navy Core Values
-Honor, Courage, Commitment
+Honor, Courage, and Commitment
 CNO's Core Attributes
 Integrity, Accountability, Initiative, Toughness
 CODE OF CONDUCT
@@ -51,7 +51,7 @@ GENERAL ORDERS
 General Order #1
 Sir/Ma'am, the first general order of a sentry is to: Take charge of this post and all government property in view.
 General Order #2
-Sir/Ma'am, the second general order of a sentry is to: Walk my post in a military manner, keeping always on the alert, and observing everything that takes place within sight or hearing.
+Sir/Ma'am, the second general order of a sentry is to: Walk my post in a military manner, keeping always on the alert and observing everything that takes place within sight or hearing.
 General Order #3
 Sir/Ma'am, the third general order of a sentry is to: Report all violations of orders I am instructed to enforce.
 General Order #4
@@ -65,11 +65,11 @@ Sir/Ma'am, the seventh general order of a sentry is to: Talk to no one except in
 General Order #8
 Sir/Ma'am, the eighth general order of a sentry is to: Give the alarm in case of fire or disorder.
 General Order #9
-Sir/Ma'am, the ninth general order of a sentry is to: Call the Officer of the Deck in any case not covered by instructions.
+Sir/Ma'am, the ninth general order of a sentry is to: Call the OOD in any case not covered by instructions.
 General Order #10
 Sir/Ma'am, the tenth general order of a sentry is to: Salute all officers and all colors and standards not cased.
 General Order #11
-Sir/Ma'am, the eleventh general order of a sentry is to: Be especially watchful at night, and during the time for challenging, challenge all persons on or near my post, and to allow no one to pass without proper authority.
+Sir/Ma'am, the eleventh general order of a sentry is to: Be especially watchful at night, and during the time for challenging, challenge all persons on or near my post, and allow no one to pass without proper authority.
 CHAIN OF COMMAND
 Chain of Command #1
 Sir/Ma'am, the first person in my chain of command is the: Class Commanding Officer
@@ -144,7 +144,7 @@ Hotel (hoh TELL)
 Letter I
 India (IN dee ah)
 Letter J
-Juliet (JUU lee et)
+Juliet (JEW lee et)
 Letter K
 Kilo (KEY loh)
 Letter L
@@ -299,7 +299,7 @@ NAVY BASICS
 Mission of the Navy
 Mission of the Navy, to recruit, train, equip, and organize to deliver combat ready Naval forces to win conflicts and wars while maintaining security and deterrence through sustained forward presence.
 Navy Core Values
-Honor, Courage, Commitment
+Honor, Courage, and Commitment
 CNO's Core Attributes
 Integrity, Accountability, Initiative, Toughness
 CODE OF CONDUCT
@@ -334,7 +334,7 @@ GENERAL ORDERS
 General Order #1
 Sir/Ma'am, the first general order of a sentry is to: Take charge of this post and all government property in view.
 General Order #2
-Sir/Ma'am, the second general order of a sentry is to: Walk my post in a military manner, keeping always on the alert, and observing everything that takes place within sight or hearing.
+Sir/Ma'am, the second general order of a sentry is to: Walk my post in a military manner, keeping always on the alert and observing everything that takes place within sight or hearing.
 General Order #3
 Sir/Ma'am, the third general order of a sentry is to: Report all violations of orders I am instructed to enforce.
 General Order #4
@@ -348,11 +348,11 @@ Sir/Ma'am, the seventh general order of a sentry is to: Talk to no one except in
 General Order #8
 Sir/Ma'am, the eighth general order of a sentry is to: Give the alarm in case of fire or disorder.
 General Order #9
-Sir/Ma'am, the ninth general order of a sentry is to: Call the Officer of the Deck in any case not covered by instructions.
+Sir/Ma'am, the ninth general order of a sentry is to: Call the OOD in any case not covered by instructions.
 General Order #10
 Sir/Ma'am, the tenth general order of a sentry is to: Salute all officers and all colors and standards not cased.
 General Order #11
-Sir/Ma'am, the eleventh general order of a sentry is to: Be especially watchful at night, and during the time for challenging, challenge all persons on or near my post, and to allow no one to pass without proper authority.
+Sir/Ma'am, the eleventh general order of a sentry is to: Be especially watchful at night, and during the time for challenging, challenge all persons on or near my post, and allow no one to pass without proper authority.
 CHAIN OF COMMAND
 Chain of Command #1
 Sir/Ma'am, the first person in my chain of command is the: Class Commanding Officer
@@ -427,7 +427,7 @@ Hotel (hoh TELL)
 Letter I
 India (IN dee ah)
 Letter J
-Juliet (JUU lee et)
+Juliet (JEW lee et)
 Letter K
 Kilo (KEY loh)
 Letter L
