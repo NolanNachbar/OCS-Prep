@@ -21,8 +21,8 @@ SAY = {"OOD": "O O D", "OCS": "O C S", "USN": "U S N", "ENS": "E N S", "MCPON": 
        "CAPT": "C eigh P T", "Capt": "Captain", "Maj": "Major", "MajGen": "Major Gen", "SgtMaj": "S G T Major",
        "PO1": "P O one", "PO2": "P O two", "PO3": "P O three", "WO1": "W O one"}
 ABBR = re.compile(r"\b(" + "|".join(sorted(SAY, key=len, reverse=True)) + r")\b")
-# Phonetic alphabet words the voice gets wrong; the rest are read as the word alone (the card's guide in parentheses is dropped).
-PHON_SAY = {"phon-053": "al fah", "phon-054": "brah-voh", "phon-064": "lee mah", "phon-067": "oss cah", "phon-068": "pah pah",
+# Phonetic alphabet words the voice gets wrong (it drops a soft final vowel: "Echo" came out as "ek"); the rest are read as the word alone (the card's guide in parentheses is dropped).
+PHON_SAY = {"phon-053": "al fah", "phon-054": "brah-voh", "phon-056": "dell tah", "phon-057": "eck oh", "phon-061": "in dee ah", "phon-063": "kee loh", "phon-070": "row me oh", "phon-072": "tang go", "phon-064": "lee mah", "phon-067": "oss cah", "phon-068": "pah pah",
             "phon-069": "kay beck", "phon-071": "see air rah", "phon-078": "zoo loo"}
 
 def talk(c):  # what the voice says for a card's answer
