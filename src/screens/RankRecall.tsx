@@ -182,7 +182,7 @@ function Step({ item, level, letters, card: c, onNext, onEasier, onHarder }: { i
     if (!name && level < 4) {
       const blanks = toks.filter((t: { blank: boolean }) => t.blank)
       let good = 0
-      blanks.forEach((t: { text: string }, i: number) => { if (L.norm(vals[i] || "") === L.norm(t.text)) good++ })
+      blanks.forEach((t: { text: string }, i: number) => { if (L.norm(vals[i] || "").replace(/ /g, "") === L.norm(t.text).replace(/ /g, "")) good++ })
       const ok = good === blanks.length
       setRes({ r: { ...exact(key), ok, ratio: blanks.length ? good / blanks.length : 1, hit: L.words(key).map(() => ok) }, note: `${good} of ${blanks.length} blanks right` })
     } else if (!text.trim()) return

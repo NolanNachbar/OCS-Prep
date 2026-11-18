@@ -108,4 +108,11 @@ t("a review is never scheduled past the ship date", () => {
   assert(L.schedule({ box: 5 }, true, "2026-12-25", "2027-01-01").due <= "2027-01-01");
   assert(L.schedule({ box: 2 }, true, "2026-11-12", "2027-01-01").due > "2026-11-12");
 });
+t("a review on or after the ship day is due no later than today or the ship day", () => {
+  assert(L.schedule({ box: 2 }, true, "2026-12-31", "2026-12-31").due === "2026-12-31");
+  assert(L.schedule({ box: 2 }, true, "2027-01-05", "2026-12-31").due === "2027-01-05");
+});
+t("1st Lt and 1stLt score the same", () => {
+  assert(L.norm("First Lieutenant (1st Lt)") === L.norm("First Lieutenant (1stLt)"));
+});
 console.log(n, "tests passed");

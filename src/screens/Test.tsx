@@ -72,7 +72,7 @@ export default function Test() {
         <h2 className="slab mt-2 text-3xl font-bold">{run.right} of {run.q.length}</h2>
         {run.section && <p className="mt-2 text-lg">{run.missed.length === 0 ? `Clean run. ${store.runs?.[run.section]?.streak ?? 0} in a row for this section. Aim for 3 clean runs on different days.` : "Not clean. The streak starts over."}</p>}
         {run.missed.length > 0 && <p className="mt-2 text-muted-foreground">Missed: {run.missed.join(", ")}. They are due again today.</p>}
-        {run.targeted && run.right > 0 && <p className="mt-2 text-muted-foreground">Cards you passed that were new that you got word for word are now marked known and come back for review in 2 days.</p>}
+        {run.targeted && run.right > 0 && <p className="mt-2 text-muted-foreground">New cards you passed word for word are now marked known and come back for review in 2 days.</p>}
         <div className="mt-5 flex gap-3">
           {run.section && <Button onClick={() => { setRun({ ...run, q: all.filter((x) => x.sec === run.section), i: 0, right: 0, missed: [] }); setText(""); setRes(null) }}>Run it again</Button>}
           <Button variant={run.section ? "outline" : "default"} onClick={() => setRun(null)}>Done</Button>

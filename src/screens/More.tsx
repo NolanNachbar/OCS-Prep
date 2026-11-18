@@ -23,7 +23,7 @@ export default function More() {
       const data = JSON.parse(await f.text())
       if (!data || typeof data.cards !== "object" || data.cards === null) throw new Error("not a progress file")
       if (confirm("Replace all progress on this device with this file?")) replace(data)
-    } catch { alert("That file is not an OCS Recite progress export.") }
+    } catch { alert("That file is not a Navy OCS Prep progress export.") }
     if (file.current) file.current.value = ""
   }
   return (

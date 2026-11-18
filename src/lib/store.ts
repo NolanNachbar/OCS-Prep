@@ -4,7 +4,7 @@ import type { Store } from "./types"
 const KEY = "ocsprep.v1"
 const defaults = (): Store => ({
   v: 1,
-  settings: { ship: "2027-01-01", newPerDay: 5, rate: 1, gap: 6 },
+  settings: { ship: "2027-04-18", newPerDay: 5, rate: 1, gap: 6 },
   cards: {},
   intro: { date: "", n: 0 },
   edits: {},
@@ -48,7 +48,11 @@ export function sanitize(raw: unknown): Store {
 }
 
 function read(): Store {
-  try { return sanitize(JSON.parse(localStorage.getItem(KEY) || "null")) } catch { /* private mode or empty storage */ }
+  let raw: string | null = null
+  try { raw = localStorage.getItem(KEY); return sanitize(JSON.parse(raw || "null")) } catch {
+    // Unreadable save: keep the raw text so the next write does not destroy it.
+    if (raw) try { localStorage.setItem(KEY + ".corrupt", raw) } catch { /* storage full or blocked */ }
+  }
   return defaults()
 }
 

@@ -16,7 +16,7 @@ const TABS = [
   { v: "listen", label: "Listen", sub: "Hands-free, for the run" },
   { v: "ranks", label: "Ranks", sub: "Rank pictures, groups and matching" },
   { v: "cards", label: "Cards", sub: "All 135 cards by section" },
-  { v: "more", label: "Settings", sub: "Dates, pass mark, your data" },
+  { v: "more", label: "Settings", sub: "Ship date, limits, your data" },
 ]
 
 export default function App() {
@@ -31,10 +31,10 @@ export default function App() {
       <header className="sticky top-0 z-20 bg-black text-white">
         <div className="mx-auto flex max-w-3xl items-center justify-between px-4 pt-[max(0.75rem,env(safe-area-inset-top))] pb-3">
           <button type="button" className="mr-3 -ml-2 flex size-11 shrink-0 items-center justify-center sm:hidden" aria-label="Menu" aria-expanded={menu} onClick={() => setMenu((m) => !m)}>{menu ? <X /> : <Menu />}</button>
-          <div className="block-mark mr-auto text-3xl uppercase leading-none">OCS Recite<span className="block font-sans text-xs font-bold tracking-[0.3em] text-[#C6CCD0]">APPENDIX B TRAINER</span></div>
+          <div className="block-mark mr-auto text-3xl uppercase leading-none">Navy OCS Prep<span className="block font-sans text-xs font-bold tracking-[0.3em] text-[#C6CCD0]">APPENDIX B TRAINER</span></div>
           <div className="text-right text-xs font-bold uppercase tracking-[0.16em] text-[#C6CCD0]"><span className="slab block text-2xl leading-none text-gold">{Number.isFinite(days) ? days : "--"}</span>days to ship</div>
         </div>
-        {saveFailed && <div role="alert" className="bg-destructive px-4 py-2 text-center text-sm font-bold text-white">Progress could not be saved on this device. Export it from More now.</div>}
+        {saveFailed && <div role="alert" className="bg-[#b3202a] px-4 py-2 text-center text-sm font-bold text-white">Progress could not be saved on this device. Export it from Settings now.</div>}
         {menu && (
           <nav className="border-t border-white/15 sm:hidden">
             {TABS.map(({ v, label }) => (

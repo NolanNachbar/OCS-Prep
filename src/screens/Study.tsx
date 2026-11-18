@@ -207,8 +207,8 @@ export default function Study() {
           <div className="mb-1 flex justify-between text-xs text-muted-foreground"><span>{s.queue.length} left</span><span>{s.done} of {s.total} cleared</span></div>
           <Progress value={s.total ? (s.done / s.total) * 100 : 0} className="mb-3 h-1.5 [&>div]:bg-gold" />
           <div className="mb-4 flex gap-3">
-            <Button variant="outline" size="sm" className="flex-1" onClick={back} disabled={!trail.length}><ChevronLeft />Back</Button>
-            <Button variant="outline" size="sm" className="flex-1" onClick={skip} disabled={s.queue.length < 2}>Skip<ChevronRight /></Button>
+            <Button variant="outline" size="sm" className="min-h-11 flex-1" onClick={back} disabled={!trail.length}><ChevronLeft />Back</Button>
+            <Button variant="outline" size="sm" className="min-h-11 flex-1" onClick={skip} disabled={s.queue.length < 2}>Skip<ChevronRight /></Button>
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <Eyebrow>{c.secName}</Eyebrow>
@@ -253,7 +253,7 @@ function Step({ item, level, card: c, hook, onIntro, onHarder, onEasier, onNext 
   const words = nb ? nb.name.split(/\s+/).filter(Boolean) : [] // each word of the name is its own blank
   // The name (General Order, Code of Conduct, Chain of Command, Constitution) is sometimes a blank too, at the same odds as a word.
   const nameBlank = !!nb && nb.name !== "" && [...c.id + item.uid].reduce((h, ch) => Math.imul(h ^ ch.charCodeAt(0), 16777619) >>> 0, 2166136261) / 4294967296 < FRAC[level]
-  const okBlank = (t: { text: string; alts?: string[] }, v: string) => (t.alts ? t.alts.includes(L.norm(v)) : L.norm(v) === L.norm(t.text))
+  const okBlank = (t: { text: string; alts?: string[] }, v: string) => (t.alts ? t.alts.includes(L.norm(v)) : L.norm(v).replace(/ /g, "") === L.norm(t.text).replace(/ /g, ""))
   const toks = useMemo(() => (level >= 1 && level <= 3 ? L.cloze(c, FRAC[level], item.uid) : []), [level, c, item.uid])
 
   const record = (r: Score, note?: string, peeked?: boolean) => {

@@ -2,7 +2,7 @@
   "name": "Navy OCS PREP",
   "short_name": "OCS PREP",
   "description": "Appendix B recital trainer",
-  "start_url": "./index.html",
+  "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "background_color": "#08262C",

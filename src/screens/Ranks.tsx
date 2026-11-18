@@ -27,7 +27,7 @@ const GROUPS: { name: string; note: string; ids: string[] }[] = [
   { name: "Navy enlisted: E-1 to E-3", note: "No insignia, then two and three diagonal stripes.", ids: ids("nve", 110, 112) },
   { name: "Navy enlisted: petty officers", note: "An eagle over one, two or three chevrons.", ids: ids("nve", 113, 115) },
   { name: "Navy enlisted: chiefs", note: "Same anchor, plus zero, one or two stars. The MCPON has three. E-7 to E-9 get asked most.", ids: ids("nve", 116, 119) },
-  { name: "Marine enlisted: stripes", note: "Private nothing, PFC one stripe, then stripes over crossed rifles: one, two, three.", ids: ids("mce", 120, 124) },
+  { name: "Marine enlisted: stripes", note: "Private has no insignia. PFC has one stripe, then stripes over crossed rifles: one, two, three.", ids: ids("mce", 120, 124) },
   { name: "Marine enlisted: rockers", note: "Three stripes over crossed rifles, plus one, two or three rockers.", ids: ids("mce", 125, 127) },
   { name: "Marine enlisted: E-8 and E-9", note: "The confusable ones. First Sergeant has a diamond, Master Gunnery Sergeant a bursting bomb, Sergeant Major a star.", ids: ids("mce", 128, 131) },
 ]

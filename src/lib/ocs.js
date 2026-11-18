@@ -8,6 +8,7 @@
       .replace(/([a-z0-9])-([a-z0-9])/g, "$1$2")
       .replace(/['’]/g, "")
       .replace(/[^a-z0-9 ]+/g, " ")
+      .replace(/\b([12])(st|nd) lt\b/g, "$1$2lt")
       .replace(/\s+/g, " ")
       .trim();
   }
@@ -165,7 +166,7 @@
       gap = Math.min(gap, Math.max(2, Math.floor(left / 4)));
     }
     s.due = addDays(today, Math.max(1, gap));
-    if (left >= 1 && s.due > ship) s.due = ship; // the 2 day floor must not push a review past the ship date
+    if (Number.isFinite(left) && s.due > ship) s.due = ship > today ? ship : today; // the 2 day floor must not push a review past the ship date
     return s;
   }
 
