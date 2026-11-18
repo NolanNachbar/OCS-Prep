@@ -164,3 +164,6 @@ Rating eagle switched to the finer-feather trace (full 56-wide, even-odd fill) h
 
 ## r56 (2026-11-12)
 Import sanitizes log and runs entries; number blanks cover Chain of Command #12-18; wrong Study cloze blanks show the correct word; 1/2-inch stripe width matched before 2-inch.
+
+## Quiz me removed (2026-11-17)
+Listen is read-to-me only. The Quiz me tab, its per-card quiz clips and the old unused whole-section quiz clips are gone (about 24 MB less to deploy). tools/make_clips.py now builds only the prompt-then-answer clip. Also fixed how the voice says abbreviations (OCS, OOD, USN, ADM and similar) and the phonetic alphabet words.

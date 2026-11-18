@@ -1,7 +1,6 @@
-"""Build one MP3 per card, read and quiz, with local Piper TTS (free, runs here). The Listen player queues these.
+"""Build one MP3 per card (prompt, then answer) with local Piper TTS (free, runs here). The Listen player queues these.
 Needs: pip install piper-tts, ffmpeg, and a voice model:
   PIPER_VOICE=/path/en_US-ryan-medium.onnx python3 tools/make_clips.py
-Quiz clips bake the gap in (a page timer is unreliable with the screen locked), sized to the answer's length.
 Optional: --only id1,id2 (or positional ids) rebuilds just those cards; OUT_DIR overrides the output folder.
 Text comes from src/data/cards.json, so the audio always matches the cards."""
 import json, os, re, subprocess, sys, wave, tempfile
@@ -58,16 +57,11 @@ def say_parts(text, path, n):  # concatenated speech with 0.55 s between pieces
     lst = f"{tmp}/{n}.txt"; open(lst, "w").write("".join(f"file '{x}'\n" for x in files))
     subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-f", "concat", "-safe", "0", "-i", lst, "-c", "copy", path], check=True)
 
-def gap(text):  # seconds to say it aloud: about 2.2 words a second plus a breath, never under 4 or over 40
-    return min(40, max(4, 1.5 + len(text.split()) / 2.2))
-
 silence(0.55, f"{tmp}/s_beat.wav"); silence(0.9, f"{tmp}/s_short.wav"); silence(1.2, f"{tmp}/s_long.wav")
 for c in cards:
     p, a = f"{tmp}/p.wav", f"{tmp}/a.wav"
     say(c["prompt"] + ".", p); say_parts(talk(c), a, "x")
-    silence(gap(c["full"]), f"{tmp}/s_gap.wav")
-    for mode, mid in (("read", "s_short"), ("quiz", "s_gap")):
-        lst = f"{tmp}/{mode}.txt"
-        open(lst, "w").write("".join(f"file '{x}'\n" for x in (p, f"{tmp}/{mid}.wav", a, f"{tmp}/s_long.wav")))
-        subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-f", "concat", "-safe", "0", "-i", lst, "-ac", "1", "-b:a", "48k", f"{out}/{c['id']}-{mode}.mp3"], check=True)
+    lst = f"{tmp}/clip.txt"
+    open(lst, "w").write("".join(f"file '{x}'\n" for x in (p, f"{tmp}/s_short.wav", a, f"{tmp}/s_long.wav")))
+    subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-f", "concat", "-safe", "0", "-i", lst, "-ac", "1", "-b:a", "48k", f"{out}/{c['id']}-read.mp3"], check=True)
 print(len(cards), "cards,", len(os.listdir(out)), "files,", sum(os.path.getsize(f"{out}/{f}") for f in os.listdir(out)) // 1024, "KB")

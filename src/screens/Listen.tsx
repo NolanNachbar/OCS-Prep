@@ -4,7 +4,6 @@ import { Pause, Play, SkipBack, SkipForward } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Panel } from "@/components/shared"
 import { useCards } from "@/lib/cards"
 import { SPEEDS } from "@/lib/speech"
@@ -12,12 +11,11 @@ import { update, useStore } from "@/lib/store"
 
 // One player for everything. Each card has its own recording (tools/make_clips.py); this queues them in book order,
 // each repeated back to back, on a single audio element so it keeps going with the screen locked.
-// Quiz clips are prompt, a gap sized to the answer, then the answer. Read clips are prompt then answer.
+// Each clip is the prompt then the answer.
 export default function Listen() {
   const store = useStore()
   const { book: order } = useCards()
   const secs = [...new Map(order.map((c) => [c.sec, c.secName])).entries()]
-  const [mode, setMode] = useState("read")
   // How many times each card plays in a row (0 = left out). Cards play in book order, each repeated back to back.
   const [reps, setReps] = useState<Record<string, number>>(() => Object.fromEntries(order.filter((x) => x.sec === secs[0]?.[0]).map((x) => [x.id, 1])))
   const [loop, setLoop] = useState(false)
@@ -30,7 +28,7 @@ export default function Listen() {
   const [lap, setLap] = useState(0)
   const au = useRef<HTMLAudioElement | null>(null)
   if (!au.current && typeof Audio !== "undefined") au.current = new Audio()
-  const live = useRef({ n: 0, loop, ids: [] as string[], prompts: [] as string[], mode, rate: 1 })
+  const live = useRef({ n: 0, loop, ids: [] as string[], prompts: [] as string[], rate: 1 })
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined) // shared so a stale effect closure can't leak one
   const seq = useRef(0) // bumps on every load; a failure only counts once, and only for the clip still loaded
   const handled = useRef(-1) // index the ended handler already started, so the effect doesn't reload it
@@ -39,7 +37,7 @@ export default function Listen() {
   const rate = store.settings.rate
   const cur = cards[idx % Math.max(1, cards.length)]
   const c = cur?.c
-  live.current = { n: cards.length, loop, ids: cards.map((x) => x.c.id), prompts: cards.map((x) => x.c.prompt), mode, rate }
+  live.current = { n: cards.length, loop, ids: cards.map((x) => x.c.id), prompts: cards.map((x) => x.c.prompt), rate }
 
   useEffect(() => {
     const a = au.current
@@ -50,7 +48,7 @@ export default function Listen() {
     pos.current = idx
     const load = (i: number) => {
       pos.current = i
-      a.src = `${import.meta.env.BASE_URL}audio/cards/${live.current.ids[i]}-${live.current.mode}.mp3`
+      a.src = `${import.meta.env.BASE_URL}audio/cards/${live.current.ids[i]}-read.mp3`
       a.defaultPlaybackRate = live.current.rate // loading a new src resets playbackRate to this
       a.playbackRate = live.current.rate
       const my = ++seq.current
@@ -91,7 +89,7 @@ export default function Listen() {
     load(idx)
     return disarm
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [playing, idx, lap, mode, c?.id])
+  }, [playing, idx, lap, c?.id])
 
   useEffect(() => { if (au.current) { au.current.defaultPlaybackRate = rate; au.current.playbackRate = rate } }, [rate])
 
@@ -124,13 +122,7 @@ export default function Listen() {
 
   return (
     <Panel>
-      <Tabs value={mode} onValueChange={(v) => { setMode(v); setPlaying(false); setIdx(0) }}>
-        <TabsList className="grid h-auto! w-full grid-cols-2 rounded-none bg-black/30">
-          <TabsTrigger value="read" className="h-11 rounded-none font-bold uppercase tracking-wider">Read to me</TabsTrigger>
-          <TabsTrigger value="quiz" className="h-11 rounded-none font-bold uppercase tracking-wider">Quiz me</TabsTrigger>
-        </TabsList>
-      </Tabs>
-      <p className="mt-3 text-sm text-muted-foreground">{mode === "read" ? "Reads each card you choose, prompt then answer." : "Prompt, then a pause to say it aloud (longer for longer answers), then the answer."} Plays from recordings, so it keeps going with the screen locked and needs a connection.</p>
+      <p className="mt-3 text-sm text-muted-foreground">Reads each card you choose, prompt then answer. Plays from recordings, so it keeps going with the screen locked and needs a connection.</p>
       <div className="mt-4 mb-2 text-xs font-bold uppercase tracking-[0.18em] text-gold">Sections ({cards.length} plays)</div>
       <div className="flex flex-wrap gap-2">
         {secs.map(([k, name]) => (
@@ -180,7 +172,7 @@ export default function Listen() {
         <div className="text-xs font-bold uppercase tracking-[0.18em] text-gold">{playing ? "Playing" : "Paused"}</div>
         <div className="slab mt-2 text-3xl font-bold leading-none">{c ? c.prompt : "Pick at least one card"}</div>
         {cur && cur.of > 1 && <div className="mt-2 text-sm text-muted-foreground">Play {cur.rep} of {cur.of}</div>}
-        {c && mode === "read" && playing && <p className="mt-3 whitespace-pre-line text-lg text-muted-foreground">{lines(c.answer)}</p>}
+        {c && playing && <p className="mt-3 whitespace-pre-line text-lg text-muted-foreground">{lines(c.answer)}</p>}
       </div>
       {note && <p className="mt-3 text-destructive" role="alert">{note}</p>}
       {err && <p className="mt-3 text-destructive" role="alert">Audio unavailable right now. Check your connection and press play again.</p>}
