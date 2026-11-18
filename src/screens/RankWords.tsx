@@ -37,7 +37,7 @@ export default function RankWords({ cards, onExit }: { cards: Card[]; onExit: ()
       <Panel>
         <Eyebrow>Word match complete</Eyebrow>
         <h2 className="slab mt-2 text-3xl font-bold">{right} of {qs.length}</h2>
-        {missed.length > 0 && <p className="mt-2 text-muted-foreground">Missed: {missed.join(", ")}. They are due again today.</p>}
+        {missed.length > 0 && <p className="mt-2 text-muted-foreground">Missed: {missed.join(", ")}. Any you have already studied are due again today.</p>}
         <Button className="mt-5" onClick={onExit}>Done</Button>
       </Panel>
     )

@@ -105,7 +105,7 @@ export default function Inspection({ pool, title, onExit }: { pool: Card[]; titl
       <Panel>
         <Eyebrow>Inspection over</Eyebrow>
         <h2 className="slab mt-2 text-3xl font-bold">{run.right} of {run.q.length}</h2>
-        {run.missed.length > 0 ? <p className="mt-2 text-muted-foreground">Missed: {run.missed.join(", ")}. They are due again today.</p> : <p className="mt-2 text-lg">Clean. Every call answered word for word.</p>}
+        {run.missed.length > 0 ? <p className="mt-2 text-muted-foreground">Missed: {run.missed.join(", ")}. Any you have already studied are due again today.</p> : <p className="mt-2 text-lg">Clean. Every call answered word for word.</p>}
         <div className="mt-5 flex gap-3">
           <Button onClick={() => { setRun({ q: draw(use, +count, store), i: 0, right: 0, missed: [] }); setText(""); setRes(null) }}>Another round</Button>
           <Button variant="outline" onClick={onExit}>Done</Button>
