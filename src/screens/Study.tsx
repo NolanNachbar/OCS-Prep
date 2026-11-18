@@ -273,7 +273,7 @@ export default function Study() {
 function TopicPick({ label, max, n, onPick, bare }: { label: string; max: number; n: number; onPick: (n: number) => void; bare?: boolean }) {
   const body = (
     <div className="mt-2 flex flex-wrap items-center gap-2" data-testid="topic-pick">
-      {!bare && <span className="mr-1 text-sm">Learn {label}: {n === max ? `all ${max}` : `${n} of ${max}`} {max === 1 ? "card" : "cards"}</span>}
+      {!bare && <span className="mr-1 w-full text-sm">Learn {label}: {n === max ? `all ${max}` : `${n} of ${max}`} {max === 1 ? "card" : "cards"}</span>}
       <Button variant="outline" size="sm" className="min-h-11 min-w-11" aria-label="Fewer cards" disabled={n <= 1} onClick={() => onPick(n - 1)}>-</Button>
       <span className="min-w-8 text-center font-semibold" data-testid="take-n">{n}</span>
       <Button variant="outline" size="sm" className="min-h-11 min-w-11" aria-label="More cards" disabled={n >= max} onClick={() => onPick(n + 1)}>+</Button>

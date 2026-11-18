@@ -20,14 +20,14 @@ export default function FirstRun() {
       <ol className="mt-2 space-y-2 text-base">
         {STEPS.map((t, i) => <li key={i} className="flex gap-3"><span className="font-semibold text-gold">{i + 1}</span><span>{t}</span></li>)}
       </ol>
-      <label className="mt-4 block text-sm text-muted-foreground">
+      <label className="mt-4 block min-w-0 text-sm text-muted-foreground">
         Ship date
         <input
           type="date"
           data-testid="ship-date"
           value={ship}
           onChange={(e) => { setShip(e.target.value); if (/^\d{4}-\d{2}-\d{2}$/.test(e.target.value)) save(e.target.value) }}
-          className="mt-1 block min-h-11 w-full rounded-lg border border-input bg-transparent px-2.5 text-base text-foreground"
+          className="mt-1 block h-12 w-full min-w-0 max-w-full appearance-none rounded-lg border border-input bg-transparent px-2.5 py-0 text-base leading-[46px] text-foreground"
         />
       </label>
       <Button className="mt-4 min-h-11 w-full" onClick={done}>Got it</Button>

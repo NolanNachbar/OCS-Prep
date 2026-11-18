@@ -31,7 +31,7 @@ export default function More() {
       <Panel>
         <Eyebrow>Settings</Eyebrow>
         <div className="mt-4 grid gap-4">
-          <div className="grid gap-2"><Label htmlFor="ship">Ship date</Label><Input id="ship" type="date" value={st.ship} onChange={(e) => { if (e.target.value) set("ship", e.target.value) }} className="h-12" /></div>
+          <div className="grid gap-2"><Label htmlFor="ship">Ship date</Label><Input id="ship" type="date" value={st.ship} onChange={(e) => { if (e.target.value) set("ship", e.target.value) }} className="h-12 max-w-full appearance-none py-0 leading-[46px]" /></div>
           <div className="grid gap-2"><Label>Learn new cards</Label>
             <Select value={st.learn === "count" ? "count" : "topic"} onValueChange={(v) => update((s) => { if (v === "count") s.settings.learn = "count"; else delete s.settings.learn; return s })}>
               <SelectTrigger className="h-12! w-full" aria-label="Learn new cards"><SelectValue /></SelectTrigger>
